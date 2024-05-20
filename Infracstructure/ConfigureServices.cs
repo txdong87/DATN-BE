@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Domain.Interfaces;
 using Infrastructure.Persistence.Repositories;
-using Domain.Entities;
+using Domain.IRepository;
 
 namespace Infrastructure;
 public static class ConfigureServices
@@ -53,7 +53,7 @@ public static class ConfigureServices
         //services.AddScoped<IEfContext>(provider => provider.GetRequiredService<EfContext>());
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(RepositoryBase<>))
-           .AddScoped<IAuthRepository, AuthRepository>(provider =>
+                .AddScoped<IAuthRepository, AuthRepository>(provider =>
            {
                var dbContext = provider.GetService<datnContext>();
                return new AuthRepository(dbContext, secretKey);

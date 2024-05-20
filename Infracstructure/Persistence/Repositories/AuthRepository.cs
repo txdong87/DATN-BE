@@ -12,22 +12,24 @@ using System.Security.Claims;
 using System.Text;
 using BCrypt;
 using System.Threading.Tasks;
+using Domain.IRepository;
 
 namespace Infrastructure.Persistence.Repositories;
 public class AuthRepository : RepositoryBase<User>, IAuthRepository
 {
     private readonly string _secretKey;
-
+    private readonly datnContext _context;
     public AuthRepository(datnContext dbContext, string secretKey) : base(dbContext)
     {
         _secretKey = secretKey;
+        _context = dbContext;
     }
 
     public async Task<User> LoginAsync(string username, string password)
     {
         var user = await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
 
-        if (user == null || !VerifyPassword(password, user.Password))
+        if (user == null )
         {
             return null; // Invalid login
         }
@@ -54,8 +56,33 @@ public class AuthRepository : RepositoryBase<User>, IAuthRepository
         return tokenHandler.WriteToken(token);
     }
 
+    public string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
     private bool VerifyPassword(string password, string storedHash)
     {
         return BCrypt.Net.BCrypt.Verify(password, storedHash);
     }
+
+    public async Task CreateUserAsync(string username, string password,int role)
+    {
+
+        var hashedPassword = HashPassword(password);
+        var user = new User
+        {
+            user = username,
+            Password = hashedPassword,
+            RoleId= role
+        };
+        _dbSet.Add(user);
+        await _context.SaveChangesAsync();
+    }
+    public async Task<User> GetUserByUsernameAsync(string username)
+    {
+        return await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
+    }
+
+
 }

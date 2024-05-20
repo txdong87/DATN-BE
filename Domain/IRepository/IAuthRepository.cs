@@ -10,5 +10,7 @@ namespace Domain.IRepository
 {
     public interface IAuthRepository : IBaseRepository<User>
     {
+        Task<User> GetUserByUsernameAsync(string username);
+        Task CreateUserAsync(string username, string password,int role);
     }
 }

@@ -537,7 +537,7 @@ namespace Infracstructure.Persistance
                     .HasColumnName("Roleld");
 
                 entity.Property(e => e.RoleName)
-                    .HasColumnType("int(11)")
+                    .HasMaxLength(255)
                     .HasColumnName("RoleName");
 
               

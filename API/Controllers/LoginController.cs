@@ -1,16 +1,17 @@
 ﻿using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Domain.Entities;
+using Domain.IRepository;
+using Infrastructure.Persistence.Repositories;
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _authRepository;
+        private readonly AuthRepository _authRepository;
 
-        public AuthController(IAuthRepository authRepository)
+        public AuthController(AuthRepository authRepository)
         {
             _authRepository = authRepository;
         }
