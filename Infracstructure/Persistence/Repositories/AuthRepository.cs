@@ -1,88 +1,51 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Domain.IRepository;
 using Infracstructure.Persistance;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Crypto.Generators;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using BCrypt;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
-using Domain.IRepository;
 
-namespace Infrastructure.Persistence.Repositories;
-public class AuthRepository : RepositoryBase<User>, IAuthRepository
+namespace Infrastructure.Persistence.Repositories
 {
-    private readonly string _secretKey;
-    private readonly datnContext _context;
-    public AuthRepository(datnContext dbContext, string secretKey) : base(dbContext)
-    {
-        _secretKey = secretKey;
-        _context = dbContext;
-    }
-
-    public async Task<User> LoginAsync(string username, string password)
-    {
-        var user = await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
-
-        if (user == null )
+    public class AuthRepository : RepositoryBase<User>, IAuthRepository
+    {   
+        private readonly datnContext _context;
+        private readonly string _secretKey;
+        public AuthRepository(datnContext dbContext, string secretKey) : base(dbContext)
         {
-            return null; // Invalid login
+            _context = dbContext;
+            _secretKey = secretKey;
         }
 
-        return user; // Successful login
-    }
-
-    public string GenerateJwtToken(User user)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_secretKey);
-        var tokenDescriptor = new SecurityTokenDescriptor
+        public new async Task<User?> GetAsync(
+            Expression<Func<User, bool>>? predicate = null,
+            CancellationToken cancellationToken = default)
         {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                    new Claim(ClaimTypes.Name, user.Fullname),
-                    new Claim(ClaimTypes.NameIdentifier, user.Userld.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
+            var dbSet = predicate == null ? _dbSet : _dbSet.Where(predicate);
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
+            return await dbSet
+                .FirstOrDefaultAsync(predicate, cancellationToken);
+        }
 
-    public string HashPassword(string password)
-    {
-        return BCrypt.Net.BCrypt.HashPassword(password);
-    }
-
-    private bool VerifyPassword(string password, string storedHash)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, storedHash);
-    }
-
-    public async Task CreateUserAsync(string username, string password,int role)
-    {
-
-        var hashedPassword = HashPassword(password);
-        var user = new User
+        public async Task<User?> LoginAsync(string username, string password)
         {
-            user = username,
-            Password = hashedPassword,
-            RoleId= role
-        };
-        _dbSet.Add(user);
-        await _context.SaveChangesAsync();
-    }
-    public async Task<User> GetUserByUsernameAsync(string username)
-    {
-        return await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
-    }
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
+            return user;
+        }
 
+        public async Task CreateUserAsync(User user)
+        {
+            _dbSet.Add(user);
+            await _context.SaveChangesAsync();
+        }
 
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
+        }
+    }
 }

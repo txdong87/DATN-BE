@@ -16,7 +16,6 @@ namespace Domain.Entities;
     public string? Password { get; set; }
     public int? RoleId { get; set; }
 
-
     public virtual Role? Role { get; set; }
     public virtual ICollection<Doctor> Doctors { get; set; }
     public virtual ICollection<Nurse> Nurses { get; set; }

@@ -1,57 +1,88 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
+using Application.Services.Interfaces;
+using Domain.Entities;
+using Domain.Interfaces;
+using Domain.IRepository;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Infrastructure;
-using Infracstructure.Persistance;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using Domain.Entities;
 
-namespace Application.Services;
-public class AuthService : IAuthService
+namespace Application.Services
 {
-    private readonly datnContext _context;
-    private readonly string _jwtSecret;
-
-    public AuthService(datnContext context, IConfiguration configuration)
+    public class AuthService : IAuthService
     {
-        _context = context;
-        _jwtSecret = configuration["JwtSettings:Secret"]; // Lấy secret từ appsettings.json
-    }
+        private readonly IAuthRepository _authRepository;
+        private readonly string _secretKey;
 
-    public async Task<string> AuthenticateAsync(string username, string password)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Fullname == username && u.Password == password);
-
-        if (user == null)
-            return null;
-
-        return GenerateJwtToken(user);
-    }
-
-    private string GenerateJwtToken(User user)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtSecret);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
         {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Fullname),
-                // Add more claims as needed
-            }),
-            Expires = DateTime.UtcNow.AddDays(1), // Token expires in 1 day
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
+            _authRepository = authRepository;
+            _secretKey = configuration["JwtSettings:Secret"];
+        }
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        public async Task<string?> AuthenticateAsync(string username, string password)
+        {
+            var user = await _authRepository.LoginAsync(username, password);
+            if (user == null || !VerifyPassword(password, user.Password))
+            {
+                return null; // Invalid login
+            }
+
+            return GenerateJwtToken(user); // Successful login
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Fullname),
+                    new Claim(ClaimTypes.NameIdentifier, user.Userld.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        private bool VerifyPassword(string password, string storedHash)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, storedHash);
+        }
+
+        public async Task RegisterUserAsync(string username, string password, int roleId,string fullname)
+        {
+            var existingUser = await _authRepository.GetUserByUsernameAsync(username);
+            if (existingUser != null)
+            {
+                throw new Exception("User already exists.");
+            }
+
+            var hashedPassword = HashPassword(password);
+            var user = new User
+            {
+                Fullname = fullname,
+                Password = hashedPassword,
+                RoleId = roleId,
+                user = username
+            };
+
+            await _authRepository.CreateUserAsync(user);
+        }
     }
 }

@@ -1,49 +1,45 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.DTOs.AuthenDTO;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Entities;
-using Domain.IRepository;
-using Infrastructure.Persistence.Repositories;
+using System.Threading.Tasks;
+
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class RegisterController : ControllerBase
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _authRepository;
+        private readonly IAuthService _authService;
 
-        public RegisterController(IAuthRepository authRepository)
+        public AuthController(IAuthService authService)
         {
-            _authRepository = authRepository;
+            _authService = authService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
         {
-            // Kiểm tra xác thực và tạo tài khoản mới
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _authService.RegisterUserAsync(registerUserDto.Username, registerUserDto.Password, registerUserDto.RoleId,registerUserDto.FullName);
+                return Ok(new { message = "User registered successfully" });
             }
-
-            // Kiểm tra xem tên người dùng đã tồn tại chưa
-            var existingUser = await _authRepository.GetUserByUsernameAsync(request.Username);
-            if (existingUser != null)
+            catch (Exception ex)
             {
-                return Conflict("Username already exists");
+                return BadRequest(new { message = ex.Message });
             }
-
-            // Tạo tài khoản mới
-            await _authRepository.CreateUserAsync(request.Username, request.Password,request.RoleId);
-
-            return Ok("User created successfully");
         }
-    }
 
-    public class RegisterRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Fullname { get; set; }
-        public int RoleId { get; set; }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            var token = await _authService.AuthenticateAsync(loginDto.Username, loginDto.Password);
+            if (token == null)
+            {
+                return Unauthorized(new { message = "Invalid credentials" });
+            }
+
+            return Ok(new { token });
+        }
     }
 }

@@ -47,10 +47,10 @@ namespace Infracstructure.Persistance
                     .HasColumnType("int(11)")
                     .HasColumnName("caseStudyld");
 
-                entity.Property(e => e.ClinicalDiagnosis)
-                    .HasMaxLength(255)
-                    .HasColumnName("clinicalDiagnosis")
-                    .HasDefaultValueSql("'NULL'");
+                //entity.Property(e => e.ClinicalDiagnosis)
+                //    .HasMaxLength(255)
+                //    .HasColumnName("clinicalDiagnosis")
+                //    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Conclusion)
                     .HasMaxLength(255)
@@ -62,14 +62,22 @@ namespace Infracstructure.Persistance
                     .HasColumnName("diagnostic")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.DiagnosticClinical)
+                entity.Property(e => e.Reason)
                     .HasMaxLength(255)
-                    .HasColumnName("diagnosticClinical")
+                    .HasColumnName("reason")
                     .HasDefaultValueSql("'NULL'");
+                entity.Property(e => e.Status)
+                    .HasMaxLength(255)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("'NULL'");
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("date")
+                    .HasColumnName("createDate")
+                    .HasDefaultValueSql("'NULL'"); ;
 
-                entity.Property(e => e.ListCdha)
-                    .HasColumnName("listCDHA")
-                    .HasDefaultValueSql("'NULL'");
+                //entity.Property(e => e.ListCdha)
+                //    .HasColumnName("listCDHA")
+                //    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.PatientName)
                     .HasMaxLength(255)
@@ -148,10 +156,11 @@ namespace Infracstructure.Persistance
                     .HasColumnName("roleIndication")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.User)
+                entity.Property(e => e.UserId)
                     .HasMaxLength(255)
                     .HasColumnName("user")
                     .HasDefaultValueSql("'NULL'");
+
             });
 
             modelBuilder.Entity<MedicalCdha>(entity =>

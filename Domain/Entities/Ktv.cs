@@ -12,11 +12,12 @@ namespace Domain.Entities
         }
 
         public int Ktvld { get; set; }
-        public string? User { get; set; }
+        public int? UserId { get; set; }
         public string? Password { get; set; }
         public string? KtvName { get; set; }
         public int? RoleIndication { get; set; }
 
+        public virtual User? UserldNavigation { get; set; }
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
         public virtual ICollection<MedicalTest> MedicalTests { get; set; }
     }
