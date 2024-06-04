@@ -17,14 +17,13 @@ namespace Application.Services
             _caseStudyRepository = caseStudyRepository;
         }
 
-        public async Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int caseStudyId)
+        public async Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int CaseStudyId)
         {
-            var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
+            var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(CaseStudyId);
             return new GetCaseStudyDto
             {
-                CaseStudyId = caseStudy.CaseStudyld,
+                CaseStudyId = caseStudy.CaseStudyId,
                 PatientId = caseStudy.Patientld,
-                PatientName = caseStudy.PatientName,
                 Report = caseStudy.Report,
                 ReportCount = caseStudy.ReportCount,
                 Conclusion = caseStudy.Conclusion,
@@ -33,7 +32,6 @@ namespace Application.Services
                 Status = caseStudy.Status,
                 CreateDate = caseStudy.CreateDate,
                 DoctorId = caseStudy.DoctorId,
-                DoctorName = caseStudy.DoctorName,
                 //MedicalCdhas = caseStudy.MedicalCdhas.Select(mc => new GetMedicalCdhaDto
                 //{
                 //    Name = mc.Name,
@@ -61,9 +59,8 @@ namespace Application.Services
             {
                 caseStudyDtos.Add(new GetCaseStudyDto
                 {
-                    CaseStudyId = caseStudy.CaseStudyld,
+                    CaseStudyId = caseStudy.CaseStudyId,
                     PatientId = caseStudy.Patientld,
-                    PatientName = caseStudy.PatientName,
                     Report = caseStudy.Report,
                     ReportCount = caseStudy.ReportCount,
                     Conclusion = caseStudy.Conclusion,
@@ -72,7 +69,6 @@ namespace Application.Services
                     Status = caseStudy.Status,
                     CreateDate = caseStudy.CreateDate,
                     DoctorId = caseStudy.DoctorId,
-                    DoctorName = caseStudy.DoctorName,
                     //MedicalCdhas = caseStudy.MedicalCdhas.Select(mc => new GetMedicalCdhaDto
                     //{
                     //    Name = mc.Name,
@@ -96,7 +92,7 @@ namespace Application.Services
 
         public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
         {
-            if (createCaseStudyDto.PatientId == null || createCaseStudyDto.Reason==null || createCaseStudyDto.DoctorId == null || string.IsNullOrEmpty(createCaseStudyDto.PatientName) || string.IsNullOrEmpty(createCaseStudyDto.DoctorName))
+            if (createCaseStudyDto.PatientId == null || createCaseStudyDto.Reason==null || createCaseStudyDto.DoctorId == null )
             {
                 throw new ArgumentException("PatientId, DoctorId, PatientName and DoctorName must be provided.");
             }
@@ -104,7 +100,6 @@ namespace Application.Services
             var caseStudy = new Casestudy
             {
                 Patientld = createCaseStudyDto.PatientId,
-                PatientName = createCaseStudyDto.PatientName,
                 Report = createCaseStudyDto.Report,
                 ReportCount = createCaseStudyDto.ReportCount,
                 Conclusion = createCaseStudyDto.Conclusion,
@@ -113,7 +108,6 @@ namespace Application.Services
                 Status = createCaseStudyDto.Status,
                 CreateDate = createCaseStudyDto.CreateDate,
                 DoctorId = createCaseStudyDto.DoctorId,
-                DoctorName = createCaseStudyDto.DoctorName,
                 //MedicalCdhas = createCaseStudyDto.MedicalCdhas.Select(mc => new MedicalCdha
                 //{
                 //    Name = mc.Name,

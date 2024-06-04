@@ -16,7 +16,7 @@ namespace API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
         {
             try
@@ -26,11 +26,12 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.InnerException?.Message);
                 return BadRequest(new { message = ex.Message });
             }
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var token = await _authService.AuthenticateAsync(loginDto.Username, loginDto.Password);

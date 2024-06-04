@@ -25,7 +25,7 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.MedicalIndications)
                                  .Include(cs => cs.MedicalTests)
-                                 .FirstOrDefaultAsync(cs => cs.CaseStudyld == caseStudyId);
+                                 .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
         }
 
         public async Task<IEnumerable<Casestudy>> GetAllCaseStudiesAsync()

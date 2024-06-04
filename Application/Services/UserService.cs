@@ -198,7 +198,7 @@ public class UserService : BaseService, IUserService
         return new Response<GetListUsersResponse>(true, response);
     }
 
-    public async Task<Response> IsAbleToDisableUser(int id)
+    public async Task<Response> IsAbleToDisableUser(Guid id)
     {
         var hasValidAssignment = await HasValidAssignment(id);
 
@@ -253,7 +253,7 @@ public class UserService : BaseService, IUserService
 
         return new Response<GetUserResponse>(true, "Success", new GetUserResponse(user));
     }
-    private async Task<bool> HasValidAssignment(int userId)
+    private async Task<bool> HasValidAssignment(Guid userId)
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 

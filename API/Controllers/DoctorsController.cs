@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
+
     [Route("[controller]")]
     public class DoctorController : ControllerBase
     {
@@ -16,6 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetDoctor(int id)
         {
             var doctor = await _doctorService.GetDoctorByIdAsync(id);

@@ -1,8 +1,11 @@
 ﻿using Application.DTOs.CaseStudy;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Services.Interfaces;
+using Application.Interfaces;
 
 namespace API.Controllers
 {
@@ -10,9 +13,9 @@ namespace API.Controllers
     [ApiController]
     public class CaseStudyController : ControllerBase
     {
-        private readonly CaseStudyService _caseStudyService;
+        private readonly ICaseStudyService _caseStudyService;
 
-        public CaseStudyController(CaseStudyService caseStudyService)
+        public CaseStudyController(ICaseStudyService caseStudyService)
         {
             _caseStudyService = caseStudyService;
         }
@@ -30,6 +33,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<GetCaseStudyDto>>> GetAllCaseStudies()
         {
             var caseStudies = await _caseStudyService.GetAllCaseStudiesAsync();
@@ -37,6 +41,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        //[Authorize]
         public async Task<ActionResult> AddCaseStudy([FromBody] CreateCaseStudyDto createCaseStudyDto)
         {
             try
@@ -51,6 +56,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
+        //[Authorize]
         public async Task<ActionResult> UpdateCaseStudy(int id, [FromBody] UpdateCaseStudyDto updateCaseStudyDto)
         {
             await _caseStudyService.UpdateCaseStudyAsync(id, updateCaseStudyDto);

@@ -15,7 +15,7 @@ namespace Domain.Entities
         }
 
         public int Doctorld { get; set; }
-        public int? Userld { get; set; }
+        public Guid Userld { get; set; }
 
         public virtual User? UserldNavigation { get; set; }
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }

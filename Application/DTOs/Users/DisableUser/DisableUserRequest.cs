@@ -6,6 +6,6 @@ namespace Application.DTOs.Users.DisableUser;
 public class DisableUserRequest
 {
     [Required]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
 }

@@ -10,7 +10,7 @@ namespace Domain.Entities;
             Doctors = new HashSet<Doctor>();
             Nurses = new HashSet<Nurse>();
         }
-    public int Userld { get; set; }
+    public Guid Userld { get; set; }
     public string? user { get; set; }
     public string? Fullname { get; set; }
     public string? Password { get; set; }

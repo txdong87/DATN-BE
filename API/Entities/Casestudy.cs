@@ -5,7 +5,7 @@ namespace API.Entities
 {
     public partial class Casestudy
     {
-        public int CaseStudyld { get; set; }
+        public int CaseStudyId { get; set; }
         public int? Patientld { get; set; }
         public string? PatientName { get; set; }
         public string? Report { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using MySql.EntityFrameworkCore.Extensions;
 using Infrastructure;
 using Application;
+using API.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+//app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

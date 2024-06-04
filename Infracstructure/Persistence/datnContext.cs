@@ -36,16 +36,16 @@ namespace Infracstructure.Persistance
         {
             modelBuilder.Entity<Casestudy>(entity =>
             {
-                entity.HasKey(e => e.CaseStudyld)
+                entity.HasKey(e => e.CaseStudyId)
                     .HasName("PRIMARY");
 
                 entity.ToTable("casestudy");
 
                 entity.HasIndex(e => e.Patientld, "patientld");
 
-                entity.Property(e => e.CaseStudyld)
+                entity.Property(e => e.CaseStudyId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("caseStudyld");
+                    .HasColumnName("CaseStudyId");
 
                 //entity.Property(e => e.ClinicalDiagnosis)
                 //    .HasMaxLength(255)
@@ -78,11 +78,6 @@ namespace Infracstructure.Persistance
                 //entity.Property(e => e.ListCdha)
                 //    .HasColumnName("listCDHA")
                 //    .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.PatientName)
-                    .HasMaxLength(255)
-                    .HasColumnName("patientName")
-                    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Patientld)
                     .HasColumnType("int(11)")
@@ -119,9 +114,9 @@ namespace Infracstructure.Persistance
                     .HasColumnName("doctorld");
 
                 entity.Property(e => e.Userld)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("char(36)")
                     .HasColumnName("userld")
-                    .HasDefaultValueSql("'NULL'");
+                    .HasDefaultValueSql("(UUID())");
 
                 entity.HasOne(d => d.UserldNavigation)
                     .WithMany(p => p.Doctors)
@@ -157,9 +152,9 @@ namespace Infracstructure.Persistance
                     .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.UserId)
-                    .HasMaxLength(255)
+                    .HasColumnType("char(36)")
                     .HasColumnName("user")
-                    .HasDefaultValueSql("'NULL'");
+                    .HasDefaultValueSql("(UUID())");
 
             });
 
@@ -182,11 +177,6 @@ namespace Infracstructure.Persistance
                     .HasColumnName("dateCreate")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.DoctorName)
-                    .HasMaxLength(255)
-                    .HasColumnName("doctorName")
-                    .HasDefaultValueSql("'NULL'");
-
                 entity.Property(e => e.Doctorld)
                     .HasColumnType("int(11)")
                     .HasColumnName("doctorld")
@@ -202,10 +192,6 @@ namespace Infracstructure.Persistance
                     .HasColumnName("imageName")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.KtvName)
-                    .HasMaxLength(255)
-                    .HasColumnName("ktvName")
-                    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Ktvld)
                     .HasColumnType("int(11)")
@@ -220,10 +206,6 @@ namespace Infracstructure.Persistance
                     .HasColumnName("observationType")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.PatientName)
-                    .HasMaxLength(255)
-                    .HasColumnName("patientName")
-                    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Patientld)
                     .HasColumnType("int(11)")
@@ -247,7 +229,7 @@ namespace Infracstructure.Persistance
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("medical_cdha_ibfk_3");
 
-                entity.HasOne(d => d.PatientldNavigation)
+                entity.HasOne(d => d.CaseStudyIdNavigation)
                     .WithMany(p => p.MedicalCdhas)
                     .HasForeignKey(d => d.Patientld)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -258,20 +240,20 @@ namespace Infracstructure.Persistance
             {
                 entity.ToTable("medical_indication");
 
-                entity.HasIndex(e => e.Patientld, "patientld");
+                entity.HasIndex(e => e.CaseStudyId, "CaseStudyId");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.Patientld)
+                entity.Property(e => e.CaseStudyId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("patientld")
+                    .HasColumnName("CaseStudyId")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.HasOne(d => d.PatientldNavigation)
+                entity.HasOne(d => d.CaseStudyIdNavigation)
                     .WithMany(p => p.MedicalIndications)
-                    .HasForeignKey(d => d.Patientld)
+                    .HasForeignKey(d => d.CaseStudyId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("medical_indication_ibfk_1");
             });
@@ -295,19 +277,10 @@ namespace Infracstructure.Persistance
                     .HasColumnName("dateCreate")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.DoctorName)
-                    .HasMaxLength(255)
-                    .HasColumnName("doctorName")
-                    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Doctorld)
                     .HasColumnType("int(11)")
                     .HasColumnName("doctorld")
-                    .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.KtvName)
-                    .HasMaxLength(255)
-                    .HasColumnName("ktvName")
                     .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Ktvld)
@@ -318,17 +291,16 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.ObservationType)
                     .HasColumnName("observationType")
                     .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.PatientName)
-                    .HasMaxLength(255)
-                    .HasColumnName("patientName")
-                    .HasDefaultValueSql("'NULL'");
+                    
 
                 entity.Property(e => e.Patientld)
                     .HasColumnType("int(11)")
                     .HasColumnName("patientld")
                     .HasDefaultValueSql("'NULL'");
-
+                entity.Property(e => e.CaseStudyId)
+                   .HasColumnType("int(11)")
+                   .HasColumnName("c")
+                   .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.TestName)
                     .HasMaxLength(255)
                     .HasColumnName("testName")
@@ -351,9 +323,9 @@ namespace Infracstructure.Persistance
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("medical_test_ibfk_3");
 
-                entity.HasOne(d => d.PatientldNavigation)
+                entity.HasOne(d => d.CaseStudyIdNavigation)
                     .WithMany(p => p.MedicalTests)
-                    .HasForeignKey(d => d.Patientld)
+                    .HasForeignKey(d => d.CaseStudyId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("medical_test_ibfk_1");
             });
@@ -372,9 +344,9 @@ namespace Infracstructure.Persistance
                     .HasColumnName("nurseld");
 
                 entity.Property(e => e.Userld)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("char(36)")
                     .HasColumnName("userld")
-                    .HasDefaultValueSql("'NULL'");
+                    .HasDefaultValueSql("(UUID())");
 
                 entity.HasOne(d => d.UserldNavigation)
                     .WithMany(p => p.Nurses)
@@ -519,8 +491,8 @@ namespace Infracstructure.Persistance
                 entity.ToTable("user");
 
                 entity.Property(e => e.Userld)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("userld");
+                     .HasColumnType("char(36)")
+                    .HasDefaultValueSql("(UUID())");
 
                 entity.Property(e => e.Fullname)
                     .HasMaxLength(255)

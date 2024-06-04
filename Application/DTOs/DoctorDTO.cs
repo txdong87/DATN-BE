@@ -12,12 +12,12 @@ namespace Application.DTOs
         public GetDoctorResponse(Domain.Entities.Doctor doctor)
         {
             DoctorId = doctor.Doctorld;
-            UserId = doctor.Userld ?? 0;
+            UserId = doctor.Userld;
             Fullname = doctor.UserldNavigation?.Fullname;
         }
 
         public int DoctorId { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string Fullname { get; set; }
     }
 }

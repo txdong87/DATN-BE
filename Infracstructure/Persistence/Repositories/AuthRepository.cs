@@ -33,7 +33,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User?> LoginAsync(string username, string password)
         {
-            var user = await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
+            var user = await _dbSet.FirstOrDefaultAsync(u => u.user == username);
             return user;
         }
 

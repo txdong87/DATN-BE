@@ -11,12 +11,12 @@ namespace Application.DTOs
         public GetNurseResponse(Domain.Entities.Nurse nurse)
         {
             NurseId = nurse.Nurseld;
-            UserId = nurse.Userld ?? 0;
+            UserId = nurse.Userld ;
             Fullname = nurse.UserldNavigation?.Fullname;
         }
 
         public int NurseId { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string Fullname { get; set; }
     }
 }

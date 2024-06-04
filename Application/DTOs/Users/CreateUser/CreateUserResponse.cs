@@ -12,7 +12,7 @@ public class CreateUserResponse
         RoleId = user.RoleId;
     }
 
-    public int Userld { get; set; }
+    public Guid Userld { get; set; }
     public string? Username { get; set; }
     public string? Fullname { get; set; }
     public int? RoleId { get; set; }

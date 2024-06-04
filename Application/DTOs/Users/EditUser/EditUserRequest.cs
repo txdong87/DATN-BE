@@ -6,7 +6,7 @@ namespace Application.DTOs.Users.EditUser
     public class EditUserRequest
     {
         [Required]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public int RoleId { get; set; }
 
 

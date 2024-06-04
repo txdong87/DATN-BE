@@ -6,8 +6,8 @@ namespace Domain.Entities
     public partial class MedicalIndication
     {
         public int Id { get; set; }
-        public int? Patientld { get; set; }
+        public int? CaseStudyId { get; set; }
+        public virtual Casestudy? CaseStudyIdNavigation { get; set; }
 
-        public virtual Patient? PatientldNavigation { get; set; }
     }
 }
