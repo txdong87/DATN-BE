@@ -13,10 +13,7 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Doctor> builder)
         {
-            builder.HasOne(d => d.UserldNavigation)
-                    .WithMany(p => p.Doctors)
-                    .HasForeignKey(d => d.Userld)
-                    .OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }

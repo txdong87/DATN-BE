@@ -12,7 +12,7 @@ namespace Domain.Entities
         }
 
         public int Ktvld { get; set; }
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public string? Password { get; set; }
         public string? KtvName { get; set; }
         public int? RoleIndication { get; set; }

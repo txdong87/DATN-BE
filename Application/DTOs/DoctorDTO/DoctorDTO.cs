@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.IRepository
+namespace Application.DTOs
 {
-    public interface IUserRepository
+    public class DoctorCreateDto
     {
-        Task<User> GetUserByUsernameAsync(int userId);
+        public int Userld { get; set; }
+        public string DoctorRole { get; set; }
     }
+
 }

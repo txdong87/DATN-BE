@@ -12,7 +12,7 @@ public class UserInternalModel
         Role = user.Role;
     }
 
-    public Guid Id { get; }
+    public int Id { get; }
 
     public string Username { get; }
 

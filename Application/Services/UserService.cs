@@ -19,15 +19,19 @@ using Domain.Shared.Constants;
 using Application.Helpers;
 using Domain.Shared.Enums;
 using Application.Common.Models;
+using Domain.IRepository;
 
 namespace Application.Services.Interfaces;
 
 
 
 public class UserService : BaseService, IUserService
+
 {
-    public UserService(IUnitOfWork unitOfWork) : base(unitOfWork)
+    private readonly IUserRepository _userRepository;
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository) : base(unitOfWork)
     {
+        _userRepository = userRepository;
     }
 
     public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest requestModel)
@@ -198,7 +202,7 @@ public class UserService : BaseService, IUserService
         return new Response<GetListUsersResponse>(true, response);
     }
 
-    public async Task<Response> IsAbleToDisableUser(Guid id)
+    public async Task<Response> IsAbleToDisableUser(int id)
     {
         var hasValidAssignment = await HasValidAssignment(id);
 
@@ -253,7 +257,7 @@ public class UserService : BaseService, IUserService
 
         return new Response<GetUserResponse>(true, "Success", new GetUserResponse(user));
     }
-    private async Task<bool> HasValidAssignment(Guid userId)
+    private async Task<bool> HasValidAssignment(int userId)
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
@@ -261,7 +265,12 @@ public class UserService : BaseService, IUserService
 
         return user.Any();
     }
+    public async Task<int> checkRole(int userId)
+    {
+        var user = await _userRepository.GetUserByUsernameAsync(userId);
 
+        return user?.RoleId ?? -1;
+    }
 
 
 }

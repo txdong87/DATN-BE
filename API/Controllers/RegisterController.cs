@@ -21,15 +21,20 @@ namespace API.Controllers
         {
             try
             {
-                await _authService.RegisterUserAsync(registerUserDto.Username, registerUserDto.Password, registerUserDto.RoleId,registerUserDto.FullName);
+                await _authService.RegisterUserAsync(registerUserDto.Username, registerUserDto.Password, registerUserDto.RoleId, registerUserDto.FullName);
                 return Ok(new { message = "User registered successfully" });
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.Message);
+                Console.WriteLine("Exception: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+                }
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)

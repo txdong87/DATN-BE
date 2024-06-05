@@ -24,5 +24,6 @@ namespace Application.Services.Interfaces
         Task<Response> DisableUserAsync(DisableUserRequest request);
        
         Task<Response<GetUserResponse>> EditUserAsync(EditUserRequest requestModel);
+        Task<int> checkRole(int userId);
     }
 }

@@ -4,6 +4,6 @@ namespace Application.DTOs.Users.GetUser;
 
 public class GetUserRequest
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
 }

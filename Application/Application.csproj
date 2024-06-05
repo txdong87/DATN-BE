@@ -28,8 +28,5 @@
     <ProjectReference Include="..\Infracstructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Interfaces\NewFolder\" />
-  </ItemGroup>
 
 </Project>

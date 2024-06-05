@@ -11,7 +11,7 @@ public class GetUserResponse
         RoleId = (int)user.RoleId;
     }
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Fullname { get; set; }
     public int RoleId { get; set; }

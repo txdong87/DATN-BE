@@ -64,15 +64,15 @@ namespace Infracstructure.Persistance
 
                 entity.Property(e => e.Reason)
                     .HasMaxLength(255)
-                    .HasColumnName("reason")
+                    .HasColumnName("Reason")
                     .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.Status)
                     .HasMaxLength(255)
-                    .HasColumnName("status")
+                    .HasColumnName("Status")
                     .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("date")
-                    .HasColumnName("createDate")
+                    .HasColumnName("CreateDate")
                     .HasDefaultValueSql("'NULL'"); ;
 
                 //entity.Property(e => e.ListCdha)
@@ -99,30 +99,29 @@ namespace Infracstructure.Persistance
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("casestudy_ibfk_1");
             });
-
             modelBuilder.Entity<Doctor>(entity =>
             {
                 entity.HasKey(e => e.Doctorld)
-                    .HasName("PRIMARY");
+                      .HasName("PRIMARY");
 
                 entity.ToTable("doctor");
 
-                entity.HasIndex(e => e.Userld, "userld");
-
                 entity.Property(e => e.Doctorld)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("doctorld");
+                      .HasColumnType("int(11)")
+                      .HasColumnName("doctorld");
 
                 entity.Property(e => e.Userld)
-                    .HasColumnType("char(36)")
-                    .HasColumnName("userld")
-                    .HasDefaultValueSql("(UUID())");
+                      .HasColumnType("int(11)")
+                      .HasColumnName("userld");
+                entity.Property(e => e.DoctorRole)
+                   .HasMaxLength(255)
+                   .HasColumnName("doctorRole");
 
-                entity.HasOne(d => d.UserldNavigation)
-                    .WithMany(p => p.Doctors)
-                    .HasForeignKey(d => d.Userld)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("doctor_ibfk_1");
+                entity.HasOne(d => d.User)
+                      .WithMany(p => p.Doctors)
+                      .HasForeignKey(d => d.Userld)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("fk_user");
             });
 
             modelBuilder.Entity<Ktv>(entity =>
@@ -152,9 +151,8 @@ namespace Infracstructure.Persistance
                     .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.UserId)
-                    .HasColumnType("char(36)")
-                    .HasColumnName("user")
-                    .HasDefaultValueSql("(UUID())");
+                    .HasColumnType("int(11)")
+                    .HasColumnName("userld");
 
             });
 
@@ -216,12 +214,6 @@ namespace Infracstructure.Persistance
                     .HasColumnType("date")
                     .HasColumnName("timeEstimate")
                     .HasDefaultValueSql("'NULL'");
-
-                entity.HasOne(d => d.DoctorldNavigation)
-                    .WithMany(p => p.MedicalCdhas)
-                    .HasForeignKey(d => d.Doctorld)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_cdha_ibfk_2");
 
                 entity.HasOne(d => d.KtvldNavigation)
                     .WithMany(p => p.MedicalCdhas)
@@ -299,7 +291,7 @@ namespace Infracstructure.Persistance
                     .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.CaseStudyId)
                    .HasColumnType("int(11)")
-                   .HasColumnName("c")
+                   .HasColumnName("CaseStudyId")
                    .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.TestName)
                     .HasMaxLength(255)
@@ -310,12 +302,6 @@ namespace Infracstructure.Persistance
                     .HasColumnType("date")
                     .HasColumnName("timeEstimate")
                     .HasDefaultValueSql("'NULL'");
-
-                entity.HasOne(d => d.DoctorldNavigation)
-                    .WithMany(p => p.MedicalTests)
-                    .HasForeignKey(d => d.Doctorld)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_test_ibfk_2");
 
                 entity.HasOne(d => d.KtvldNavigation)
                     .WithMany(p => p.MedicalTests)
@@ -344,9 +330,8 @@ namespace Infracstructure.Persistance
                     .HasColumnName("nurseld");
 
                 entity.Property(e => e.Userld)
-                    .HasColumnType("char(36)")
-                    .HasColumnName("userld")
-                    .HasDefaultValueSql("(UUID())");
+                    .HasColumnType("int(11)")
+                    .HasColumnName("userld");
 
                 entity.HasOne(d => d.UserldNavigation)
                     .WithMany(p => p.Nurses)
@@ -486,25 +471,36 @@ namespace Infracstructure.Persistance
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Userld)
-                    .HasName("PRIMARY");
+                      .HasName("PRIMARY");
 
                 entity.ToTable("user");
 
                 entity.Property(e => e.Userld)
-                     .HasColumnType("char(36)")
-                    .HasDefaultValueSql("(UUID())");
+                      .HasColumnType("int(11)")
+                      .HasColumnName("userld")
+                      .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Fullname)
-                    .HasMaxLength(255)
-                    .HasColumnName("fullname")
-                    .HasDefaultValueSql("'NULL'");
-
+                      .HasMaxLength(255)
+                      .HasColumnName("fullname")
+                      .HasDefaultValueSql("'NULL'");
                 entity.Property(e => e.Password)
-                    .HasMaxLength(255)
-                    .HasColumnName("password")
-                    .HasDefaultValueSql("'NULL'");
+                      .HasMaxLength(255)
+                      .HasColumnName("password")
+                      .HasDefaultValueSql("'NULL'");
 
+                entity.Property(e => e.RoleId)
+                      .HasColumnType("int(11)")
+                      .HasColumnName("RoleId")
+                      .HasDefaultValueSql("'NULL'");
+
+                entity.HasMany(e => e.Doctors)
+                      .WithOne(d => d.User)
+                      .HasForeignKey(d => d.Userld)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .HasConstraintName("fk_user");
             });
+
 
             modelBuilder.Entity<Role>(entity =>
             {

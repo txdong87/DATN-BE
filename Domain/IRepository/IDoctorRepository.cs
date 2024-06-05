@@ -10,5 +10,9 @@ namespace Infrastructure.Persistence.Repositories
     public interface IDoctorRepository
     {
         Task<Doctor> GetDoctorByIdAsync(int doctorId);
+        Task<IEnumerable<Doctor>> GetAllDoctorsAsync();
+        Task CreateDoctorAsync(Doctor doctor);
+        Task UpdateDoctorAsync(Doctor doctor);
+        Task DeleteDoctorAsync(int id);
     }
 }
