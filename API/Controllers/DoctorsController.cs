@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
                 var newDoctor = new Doctor
                 {
                     
-                    Userld = doctorDto.Userld,
+                    UserId = doctorDto.Userld,
                     DoctorRole = doctorDto.DoctorRole
                 };
 

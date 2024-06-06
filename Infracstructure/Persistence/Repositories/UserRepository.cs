@@ -22,7 +22,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User> GetUserByUsernameAsync(int userId)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Userld == userId);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
         }
     }
 }

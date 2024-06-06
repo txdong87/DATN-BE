@@ -10,7 +10,7 @@ namespace Application.DTOs
     {
         public GetKTVResponse(Domain.Entities.Ktv KTV)
         {
-            KTVId = KTV.Ktvld;
+            KTVId = KTV.KtvId;
             UserId = KTV.UserId ;
             Fullname = KTV.UserldNavigation?.Fullname;
         }

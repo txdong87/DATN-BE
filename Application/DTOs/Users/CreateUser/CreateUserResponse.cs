@@ -6,7 +6,7 @@ public class CreateUserResponse
 {
     public CreateUserResponse(User user)
     {
-        Userld = user.Userld;
+        Userld = user.UserId;
         Username = user.user;
         Fullname = user.Fullname;
         RoleId = user.RoleId;

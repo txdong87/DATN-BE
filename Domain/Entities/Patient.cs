@@ -11,7 +11,7 @@ namespace Domain.Entities
             Reports = new HashSet<Report>();
         }
 
-        public int Patientld { get; set; }
+        public int PatientId { get; set; }
         public string? PatientName { get; set; }
         public string? Address { get; set; }
         public int? Sex { get; set; }

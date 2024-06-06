@@ -7,7 +7,7 @@ public class UserInternalModel
 {
     public UserInternalModel(User user)
     {
-        Id = user.Userld;
+        Id = user.UserId;
         Username = user.user;
         Role = user.Role;
     }

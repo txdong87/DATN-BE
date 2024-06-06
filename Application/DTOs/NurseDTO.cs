@@ -10,9 +10,9 @@ namespace Application.DTOs
     {
         public GetNurseResponse(Domain.Entities.Nurse nurse)
         {
-            NurseId = nurse.Nurseld;
-            UserId = nurse.Userld ;
-            Fullname = nurse.UserldNavigation?.Fullname;
+            NurseId = nurse.NurseId;
+            UserId = nurse.UserId ;
+            Fullname = nurse.UserIdNavigation?.Fullname;
         }
 
         public int NurseId { get; set; }

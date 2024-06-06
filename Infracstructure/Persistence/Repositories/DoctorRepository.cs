@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<Doctor> GetDoctorByIdAsync(int doctorId)
         {
-            return await _context.Doctors.Include(d => d.User).FirstOrDefaultAsync(d => d.Doctorld == doctorId);
+            return await _context.Doctors.Include(d => d.User).FirstOrDefaultAsync(d => d.DoctorId == doctorId);
         }
 
         public async Task CreateDoctorAsync(Doctor doctor)

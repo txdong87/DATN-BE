@@ -20,7 +20,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<Casestudy> GetCaseStudyByIdAsync(int caseStudyId)
         {
             return await _context.Casestudies
-                                 .Include(cs => cs.PatientldNavigation)
+                                 .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorldNavigation)
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.MedicalIndications)
@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<Casestudy>> GetAllCaseStudiesAsync()
         {
             return await _context.Casestudies
-                                 .Include(cs => cs.PatientldNavigation)
+                                 .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorldNavigation)
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.MedicalIndications)

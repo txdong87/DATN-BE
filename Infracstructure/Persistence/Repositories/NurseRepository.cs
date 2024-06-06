@@ -22,8 +22,8 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<Nurse> GetNurseByIdAsync(int nurseId)
         {
             return await _context.Nurses
-                                 .Include(d => d.UserldNavigation)
-                                 .FirstOrDefaultAsync(d => d.Nurseld == nurseId);
+                                 .Include(d => d.UserIdNavigation)
+                                 .FirstOrDefaultAsync(d => d.NurseId == nurseId);
         }
     }
 }

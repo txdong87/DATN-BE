@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _context.Ktvs
                                  .Include(d => d.UserldNavigation)
-                                 .FirstOrDefaultAsync(d => d.Ktvld == KTVid);
+                                 .FirstOrDefaultAsync(d => d.KtvId == KTVid);
         }
     }
 }

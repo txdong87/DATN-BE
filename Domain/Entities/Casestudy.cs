@@ -6,7 +6,7 @@ namespace Domain.Entities
     public partial class Casestudy
     {
         public int CaseStudyId { get; set; }
-        public int? Patientld { get; set; }
+        public int? patientId { get; set; }
         public string? Report { get; set; }
         public int? ReportCount { get; set; }
         public string? Reason { get; set; }
@@ -19,7 +19,7 @@ namespace Domain.Entities
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
         public virtual ICollection<MedicalIndication> MedicalIndications { get; set; }
         public virtual ICollection<MedicalTest> MedicalTests { get; set; }
-        public virtual Patient? PatientldNavigation { get; set; }
+        public virtual Patient? PatientIdNavigation { get; set; }
         public virtual Doctor? DoctorldNavigation { get; set; }
     }
 }

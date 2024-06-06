@@ -14,7 +14,7 @@ namespace Domain.Shared.Helpers
         public static string GenerateJwtToken(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
-            if (user.Userld == null) throw new ArgumentNullException(nameof(user.Userld), "User ID cannot be null");
+            if (user.UserId == null) throw new ArgumentNullException(nameof(user.UserId), "User ID cannot be null");
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(JwtSettings.SecurityKey);
@@ -23,7 +23,7 @@ namespace Domain.Shared.Helpers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(JwtSettings.IdTokenClaimName, user.Userld.ToString())
+                    new Claim(JwtSettings.IdTokenClaimName, user.UserId.ToString())
                 }),
 
                 Expires = DateTime.UtcNow.AddDays(JwtSettings.ExpiredTimeInDay),

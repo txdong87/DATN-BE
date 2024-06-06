@@ -11,8 +11,8 @@ namespace Domain.Entities
             Reports = new HashSet<Report>();
         }
 
-        public int Doctorld { get; set; }
-        public int Userld { get; set; }
+        public int DoctorId { get; set; }
+        public int UserId { get; set; }
         public string DoctorRole { get; set; }
         public virtual User User { get; set; }
 

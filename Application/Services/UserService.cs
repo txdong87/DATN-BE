@@ -61,7 +61,7 @@ public class UserService : BaseService, IUserService
 
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
-        var user = await userRepository.GetAsync(u => u.Userld == requestModel.UserId);
+        var user = await userRepository.GetAsync(u => u.UserId == requestModel.UserId);
 
         if (user == null)
         {
@@ -148,7 +148,7 @@ public class UserService : BaseService, IUserService
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
-        var user = await userRepository.GetAsync(u => u.Userld == request.Id);
+        var user = await userRepository.GetAsync(u => u.UserId == request.Id);
 
         if (user == null)
         {
@@ -218,7 +218,7 @@ public class UserService : BaseService, IUserService
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
-        var user = await userRepository.GetAsync(u =>u.Userld == request.Id );
+        var user = await userRepository.GetAsync(u =>u.UserId == request.Id );
 
         if (user == null)
         {
@@ -243,7 +243,7 @@ public class UserService : BaseService, IUserService
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
-        var user = await userRepository.GetAsync(u =>  u.Userld == requestModel.UserId);
+        var user = await userRepository.GetAsync(u =>  u.UserId == requestModel.UserId);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
         if (user == null)
         {
@@ -261,7 +261,7 @@ public class UserService : BaseService, IUserService
     {
         var userRepository = UnitOfWork.AsyncRepository<User>();
 
-        var user = await userRepository.ListAsync(a => a.Userld == userId);
+        var user = await userRepository.ListAsync(a => a.UserId == userId);
 
         return user.Any();
     }

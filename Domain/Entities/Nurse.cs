@@ -5,9 +5,9 @@ namespace Domain.Entities
 {
     public partial class Nurse
     {
-        public int Nurseld { get; set; }
-        public int Userld { get; set; }
+        public int NurseId { get; set; }
+        public int UserId { get; set; }
 
-        public virtual User? UserldNavigation { get; set; }
+        public virtual User? UserIdNavigation { get; set; }
     }
 }

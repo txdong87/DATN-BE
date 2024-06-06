@@ -6,7 +6,7 @@ public class AuthenticationResponse
 {
     public AuthenticationResponse(User user, string token)
     {
-        Id = user.Userld;
+        Id = user.UserId;
         Username = user.user;
         Role = (int)user.RoleId;
         Token = token;

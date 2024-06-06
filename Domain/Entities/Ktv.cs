@@ -11,7 +11,7 @@ namespace Domain.Entities
             MedicalTests = new HashSet<MedicalTest>();
         }
 
-        public int Ktvld { get; set; }
+        public int KtvId { get; set; }
         public int UserId { get; set; }
         public string? Password { get; set; }
         public string? KtvName { get; set; }

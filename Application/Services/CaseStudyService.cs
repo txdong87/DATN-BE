@@ -23,7 +23,7 @@ namespace Application.Services
             return new GetCaseStudyDto
             {
                 CaseStudyId = caseStudy.CaseStudyId,
-                PatientId = caseStudy.Patientld,
+                PatientId = caseStudy.patientId,
                 Report = caseStudy.Report,
                 ReportCount = caseStudy.ReportCount,
                 Conclusion = caseStudy.Conclusion,
@@ -60,7 +60,7 @@ namespace Application.Services
                 caseStudyDtos.Add(new GetCaseStudyDto
                 {
                     CaseStudyId = caseStudy.CaseStudyId,
-                    PatientId = caseStudy.Patientld,
+                    PatientId = caseStudy.patientId,
                     Report = caseStudy.Report,
                     ReportCount = caseStudy.ReportCount,
                     Conclusion = caseStudy.Conclusion,
@@ -99,7 +99,7 @@ namespace Application.Services
 
             var caseStudy = new Casestudy
             {
-                Patientld = createCaseStudyDto.PatientId,
+                patientId = createCaseStudyDto.PatientId,
                 Report = createCaseStudyDto.Report,
                 ReportCount = createCaseStudyDto.ReportCount,
                 Conclusion = createCaseStudyDto.Conclusion,
