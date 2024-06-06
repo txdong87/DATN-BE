@@ -15,8 +15,8 @@ namespace Application.DTOs
         public int? Sex { get; set; }
         public DateTime? Dob { get; set; }
         public int? Phone { get; set; }
-        public int? RoomId { get; set; }
-        public int? DoctorId { get; set; }
+        //public string? patientCode { get; set; }
+        public DateTime? createdAt{ get; set; }
 
         //// Assuming you also want to include r nmelated collections in the DTO
         //public ICollection<CasestudyDTO>? Casestudies { get; set; }

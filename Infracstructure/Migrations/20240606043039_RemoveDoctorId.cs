@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class RemoveDoctorId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,15 +31,16 @@ namespace Infrastructure.Migrations
                 name: "user",
                 columns: table => new
                 {
-                    Userld = table.Column<Guid>(type: "char(36)", nullable: false, defaultValueSql: "(UUID())"),
+                    userld = table.Column<int>(type: "int(11)", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     user = table.Column<string>(type: "longtext", nullable: true),
                     fullname = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
-                    RoleId = table.Column<int>(type: "int(11)", nullable: true)
+                    RoleId = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.Userld);
+                    table.PrimaryKey("PRIMARY", x => x.userld);
                     table.ForeignKey(
                         name: "FK_user_role_RoleId",
                         column: x => x.RoleId,
@@ -54,16 +55,17 @@ namespace Infrastructure.Migrations
                 {
                     doctorld = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    userld = table.Column<Guid>(type: "char(36)", nullable: false, defaultValueSql: "(UUID())")
+                    userld = table.Column<int>(type: "int(11)", nullable: false),
+                    doctorRole = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.doctorld);
                     table.ForeignKey(
-                        name: "doctor_ibfk_1",
+                        name: "fk_user",
                         column: x => x.userld,
                         principalTable: "user",
-                        principalColumn: "Userld",
+                        principalColumn: "userld",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -74,7 +76,7 @@ namespace Infrastructure.Migrations
                 {
                     ktvld = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    user = table.Column<Guid>(type: "char(36)", nullable: false, defaultValueSql: "(UUID())"),
+                    userld = table.Column<int>(type: "int(11)", nullable: false),
                     password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     ktvName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     roleIndication = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'")
@@ -83,10 +85,10 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PRIMARY", x => x.ktvld);
                     table.ForeignKey(
-                        name: "FK_ktv_user_user",
-                        column: x => x.user,
+                        name: "FK_ktv_user_userld",
+                        column: x => x.userld,
                         principalTable: "user",
-                        principalColumn: "Userld",
+                        principalColumn: "userld",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -97,7 +99,7 @@ namespace Infrastructure.Migrations
                 {
                     nurseld = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    userld = table.Column<Guid>(type: "char(36)", nullable: false, defaultValueSql: "(UUID())")
+                    userld = table.Column<int>(type: "int(11)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,7 +108,7 @@ namespace Infrastructure.Migrations
                         name: "nurse_ibfk_1",
                         column: x => x.userld,
                         principalTable: "user",
-                        principalColumn: "Userld",
+                        principalColumn: "userld",
                         onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -122,18 +124,18 @@ namespace Infrastructure.Migrations
                     sex = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
                     dob = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
                     phone = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
-                    roomld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
-                    doctorld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'")
+                    createdAt = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
+                    patientCode = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
+                    Doctorld = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PRIMARY", x => x.patientld);
                     table.ForeignKey(
-                        name: "patient_ibfk_1",
-                        column: x => x.doctorld,
+                        name: "FK_patient_doctor_Doctorld",
+                        column: x => x.Doctorld,
                         principalTable: "doctor",
-                        principalColumn: "doctorld",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "doctorld");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -146,9 +148,9 @@ namespace Infrastructure.Migrations
                     patientld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
                     report = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'"),
                     reportCount = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
-                    reason = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
-                    status = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
-                    createDate = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
+                    Reason = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
+                    Status = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
                     conclusion = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     diagnostic = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     DoctorId = table.Column<int>(type: "int(11)", nullable: true)
@@ -220,11 +222,17 @@ namespace Infrastructure.Migrations
                     imageName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     imageLink = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     nonDicom = table.Column<bool>(type: "tinyint(1)", nullable: true, defaultValueSql: "'NULL'"),
+                    DoctorldNavigationDoctorld = table.Column<int>(type: "int(11)", nullable: true),
                     PatientIdNavigationPatientld = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_medical_cdha", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_doctor_DoctorldNavigationDoctorld",
+                        column: x => x.DoctorldNavigationDoctorld,
+                        principalTable: "doctor",
+                        principalColumn: "doctorld");
                     table.ForeignKey(
                         name: "FK_medical_cdha_patient_PatientIdNavigationPatientld",
                         column: x => x.PatientIdNavigationPatientld,
@@ -235,12 +243,6 @@ namespace Infrastructure.Migrations
                         column: x => x.patientld,
                         principalTable: "casestudy",
                         principalColumn: "CaseStudyId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "medical_cdha_ibfk_2",
-                        column: x => x.doctorld,
-                        principalTable: "doctor",
-                        principalColumn: "doctorld",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "medical_cdha_ibfk_3",
@@ -257,23 +259,11 @@ namespace Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    CaseStudyId = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
-                    Doctorld = table.Column<int>(type: "int(11)", nullable: true),
-                    Patientld = table.Column<int>(type: "int(11)", nullable: true)
+                    CaseStudyId = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_medical_indication", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_medical_indication_doctor_Doctorld",
-                        column: x => x.Doctorld,
-                        principalTable: "doctor",
-                        principalColumn: "doctorld");
-                    table.ForeignKey(
-                        name: "FK_medical_indication_patient_Patientld",
-                        column: x => x.Patientld,
-                        principalTable: "patient",
-                        principalColumn: "patientld");
                     table.ForeignKey(
                         name: "medical_indication_ibfk_1",
                         column: x => x.CaseStudyId,
@@ -291,17 +281,23 @@ namespace Infrastructure.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     patientld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
                     doctorld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
-                    c = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
+                    CaseStudyId = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
                     ktvld = table.Column<int>(type: "int(11)", nullable: true, defaultValueSql: "'NULL'"),
                     observationType = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'"),
                     dateCreate = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
                     timeEstimate = table.Column<DateTime>(type: "date", nullable: true, defaultValueSql: "'NULL'"),
                     testName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
+                    DoctorldNavigationDoctorld = table.Column<int>(type: "int(11)", nullable: true),
                     PatientIdNavigationPatientld = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_medical_test", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_medical_test_doctor_DoctorldNavigationDoctorld",
+                        column: x => x.DoctorldNavigationDoctorld,
+                        principalTable: "doctor",
+                        principalColumn: "doctorld");
                     table.ForeignKey(
                         name: "FK_medical_test_patient_PatientIdNavigationPatientld",
                         column: x => x.PatientIdNavigationPatientld,
@@ -309,15 +305,9 @@ namespace Infrastructure.Migrations
                         principalColumn: "patientld");
                     table.ForeignKey(
                         name: "medical_test_ibfk_1",
-                        column: x => x.c,
+                        column: x => x.CaseStudyId,
                         principalTable: "casestudy",
                         principalColumn: "CaseStudyId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "medical_test_ibfk_2",
-                        column: x => x.doctorld,
-                        principalTable: "doctor",
-                        principalColumn: "doctorld",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "medical_test_ibfk_3",
@@ -339,19 +329,24 @@ namespace Infrastructure.Migrations
                 column: "patientld");
 
             migrationBuilder.CreateIndex(
-                name: "userld",
+                name: "IX_doctor_userld",
                 table: "doctor",
                 column: "userld");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ktv_user",
+                name: "IX_ktv_userld",
                 table: "ktv",
-                column: "user");
+                column: "userld");
 
             migrationBuilder.CreateIndex(
                 name: "doctorld",
                 table: "medical_cdha",
                 column: "doctorld");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_medical_cdha_DoctorldNavigationDoctorld",
+                table: "medical_cdha",
+                column: "DoctorldNavigationDoctorld");
 
             migrationBuilder.CreateIndex(
                 name: "IX_medical_cdha_PatientIdNavigationPatientld",
@@ -374,24 +369,19 @@ namespace Infrastructure.Migrations
                 column: "CaseStudyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_medical_indication_Doctorld",
-                table: "medical_indication",
-                column: "Doctorld");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_medical_indication_Patientld",
-                table: "medical_indication",
-                column: "Patientld");
-
-            migrationBuilder.CreateIndex(
                 name: "doctorld1",
                 table: "medical_test",
                 column: "doctorld");
 
             migrationBuilder.CreateIndex(
-                name: "IX_medical_test_c",
+                name: "IX_medical_test_CaseStudyId",
                 table: "medical_test",
-                column: "c");
+                column: "CaseStudyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_medical_test_DoctorldNavigationDoctorld",
+                table: "medical_test",
+                column: "DoctorldNavigationDoctorld");
 
             migrationBuilder.CreateIndex(
                 name: "IX_medical_test_PatientIdNavigationPatientld",
@@ -409,17 +399,17 @@ namespace Infrastructure.Migrations
                 column: "patientld");
 
             migrationBuilder.CreateIndex(
-                name: "userld1",
+                name: "userld",
                 table: "nurse",
                 column: "userld");
 
             migrationBuilder.CreateIndex(
-                name: "doctorld2",
+                name: "IX_patient_Doctorld",
                 table: "patient",
-                column: "doctorld");
+                column: "Doctorld");
 
             migrationBuilder.CreateIndex(
-                name: "doctorld3",
+                name: "doctorld2",
                 table: "report",
                 column: "doctorld");
 

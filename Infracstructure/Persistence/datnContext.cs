@@ -116,7 +116,6 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.DoctorRole)
                    .HasMaxLength(255)
                    .HasColumnName("doctorRole");
-
                 entity.HasOne(d => d.User)
                       .WithMany(p => p.Doctors)
                       .HasForeignKey(d => d.Userld)
@@ -347,8 +346,6 @@ namespace Infracstructure.Persistance
 
                 entity.ToTable("patient");
 
-                entity.HasIndex(e => e.Doctorld, "doctorld");
-
                 entity.Property(e => e.Patientld)
                     .HasColumnType("int(11)")
                     .HasColumnName("patientld");
@@ -363,9 +360,9 @@ namespace Infracstructure.Persistance
                     .HasColumnName("dob")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.Doctorld)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("doctorld")
+                entity.Property(e => e.patientCode)
+                     .HasMaxLength(255)
+                    .HasColumnName("patientCode")
                     .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.PatientName)
@@ -378,21 +375,14 @@ namespace Infracstructure.Persistance
                     .HasColumnName("phone")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.Roomld)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("roomld")
-                    .HasDefaultValueSql("'NULL'");
-
                 entity.Property(e => e.Sex)
                     .HasColumnType("int(11)")
                     .HasColumnName("sex")
                     .HasDefaultValueSql("'NULL'");
-
-                entity.HasOne(d => d.DoctorldNavigation)
-                    .WithMany(p => p.Patients)
-                    .HasForeignKey(d => d.Doctorld)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("patient_ibfk_1");
+                entity.Property(e => e.createdAt)
+                   .HasColumnType("date")
+                   .HasColumnName("createdAt")
+                   .HasDefaultValueSql("'NULL'");
             });
 
             modelBuilder.Entity<Report>(entity =>
@@ -491,8 +481,7 @@ namespace Infracstructure.Persistance
 
                 entity.Property(e => e.RoleId)
                       .HasColumnType("int(11)")
-                      .HasColumnName("RoleId")
-                      .HasDefaultValueSql("'NULL'");
+                      .HasColumnName("RoleId");
 
                 entity.HasMany(e => e.Doctors)
                       .WithOne(d => d.User)

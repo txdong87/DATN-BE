@@ -1,7 +1,7 @@
 ﻿using Application.DTOs;
-using Domain.Entities;
-using Domain.IRepository;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -9,30 +9,31 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
     {
-        private readonly IPatientRepository _patientRepository;
+        private readonly IPatientService _patientService;
 
-        public PatientsController(IPatientRepository patientRepository)
+        public PatientsController(IPatientService patientService)
         {
-            _patientRepository = patientRepository;
+            _patientService = patientService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllPatients()
         {
-            var patients = await _patientRepository.GetAllPatientsAsync();
+            var patients = await _patientService.GetAllPatientsAsync();
             return Ok(patients);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPatientById(int id)
         {
-            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            var patient = await _patientService.GetPatientByIdAsync(id);
             if (patient == null)
             {
                 return NotFound();
             }
             return Ok(patient);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddPatient([FromBody] PatientDTO patientDto)
         {
@@ -41,26 +42,15 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var patient = new Patient
-            {
-                PatientName = patientDto.PatientName,
-                Address = patientDto.Address,
-                Sex = patientDto.Sex,
-                Dob = patientDto.Dob,
-                Phone = patientDto.Phone,
-                Roomld = patientDto.RoomId,
-                Doctorld=patientDto.DoctorId
-            };
+            await _patientService.AddPatientAsync(patientDto);
 
-            await _patientRepository.AddPatientAsync(patient);
-
-            return CreatedAtAction(nameof(GetPatientById), new { id = patient.Patientld}, patient);
+            return CreatedAtAction(nameof(GetPatientById), patientDto);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            await _patientRepository.DeletePatientAsync(id);
+            await _patientService.DeletePatientAsync(id);
             return NoContent();
         }
     }

@@ -20,6 +20,7 @@ public static class ConfigureServices
         services.AddScoped<IKTVService, KTVService>();
         services.AddScoped<ICaseStudyService, CaseStudyService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPatientService, PatientService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }

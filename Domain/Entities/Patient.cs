@@ -8,9 +8,6 @@ namespace Domain.Entities
         public Patient()
         {
             Casestudies = new HashSet<Casestudy>();
-            MedicalCdhas = new HashSet<MedicalCdha>();
-            MedicalIndications = new HashSet<MedicalIndication>();
-            MedicalTests = new HashSet<MedicalTest>();
             Reports = new HashSet<Report>();
         }
 
@@ -20,14 +17,10 @@ namespace Domain.Entities
         public int? Sex { get; set; }
         public DateTime? Dob { get; set; }
         public int? Phone { get; set; }
-        public int? Roomld { get; set; }
-        public int? Doctorld { get; set; }
+        public DateTime? createdAt { get; set; }
+        public string? patientCode {  get; set; }
 
-        public virtual Doctor? DoctorldNavigation { get; set; }
         public virtual ICollection<Casestudy> Casestudies { get; set; }
-        public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
-        public virtual ICollection<MedicalIndication> MedicalIndications { get; set; }
-        public virtual ICollection<MedicalTest> MedicalTests { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
     }
 }
