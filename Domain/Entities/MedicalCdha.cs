@@ -18,7 +18,7 @@ namespace Domain.Entities
         public bool? NonDicom { get; set; }
 
         public virtual Doctor? DoctorIdNavigation { get; set; }
-        public virtual Ktv? KtvIdNavigation { get; set; }
+        public virtual KTV? KtvIdNavigation { get; set; }
         public virtual Casestudy? CaseStudyIdNavigation { get; set; }
         public virtual Patient? PatientIdNavigation { get; set; }
     }

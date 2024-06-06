@@ -44,7 +44,7 @@ namespace API.Controllers
 
             await _patientService.AddPatientAsync(patientDto);
 
-            return CreatedAtAction(nameof(GetPatientById), patientDto);
+            return Ok();
         }
 
         [HttpDelete("{id}")]

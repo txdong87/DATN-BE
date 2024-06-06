@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.IRepository;
 using Infrastructure.Persistence.Repositories;
 
 namespace Application.Services
@@ -10,10 +11,12 @@ namespace Application.Services
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IUserRepository _userRepository;
 
-        public DoctorService(IDoctorRepository doctorRepository)
+        public DoctorService(IDoctorRepository doctorRepository, IUserRepository userRepository)
         {
             _doctorRepository = doctorRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
@@ -23,7 +26,12 @@ namespace Application.Services
 
         public async Task<Doctor> GetDoctorByIdAsync(int doctorId)
         {
-            return await _doctorRepository.GetDoctorByIdAsync(doctorId);
+            var doctor = await _doctorRepository.GetDoctorByIdAsync(doctorId);
+            if (doctor != null)
+            {
+                //doctor = await _userRepository.GetUserByUsernameAsync(doctor.UserId);
+            }
+            return doctor;
         }
 
         public async Task AddDoctorAsync(Doctor doctor)

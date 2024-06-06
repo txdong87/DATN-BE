@@ -50,7 +50,11 @@ namespace WebAPI.Controllers
                 {
                     return BadRequest("Người dùng không hợp lệ hoặc không có quyền trở thành bác sĩ.");
                 }
-
+                var existingDoctor = await _doctorService.GetDoctorByIdAsync(doctorDto.Userld);
+                if (existingDoctor != null)
+                {
+                    return BadRequest("Người dùng này đã là bác sĩ rồi");
+                }
                 // Tạo bác sĩ mới
                 var newDoctor = new Doctor
                 {

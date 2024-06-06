@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(datnContext))]
-    [Migration("20240606072519_FixDB")]
-    partial class FixDB
+    [Migration("20240606093105_AddDB")]
+    partial class AddDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,10 +36,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<DateTime?>("CreateDate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("CreateDate")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("CreateDate");
 
                     b.Property<string>("Diagnostic")
                         .ValueGeneratedOnAdd()
@@ -65,10 +63,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("ReportCount")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("reportCount")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("reportCount");
 
                     b.Property<string>("Status")
                         .ValueGeneratedOnAdd()
@@ -78,10 +74,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("patientId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("patientId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("patientId");
 
                     b.HasKey("CaseStudyId")
                         .HasName("PRIMARY");
@@ -140,10 +134,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("RoleIndication")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("roleIndication")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("roleIndication");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int(11)")
@@ -168,16 +160,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("dateCreate")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("dateCreate");
 
                     b.Property<int?>("DoctorId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("doctorId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("doctorId");
 
                     b.Property<string>("ImageLink")
                         .ValueGeneratedOnAdd()
@@ -194,37 +182,27 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("KtvId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("ktvId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("ktvId");
 
                     b.Property<bool?>("NonDicom")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasColumnName("nonDicom")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("nonDicom");
 
                     b.Property<string>("ObservationType")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("longtext")
-                        .HasColumnName("observationType")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("observationType");
 
                     b.Property<int?>("PatientId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("patientId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("patientId");
 
                     b.Property<int?>("PatientIdNavigationPatientId")
                         .HasColumnType("int(11)");
 
                     b.Property<DateTime?>("TimeEstimate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("timeEstimate")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("timeEstimate");
 
                     b.HasKey("Id");
 
@@ -248,10 +226,8 @@ namespace Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<int?>("CaseStudyId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("CaseStudyId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("CaseStudyId");
 
                     b.HasKey("Id");
 
@@ -268,40 +244,28 @@ namespace Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<int?>("CaseStudyId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("CaseStudyId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("CaseStudyId");
 
                     b.Property<DateTime?>("DateCreate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("dateCreate")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("dateCreate");
 
                     b.Property<int?>("DoctorId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("doctorId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("doctorId");
 
                     b.Property<int?>("KtvId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("ktvId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("ktvId");
 
                     b.Property<string>("ObservationType")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("longtext")
-                        .HasColumnName("observationType")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("observationType");
 
                     b.Property<int?>("PatientId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("patientId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("patientId");
 
                     b.Property<string>("TestName")
                         .ValueGeneratedOnAdd()
@@ -311,10 +275,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<DateTime?>("TimeEstimate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("timeEstimate")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("timeEstimate");
 
                     b.HasKey("Id");
 
@@ -366,10 +328,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<DateTime?>("Dob")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("dob")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("dob");
 
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int(11)");
@@ -382,22 +342,16 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("Phone")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("phone")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("phone");
 
                     b.Property<int?>("Sex")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("sex")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("sex");
 
                     b.Property<DateTime?>("createdAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasColumnName("createdAt")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("createdAt");
 
                     b.Property<string>("patientCode")
                         .ValueGeneratedOnAdd()
@@ -436,10 +390,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("DoctorId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("doctorId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("doctorId");
 
                     b.Property<string>("DoctorName")
                         .ValueGeneratedOnAdd()
@@ -456,16 +408,12 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("KtvId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("ktvId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("ktvId");
 
                     b.Property<int?>("PatientId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("patientId")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("patientId");
 
                     b.Property<string>("PatientName")
                         .ValueGeneratedOnAdd()
@@ -475,10 +423,8 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<int?>("State")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int(11)")
-                        .HasColumnName("state")
-                        .HasDefaultValueSql("'NULL'");
+                        .HasColumnName("state");
 
                     b.HasKey("ReportId")
                         .HasName("PRIMARY");

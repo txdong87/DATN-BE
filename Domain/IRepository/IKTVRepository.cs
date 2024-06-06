@@ -9,6 +9,10 @@ namespace Domain.IRepository
 {
     public interface IKTVRepository
     {
-        Task<Ktv> GetKTVByIdAsync(int KTVId);
+        Task<KTV> GetKTVByIdAsync(int KTVId);
+        Task<IEnumerable<KTV>> GetAllKTVsAsync();
+        Task CreateKTVAsync(KTV KTV);
+        Task UpdateKTVAsync(KTV KTV);
+        Task DeleteKTVAsync(int id);
     }
 }

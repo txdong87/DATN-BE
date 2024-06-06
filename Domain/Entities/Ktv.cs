@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Domain.Entities
 {
-    public partial class Ktv
+    public partial class KTV
     {
-        public Ktv()
+        public KTV()
         {
             MedicalCdhas = new HashSet<MedicalCdha>();
             MedicalTests = new HashSet<MedicalTest>();

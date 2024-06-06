@@ -8,7 +8,7 @@ namespace Application.DTOs
 {
     public class GetKTVResponse
     {
-        public GetKTVResponse(Domain.Entities.Ktv KTV)
+        public GetKTVResponse(Domain.Entities.KTV KTV)
         {
             KTVId = KTV.KtvId;
             UserId = KTV.UserId ;

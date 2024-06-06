@@ -18,12 +18,12 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
         {
-            return await _context.Doctors.Include(d => d.User).ToListAsync();
+            return await _context.Doctors.ToListAsync();
         }
 
         public async Task<Doctor> GetDoctorByIdAsync(int doctorId)
         {
-            return await _context.Doctors.Include(d => d.User).FirstOrDefaultAsync(d => d.DoctorId == doctorId);
+            return await _context.Doctors.FirstOrDefaultAsync(d => d.DoctorId == doctorId);
         }
 
         public async Task CreateDoctorAsync(Doctor doctor)
