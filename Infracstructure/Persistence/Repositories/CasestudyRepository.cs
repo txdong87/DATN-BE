@@ -21,7 +21,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _context.Casestudies
                                  .Include(cs => cs.PatientIdNavigation)
-                                 .Include(cs => cs.DoctorldNavigation)
+                                 .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.MedicalIndications)
                                  .Include(cs => cs.MedicalTests)
@@ -32,7 +32,7 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _context.Casestudies
                                  .Include(cs => cs.PatientIdNavigation)
-                                 .Include(cs => cs.DoctorldNavigation)
+                                 .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.MedicalIndications)
                                  .Include(cs => cs.MedicalTests)

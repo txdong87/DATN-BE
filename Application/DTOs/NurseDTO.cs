@@ -12,11 +12,9 @@ namespace Application.DTOs
         {
             NurseId = nurse.NurseId;
             UserId = nurse.UserId ;
-            Fullname = nurse.UserIdNavigation?.Fullname;
         }
 
         public int NurseId { get; set; }
         public int UserId { get; set; }
-        public string Fullname { get; set; }
     }
 }

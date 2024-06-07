@@ -6,11 +6,29 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    public partial class AddDB : Migration
+    public partial class addPrescriptionMedication : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Medication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Unit = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    Route = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Usage = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    IsFunctionalFoods = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medication", x => x.Id);
+                })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -62,11 +80,11 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PRIMARY", x => x.doctorId);
                     table.ForeignKey(
-                        name: "fk_user",
+                        name: "FK_doctor_user_userId",
                         column: x => x.userId,
                         principalTable: "user",
                         principalColumn: "userId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -105,11 +123,11 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PRIMARY", x => x.nurseId);
                     table.ForeignKey(
-                        name: "nurse_ibfk_1",
+                        name: "FK_nurse_user_userId",
                         column: x => x.userId,
                         principalTable: "user",
                         principalColumn: "userId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -168,7 +186,8 @@ namespace Infrastructure.Migrations
                         name: "FK_casestudy_doctor_DoctorId",
                         column: x => x.DoctorId,
                         principalTable: "doctor",
-                        principalColumn: "doctorId");
+                        principalColumn: "doctorId",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -315,6 +334,61 @@ namespace Infrastructure.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Prescription",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    PatientId = table.Column<int>(type: "int(11)", nullable: true),
+                    CasestudyId = table.Column<int>(type: "int(11)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prescription", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Prescription_casestudy_CasestudyId",
+                        column: x => x.CasestudyId,
+                        principalTable: "casestudy",
+                        principalColumn: "CaseStudyId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Prescription_patient_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "patient",
+                        principalColumn: "patientId");
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PrescriptionMedication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
+                    MedicationId = table.Column<int>(type: "int", nullable: false),
+                    Dosages = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PrescriptionMedication", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionMedication_Medication_MedicationId",
+                        column: x => x.MedicationId,
+                        principalTable: "Medication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionMedication_Prescription_PrescriptionId",
+                        column: x => x.PrescriptionId,
+                        principalTable: "Prescription",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_casestudy_DoctorId",
                 table: "casestudy",
@@ -391,6 +465,26 @@ namespace Infrastructure.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prescription_CasestudyId",
+                table: "Prescription",
+                column: "CasestudyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescription_PatientId",
+                table: "Prescription",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PrescriptionMedication_MedicationId",
+                table: "PrescriptionMedication",
+                column: "MedicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PrescriptionMedication_PrescriptionId",
+                table: "PrescriptionMedication",
+                column: "PrescriptionId");
+
+            migrationBuilder.CreateIndex(
                 name: "doctorId2",
                 table: "report",
                 column: "doctorId");
@@ -421,13 +515,22 @@ namespace Infrastructure.Migrations
                 name: "nurse");
 
             migrationBuilder.DropTable(
+                name: "PrescriptionMedication");
+
+            migrationBuilder.DropTable(
                 name: "report");
 
             migrationBuilder.DropTable(
-                name: "casestudy");
+                name: "ktv");
 
             migrationBuilder.DropTable(
-                name: "ktv");
+                name: "Medication");
+
+            migrationBuilder.DropTable(
+                name: "Prescription");
+
+            migrationBuilder.DropTable(
+                name: "casestudy");
 
             migrationBuilder.DropTable(
                 name: "patient");

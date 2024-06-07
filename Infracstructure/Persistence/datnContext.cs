@@ -23,6 +23,9 @@ namespace Infracstructure.Persistance
         public virtual DbSet<MedicalCdha> MedicalCdhas { get; set; } = null!;
         public virtual DbSet<MedicalIndication> MedicalIndications { get; set; } = null!;
         public virtual DbSet<MedicalTest> MedicalTests { get; set; } = null!;
+        public virtual DbSet<Medication> Medication { get; set; } = null!;
+        public virtual DbSet<Prescription> Prescription { get; set; } = null!;
+        public virtual DbSet<PrescriptionMedication> PrescriptionMedication { get; set; } = null!;
         public virtual DbSet<Nurse> Nurses { get; set; } = null!;
         public virtual DbSet<Patient> Patients { get; set; } = null!;
         public virtual DbSet<Report> Reports { get; set; } = null!;
@@ -90,6 +93,14 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.ReportCount)
                     .HasColumnType("int(11)")
                     .HasColumnName("reportCount");
+                entity.HasMany(e => e.Prescriptions)
+                      .WithOne(e => e.Casestudy)
+                      .HasForeignKey(e => e.CasestudyId);
+                entity.HasOne(d => d.DoctorIdNavigation)
+                    .WithMany(d => d.Casestudies)
+                    .HasForeignKey(d => d.DoctorId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_casestudy_doctor_DoctorId");
 
                 entity.HasOne(d => d.PatientIdNavigation)
                     .WithMany(p => p.Casestudies)
@@ -308,12 +319,6 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.UserId)
                     .HasColumnType("int(11)")
                     .HasColumnName("userId");
-
-                entity.HasOne(d => d.UserIdNavigation)
-                    .WithMany(p => p.Nurses)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("nurse_ibfk_1");
             });
 
             modelBuilder.Entity<Patient>(entity =>
@@ -471,7 +476,49 @@ namespace Infracstructure.Persistance
 
               
             });
-                OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<Prescription>(entity =>
+            {
+                entity.ToTable("Prescription");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Date).IsRequired();
+
+                entity.HasOne(e => e.Casestudy)
+                      .WithMany(c => c.Prescriptions)
+                      .HasForeignKey(e => e.CasestudyId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Medication>(entity =>
+            {
+                entity.ToTable("Medication");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Unit).HasMaxLength(50);
+                entity.Property(e => e.Route).HasMaxLength(100);
+                entity.Property(e => e.Usage).HasMaxLength(100);
+                entity.Property(e => e.IsFunctionalFoods).HasDefaultValue(false);
+            });
+
+            modelBuilder.Entity<PrescriptionMedication>(entity =>
+            {
+                entity.ToTable("PrescriptionMedication");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Dosages).HasMaxLength(200);
+
+                entity.HasOne(e => e.Prescription)
+                      .WithMany(p => p.PrescriptionMedications)
+                      .HasForeignKey(e => e.PrescriptionId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Medication)
+                      .WithMany(m => m.PrescriptionMedications)
+                      .HasForeignKey(e => e.MedicationId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

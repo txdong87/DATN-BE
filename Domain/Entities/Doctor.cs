@@ -9,6 +9,8 @@ namespace Domain.Entities
         {
             Patients = new HashSet<Patient>();
             Reports = new HashSet<Report>();
+            Casestudies = new HashSet<Casestudy>();
+
         }
 
         public int DoctorId { get; set; }
@@ -17,5 +19,6 @@ namespace Domain.Entities
 
         public virtual ICollection<Patient> Patients { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
+        public virtual ICollection<Casestudy> Casestudies { get; set; }
     }
 }

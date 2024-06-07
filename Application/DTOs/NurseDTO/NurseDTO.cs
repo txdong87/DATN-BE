@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.DoctorDTO
+namespace Application.DTOs.NurseDTO
 {
-    public class DoctorResponseDTO
+    public class NurseDTO
     {
         public int UserId { get; set; }
-        public string DoctorRole { get; set; }
-        public string DoctorName { get; set;}
-
     }
 }

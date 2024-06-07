@@ -45,7 +45,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            return await _dbSet.FirstOrDefaultAsync(u => u.Fullname == username);
+            return await _dbSet.FirstOrDefaultAsync(u => u.user == username);
         }
     }
 }

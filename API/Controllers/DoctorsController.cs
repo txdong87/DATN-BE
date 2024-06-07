@@ -45,12 +45,12 @@ namespace WebAPI.Controllers
             try
             {
                 // Kiểm tra xem người dùng có tồn tại và có RoleId = 1 không
-                var role = await _userService.checkRole(doctorDto.Userld);
+                var role = await _userService.checkRole(doctorDto.UserId);
                 if (role == null || role != 1)
                 {
                     return BadRequest("Người dùng không hợp lệ hoặc không có quyền trở thành bác sĩ.");
                 }
-                var existingDoctor = await _doctorService.GetDoctorByIdAsync(doctorDto.Userld);
+                var existingDoctor = await _doctorService.GetDoctorByIdAsync(doctorDto.UserId);
                 if (existingDoctor != null)
                 {
                     return BadRequest("Người dùng này đã là bác sĩ rồi");
@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
                 var newDoctor = new Doctor
                 {
                     
-                    UserId = doctorDto.Userld,
+                    UserId = doctorDto.UserId,
                     DoctorRole = doctorDto.DoctorRole
                 };
 

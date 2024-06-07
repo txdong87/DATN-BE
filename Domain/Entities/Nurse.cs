@@ -8,6 +8,5 @@ namespace Domain.Entities
         public int NurseId { get; set; }
         public int UserId { get; set; }
 
-        public virtual User? UserIdNavigation { get; set; }
     }
 }

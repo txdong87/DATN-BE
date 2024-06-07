@@ -9,6 +9,10 @@ namespace Domain.IRepository
 {
     public interface INurseRepository
     {
-        Task<Nurse> GetNurseByIdAsync(int Nurse);
+        Task<Nurse> GetNurseByIdAsync(int nurseId);
+        Task<IEnumerable<Nurse>> GetAllNursesAsync();
+        Task CreateNurseAsync(Nurse nurse);
+        Task UpdateNurseAsync(Nurse nurse);
+        Task DeleteNurseAsync(int id);
     }
 }

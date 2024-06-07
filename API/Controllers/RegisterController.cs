@@ -21,7 +21,7 @@ namespace API.Controllers
         {
             try
             {
-                await _authService.RegisterUserAsync(registerUserDto.Username, registerUserDto.Password, registerUserDto.RoleId, registerUserDto.FullName);
+                await _authService.RegisterUserAsync(registerUserDto.User, registerUserDto.Password, registerUserDto.RoleId, registerUserDto.FullName);
                 return Ok(new { message = "User registered successfully" });
             }
             catch (Exception ex)

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(datnContext))]
-    [Migration("20240606093105_AddDB")]
-    partial class AddDB
+    [Migration("20240607103136_add-PrescriptionMedication")]
+    partial class addPrescriptionMedication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -112,7 +112,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("doctor", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Ktv", b =>
+            modelBuilder.Entity("Domain.Entities.KTV", b =>
                 {
                     b.Property<int>("KtvId")
                         .ValueGeneratedOnAdd()
@@ -294,6 +294,42 @@ namespace Infrastructure.Migrations
                     b.ToTable("medical_test", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Medication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsFunctionalFoods")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Route")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Usage")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Medication", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Nurse", b =>
                 {
                     b.Property<int>("NurseId")
@@ -366,6 +402,57 @@ namespace Infrastructure.Migrations
                     b.HasIndex("DoctorId");
 
                     b.ToTable("patient", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Prescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CasestudyId")
+                        .IsRequired()
+                        .HasColumnType("int(11)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PatientId")
+                        .HasColumnType("int(11)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CasestudyId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Prescription", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.PrescriptionMedication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Dosages")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicationId");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.ToTable("PrescriptionMedication", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Report", b =>
@@ -494,9 +581,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Casestudy", b =>
                 {
-                    b.HasOne("Domain.Entities.Doctor", "DoctorldNavigation")
-                        .WithMany()
-                        .HasForeignKey("DoctorId");
+                    b.HasOne("Domain.Entities.Doctor", "DoctorIdNavigation")
+                        .WithMany("Casestudies")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_casestudy_doctor_DoctorId");
 
                     b.HasOne("Domain.Entities.Patient", "PatientIdNavigation")
                         .WithMany("Casestudies")
@@ -504,24 +593,21 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("casestudy_ibfk_1");
 
-                    b.Navigation("DoctorldNavigation");
+                    b.Navigation("DoctorIdNavigation");
 
                     b.Navigation("PatientIdNavigation");
                 });
 
             modelBuilder.Entity("Domain.Entities.Doctor", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.User", null)
                         .WithMany("Doctors")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_user");
-
-                    b.Navigation("User");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Ktv", b =>
+            modelBuilder.Entity("Domain.Entities.KTV", b =>
                 {
                     b.HasOne("Domain.Entities.User", "UserldNavigation")
                         .WithMany()
@@ -538,7 +624,7 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("DoctorId");
 
-                    b.HasOne("Domain.Entities.Ktv", "KtvIdNavigation")
+                    b.HasOne("Domain.Entities.KTV", "KtvIdNavigation")
                         .WithMany("MedicalCdhas")
                         .HasForeignKey("KtvId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -586,7 +672,7 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("DoctorId");
 
-                    b.HasOne("Domain.Entities.Ktv", "KtvIdNavigation")
+                    b.HasOne("Domain.Entities.KTV", "KtvIdNavigation")
                         .WithMany("MedicalTests")
                         .HasForeignKey("KtvId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -607,14 +693,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Nurse", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "UserIdNavigation")
+                    b.HasOne("Domain.Entities.User", null)
                         .WithMany("Nurses")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("nurse_ibfk_1");
-
-                    b.Navigation("UserIdNavigation");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Patient", b =>
@@ -622,6 +705,42 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Doctor", null)
                         .WithMany("Patients")
                         .HasForeignKey("DoctorId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Prescription", b =>
+                {
+                    b.HasOne("Domain.Entities.Casestudy", "Casestudy")
+                        .WithMany("Prescriptions")
+                        .HasForeignKey("CasestudyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId");
+
+                    b.Navigation("Casestudy");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PrescriptionMedication", b =>
+                {
+                    b.HasOne("Domain.Entities.Medication", "Medication")
+                        .WithMany("PrescriptionMedications")
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Prescription", "Prescription")
+                        .WithMany("PrescriptionMedications")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medication");
+
+                    b.Navigation("Prescription");
                 });
 
             modelBuilder.Entity("Domain.Entities.Report", b =>
@@ -659,20 +778,29 @@ namespace Infrastructure.Migrations
                     b.Navigation("MedicalIndications");
 
                     b.Navigation("MedicalTests");
+
+                    b.Navigation("Prescriptions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Doctor", b =>
                 {
+                    b.Navigation("Casestudies");
+
                     b.Navigation("Patients");
 
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Ktv", b =>
+            modelBuilder.Entity("Domain.Entities.KTV", b =>
                 {
                     b.Navigation("MedicalCdhas");
 
                     b.Navigation("MedicalTests");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Medication", b =>
+                {
+                    b.Navigation("PrescriptionMedications");
                 });
 
             modelBuilder.Entity("Domain.Entities.Patient", b =>
@@ -680,6 +808,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Casestudies");
 
                     b.Navigation("Reports");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Prescription", b =>
+                {
+                    b.Navigation("PrescriptionMedications");
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
