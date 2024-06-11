@@ -6,10 +6,11 @@ namespace Domain.Interfaces
 {
     public interface IMedicationRepository
     {
-        Task<IEnumerable<Medication>> GetAllAsync();
-        Task<Medication> GetByIdAsync(int id);
-        Task AddAsync(Medication medication);
-        Task UpdateAsync(Medication medication);
-        Task DeleteAsync(int id);
+        Task<IEnumerable<Medication>> GetAllMedications();
+        Task<Medication> GetMedicationById(int id);
+        Task AddMedication(Medication medication);
+        Task UpdateMedication(Medication medication);
+        Task DeleteMedication(int id);
     }
 }
+ 

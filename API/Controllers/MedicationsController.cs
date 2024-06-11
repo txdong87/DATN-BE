@@ -1,14 +1,12 @@
-﻿using Application;
+﻿using Application.DTOs;
+using Application.DTOs.Users;
 using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Presentation.Controllers
+namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class MedicationsController : ControllerBase
     {
         private readonly IMedicationService _medicationService;
@@ -19,56 +17,42 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Medication>>> GetAllMedications()
+        public async Task<IActionResult> GetAll()
         {
-            var medications = await _medicationService.GetAllMedicationsAsync();
+            var medications = await _medicationService.GetAllMedications();
             return Ok(medications);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Medication>> GetMedicationById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var medication = await _medicationService.GetMedicationByIdAsync(id);
-            if (medication == null)
-            {
-                return NotFound();
-            }
+            var medication = await _medicationService.GetMedicationById(id);
+            if (medication == null) return NotFound();
             return Ok(medication);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddMedication(MedicationDTO medicationDto)
+        public async Task<IActionResult> Create([FromBody] MedicationDto medicationDto)
         {
-            var medication = new Medication
-            {
-                Name = medicationDto.Name,
-                Unit = medicationDto.Unit,
-                Route = medicationDto.Route,
-                Usage = medicationDto.Usage,
-                IsFunctionalFoods = medicationDto.IsFunctionalFoods
-            };
-
-            await _medicationService.AddMedicationAsync(medication);
-            return CreatedAtAction(nameof(GetMedicationById), new { id = medication.Id }, medication);
+            await _medicationService.AddMedication(medicationDto);
+            return CreatedAtAction(nameof(GetById), new { id = medicationDto.Id }, medicationDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateMedication(int id, Medication medication)
+        public async Task<IActionResult> Update(int id, [FromBody] MedicationDto medicationDto)
         {
-            if (id != medication.Id)
-            {
-                return BadRequest();
-            }
-
-            await _medicationService.UpdateMedicationAsync(medication);
+            if (id != medicationDto.Id) return BadRequest();
+            await _medicationService.UpdateMedication(medicationDto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteMedication(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            await _medicationService.DeleteMedicationAsync(id);
+            await _medicationService.DeleteMedication(id);
             return NoContent();
         }
     }
+
+   
 }
