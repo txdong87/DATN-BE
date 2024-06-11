@@ -4,6 +4,8 @@ using Application.Services.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.IRepository;
+using Infrastructure.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -18,11 +20,13 @@ namespace Application.Services
     {
         private readonly IAuthRepository _authRepository;
         private readonly string _secretKey;
+        private readonly IUserRepository _userRepository;
 
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration,IUserRepository userRepository)
         {
             _authRepository = authRepository;
             _secretKey = configuration["JwtSettings:Secret"];
+            _userRepository = userRepository;
         }
 
         public async Task<string?> AuthenticateAsync(string username, string password)
@@ -83,6 +87,10 @@ namespace Application.Services
             };
 
             await _authRepository.CreateUserAsync(user);
+        }
+        public async Task<string> GetUserRoleAsync(string username)
+        {
+            return await _authRepository.GetUserRoleAsync(username);
         }
     }
 }

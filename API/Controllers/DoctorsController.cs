@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs;
+using Application.DTOs.Users.GetUser;
 using Application.Interfaces;
 using Application.Services.Interfaces;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,11 +21,22 @@ namespace WebAPI.Controllers
             _doctorService = doctorService;
             _userService = userService; 
         }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Doctor>>> GetAllDoctors()
+        public async Task<ActionResult<IEnumerable<DoctorCreateDto>>> GetAllDoctors()
         {
-            var doctors = await _doctorService.GetAllDoctorsAsync();
+            var doctors = await _doctorService.GetNameDoctorsAsync();
+
+            // Lặp qua danh sách các bác sĩ để lấy DoctorName từ UserService
+            foreach (var doctor in doctors)
+            {
+                var userRoleId = await _userService.checkRole(doctor.UserId);
+                if (userRoleId == 1)
+                {
+                    //var doctorName = await _userService.GetDoctorNameAsync(doctor.UserId);
+                    //doctor.DoctorName = doctorName;
+                }
+            }
+
             return Ok(doctors);
         }
 

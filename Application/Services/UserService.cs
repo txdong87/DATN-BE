@@ -271,6 +271,10 @@ public class UserService : BaseService, IUserService
 
         return user?.RoleId ?? -1;
     }
-
+    public async Task<string> GetDoctorNameAsync(int userId)
+    {
+        var user = await _userRepository.GetUserByUsernameAsync(userId);
+        return user?.Fullname;
+    }
 
 }

@@ -21,9 +21,6 @@ namespace API.Entities
         public DateTime? Dob { get; set; }
         public int? Phone { get; set; }
         public int? Roomld { get; set; }
-        public int? Doctorld { get; set; }
-
-        public virtual Doctor? DoctorldNavigation { get; set; }
         public virtual ICollection<Casestudy> Casestudies { get; set; }
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
         public virtual ICollection<MedicalIndication> MedicalIndications { get; set; }

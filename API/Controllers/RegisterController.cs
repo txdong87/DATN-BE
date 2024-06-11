@@ -45,7 +45,9 @@ namespace API.Controllers
                 return Unauthorized(new { message = "Invalid credentials" });
             }
 
-            return Ok(new { token });
+            var userRole = await _authService.GetUserRoleAsync(loginDto.Username);
+            return Ok(new { token, role = userRole });
         }
+
     }
 }

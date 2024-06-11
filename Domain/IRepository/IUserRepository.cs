@@ -9,6 +9,8 @@ namespace Domain.IRepository
 {
     public interface IUserRepository
     {
+
         Task<User> GetUserByUsernameAsync(int userId);
+
     }
 }

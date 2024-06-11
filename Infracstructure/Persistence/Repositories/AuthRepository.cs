@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Infrastructure.Persistence.Repositories
 {
     public class AuthRepository : RepositoryBase<User>, IAuthRepository
-    {   
+    {
         private readonly datnContext _context;
         private readonly string _secretKey;
         public AuthRepository(datnContext dbContext, string secretKey) : base(dbContext)
@@ -43,9 +43,17 @@ namespace Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
-            return await _dbSet.FirstOrDefaultAsync(u => u.user == username);
+            return await _context.Users
+                                 .Include(u => u.Role) // Sử dụng Include để load Role
+                                 .FirstOrDefaultAsync(u => u.user == username);
+        }
+
+        public async Task<string> GetUserRoleAsync(string username)
+        {
+            var user = await GetUserByUsernameAsync(username);
+            return user?.Role?.RoleName;  // Truy xuất RoleName từ property RoleName
         }
     }
 }

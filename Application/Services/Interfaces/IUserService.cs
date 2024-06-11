@@ -25,5 +25,6 @@ namespace Application.Services.Interfaces
        
         Task<Response<GetUserResponse>> EditUserAsync(EditUserRequest requestModel);
         Task<int> checkRole(int userId);
+        Task<string> GetDoctorNameAsync(int userId);
     }
 }

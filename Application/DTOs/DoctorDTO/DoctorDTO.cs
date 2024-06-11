@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 namespace Application.DTOs
 {
     public class DoctorCreateDto
-    {
+    {   
+        public int DoctorId {  get; set; }
         public int UserId { get; set; }
         public string DoctorRole { get; set; }
+        public string DoctorName { get; set; }
     }
 
 }

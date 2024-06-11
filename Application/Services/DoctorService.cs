@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.DTOs;
 using Application.Interfaces;
+using Application.Services.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.IRepository;
@@ -19,10 +21,31 @@ namespace Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
+        public async Task<IEnumerable<DoctorCreateDto>> GetNameDoctorsAsync()
         {
-            return await _doctorRepository.GetAllDoctorsAsync();
+            var doctors = await _doctorRepository.GetAllDoctorsAsync();
+            var doctorDtos = new List<DoctorCreateDto>();
+            foreach (var doctor in doctors)
+            {
+
+
+
+                var user = await _userRepository.GetUserByUsernameAsync(doctor.UserId); // Sửa ở đây
+                if (user != null)
+                {
+                    var doctorDto = new DoctorCreateDto
+                    {   DoctorId=doctor.DoctorId,
+                        UserId = doctor.UserId,
+                        DoctorRole = doctor.DoctorRole,
+                        DoctorName = user.Fullname // Sửa ở đây
+                    };
+                    doctorDtos.Add(doctorDto);
+                }
+
+            }
+            return doctorDtos;
         }
+
 
         public async Task<Doctor> GetDoctorByIdAsync(int doctorId)
         {

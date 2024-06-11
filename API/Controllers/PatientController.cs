@@ -42,9 +42,9 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            await _patientService.AddPatientAsync(patientDto);
+            var response = await _patientService.AddPatientAsync(patientDto);
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]

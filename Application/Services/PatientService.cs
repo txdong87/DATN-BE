@@ -4,6 +4,7 @@ using Domain.IRepository;
 using Application.Utilities;
 using System;
 using System.Threading.Tasks;
+using Application.Common.Models;
 
 namespace Application.Services
 {
@@ -26,7 +27,7 @@ namespace Application.Services
             return await _patientRepository.GetPatientByIdAsync(patientId);
         }
 
-        public async Task AddPatientAsync(PatientDTO patientDto)
+        public async Task<Response<PatientDTO>> AddPatientAsync(PatientDTO patientDto)
         {
             if (patientDto == null)
             {
@@ -41,10 +42,13 @@ namespace Application.Services
                 Dob = patientDto.Dob,
                 Phone = patientDto.Phone,
                 patientCode = PatientCodeGenerator.GeneratePatientCode(),
-                createdAt = patientDto.createdAt,
+                createdAt = DateTime.Now,
             };
 
             await _patientRepository.AddPatientAsync(patient);
+            var response = new Response<PatientDTO>(isSuccess: true, data: patientDto);
+
+            return response;
         }
 
         public async Task UpdatePatientAsync(Patient patient)

@@ -13,6 +13,6 @@ namespace Domain.IRepository
         Task<User> GetUserByUsernameAsync(string username);
         Task CreateUserAsync(User user);
         Task<User> LoginAsync(string username, string password);
-        //string GenerateJwtToken(User user);
+        Task<string> GetUserRoleAsync(string username);
     }
 }
