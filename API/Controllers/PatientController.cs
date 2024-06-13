@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.PatientDTO;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -52,6 +52,12 @@ namespace API.Controllers
         {
             await _patientService.DeletePatientAsync(id);
             return NoContent();
+        }
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchPatients([FromBody] PatientSearchDTO searchDto)
+        {
+            var patients = await _patientService.SearchPatientsAsync(searchDto.Name, searchDto.Take, searchDto.Skip);
+            return Ok(patients);
         }
     }
 }

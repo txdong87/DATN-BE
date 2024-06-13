@@ -1,5 +1,5 @@
 ﻿using Application.Common.Models;
-using Application.DTOs;
+using Application.DTOs.PatientDTO;
 using Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,5 +13,6 @@ namespace Application.Services
         Task<Response<PatientDTO>> AddPatientAsync(PatientDTO patientDto);
         Task UpdatePatientAsync(Patient patient);
         Task DeletePatientAsync(int patientId);
+        Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip);
     }
 }

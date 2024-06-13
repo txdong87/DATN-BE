@@ -14,5 +14,6 @@ namespace Domain.IRepository
         Task AddPatientAsync(Patient patient);
         Task UpdatePatientAsync(Patient patient);
         Task DeletePatientAsync(int patientId);
+        Task<List<Patient>> SearchByNameAsync(string name, int take, int skip);
     }
 }

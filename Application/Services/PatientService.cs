@@ -1,16 +1,18 @@
-﻿using Application.DTOs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.IRepository;
 using Application.Utilities;
 using System;
 using System.Threading.Tasks;
 using Application.Common.Models;
+using Application.DTOs.PatientDTO;
+using Org.BouncyCastle.Crypto;
 
 namespace Application.Services
 {
     public class PatientService:IPatientService
     {
         private readonly IPatientRepository _patientRepository;
+        
 
         public PatientService(IPatientRepository patientRepository)
         {
@@ -59,6 +61,17 @@ namespace Application.Services
         public async Task DeletePatientAsync(int patientId)
         {
             await _patientRepository.DeletePatientAsync(patientId);
+        }
+        public async Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip)
+        {
+            var patients = await _patientRepository.SearchByNameAsync(name, take, skip);
+            return patients.Select(patient => new PatientSearchDTO
+            {
+                
+                Name = patient.PatientName,
+                PatientCode = patient.patientCode,
+                // Map other fields as needed
+            }).ToList();
         }
     }
 }

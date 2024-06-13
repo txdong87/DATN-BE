@@ -50,5 +50,16 @@ namespace Infrastructure.Persistence.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<Patient>> SearchByNameAsync(string name, int take, int skip)
+        {
+            var upperName = name.ToUpper();
+            return await _context.Patients
+                .Where(t => t.PatientName.ToUpper().Contains(upperName))
+                .OrderBy(t => t.createdAt)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+        }
     }
 }

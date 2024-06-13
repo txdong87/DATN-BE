@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Users
+namespace Application.DTOs
 {
     public class PrescriptionDto
     {
@@ -12,5 +12,6 @@ namespace Application.DTOs.Users
         public int? PatientId { get; set; }
         public int? CasestudyId { get; set; }
         public DateTime Date { get; set; }
+        public List<PrescriptionMedicationDto> PrescriptionMedications { get; set; }
     }
 }

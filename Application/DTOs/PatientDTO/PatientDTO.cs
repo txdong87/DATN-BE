@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.PatientDTO
 {
     public class PatientDTO
     {
@@ -16,6 +16,6 @@ namespace Application.DTOs
         public int? Sex { get; set; }
         public DateTime? Dob { get; set; }
         public int? Phone { get; set; }
-        public DateTime? createdAt{ get; set; }
+        public DateTime? createdAt { get; set; }
     }
 }
