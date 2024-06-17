@@ -103,9 +103,9 @@ namespace Application.Services
 
         public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
         {
-            if (createCaseStudyDto.PatientId == null || createCaseStudyDto.Reason==null || createCaseStudyDto.DoctorId == null )
+            if (createCaseStudyDto.PatientId == null || createCaseStudyDto.Reason==null )
             {
-                throw new ArgumentException("PatientId, DoctorId, PatientName and DoctorName must be provided.");
+                throw new ArgumentException("PatientId, PatientName and DoctorName must be provided.");
             }
 
             var caseStudy = new Casestudy
