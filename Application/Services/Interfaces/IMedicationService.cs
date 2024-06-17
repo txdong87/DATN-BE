@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs;
+using Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,10 +7,10 @@ namespace Application.Interfaces
 {
     public interface IMedicationService
     {
-        Task<IEnumerable<Medication>> GetAllMedicationsAsync();
-        Task<Medication> GetMedicationByIdAsync(int id);
-        Task AddMedicationAsync(Medication medication);
-        Task UpdateMedicationAsync(Medication medication);
-        Task DeleteMedicationAsync(int id);
+        Task<IEnumerable<MedicationDto>> GetAllMedications();
+        Task<MedicationDto> GetMedicationById(int id);
+        Task AddMedication(MedicationDto medicationDto);
+        Task UpdateMedication(MedicationDto medicationDto);
+        Task DeleteMedication(int id);
     }
 }

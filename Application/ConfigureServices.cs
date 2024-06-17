@@ -23,6 +23,7 @@ public static class ConfigureServices
         services.AddScoped<IPatientService, PatientService>();
         services.AddScoped<INurseService, NurseService>();
         services.AddScoped<IMedicationService, MedicationService>();
+        services.AddScoped<IPrescriptionService, PrescriptionService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
