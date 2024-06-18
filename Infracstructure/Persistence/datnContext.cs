@@ -21,8 +21,6 @@ namespace Infracstructure.Persistance
         public virtual DbSet<Doctor> Doctors { get; set; } = null!;
         public virtual DbSet<KTV> Ktvs { get; set; } = null!;
         public virtual DbSet<MedicalCdha> MedicalCdhas { get; set; } = null!;
-        public virtual DbSet<MedicalIndication> MedicalIndications { get; set; } = null!;
-        public virtual DbSet<MedicalTest> MedicalTests { get; set; } = null!;
         public virtual DbSet<Medication> Medication { get; set; } = null!;
         public virtual DbSet<Prescription> Prescription { get; set; } = null!;
         public virtual DbSet<PrescriptionMedication> PrescriptionMedication { get; set; } = null!;
@@ -93,20 +91,30 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.ReportCount)
                     .HasColumnType("int(11)")
                     .HasColumnName("reportCount");
-                entity.HasMany(e => e.Prescriptions)
-                      .WithOne(e => e.Casestudy)
-                      .HasForeignKey(e => e.CasestudyId);
+                entity.HasOne(d => d.PatientIdNavigation)
+                  .WithMany(p => p.Casestudies)
+                  .HasForeignKey(d => d.patientId)
+                  .OnDelete(DeleteBehavior.Restrict)
+                  .HasConstraintName("FK_casestudy_patient");
+
+                // Configure relationship with Doctor (optional initially)
                 entity.HasOne(d => d.DoctorIdNavigation)
-                    .WithMany(d => d.Casestudies)
+                    .WithMany(p => p.Casestudies)
                     .HasForeignKey(d => d.DoctorId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_casestudy_doctor_DoctorId");
+                    .HasConstraintName("FK_casestudy_doctor");
 
-                entity.HasOne(d => d.PatientIdNavigation)
-                    .WithMany(p => p.Casestudies)
-                    .HasForeignKey(d => d.patientId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("casestudy_ibfk_1");
+                // Configure relationship with Prescription
+                entity.HasMany(e => e.Prescriptions)
+                    .WithOne(e => e.Casestudy)
+                    .HasForeignKey(e => e.CasestudyId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Configure relationship with MedicalCdha
+                entity.HasMany(e => e.MedicalCdhas)
+                    .WithOne(e => e.CaseStudyIdNavigation)
+                    .HasForeignKey(e => e.CaseStudyId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<Doctor>(entity =>
             {
@@ -223,86 +231,7 @@ namespace Infracstructure.Persistance
                     .HasConstraintName("medical_cdha_ibfk_1");
             });
 
-            modelBuilder.Entity<MedicalIndication>(entity =>
-            {
-                entity.ToTable("medical_indication");
-
-                entity.HasIndex(e => e.CaseStudyId, "CaseStudyId");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.CaseStudyId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("CaseStudyId");
-
-                entity.HasOne(d => d.CaseStudyIdNavigation)
-                    .WithMany(p => p.MedicalIndications)
-                    .HasForeignKey(d => d.CaseStudyId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_indication_ibfk_1");
-            });
-
-            modelBuilder.Entity<MedicalTest>(entity =>
-            {
-                entity.ToTable("medical_test");
-
-                entity.HasIndex(e => e.DoctorId, "doctorId");
-
-                entity.HasIndex(e => e.KtvId, "ktvId");
-
-                entity.HasIndex(e => e.PatientId, "patientId");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.DateCreate)
-                    .HasColumnType("date")
-                    .HasColumnName("dateCreate");
-
-
-                entity.Property(e => e.DoctorId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("doctorId");
-
-                entity.Property(e => e.KtvId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("ktvId");
-
-                entity.Property(e => e.ObservationType)
-                    .HasColumnName("observationType");
-
-
-                entity.Property(e => e.PatientId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("patientId");
-                entity.Property(e => e.CaseStudyId)
-                   .HasColumnType("int(11)")
-                   .HasColumnName("CaseStudyId");
-                entity.Property(e => e.TestName)
-                    .HasMaxLength(255)
-                    .HasColumnName("testName")
-                    .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.TimeEstimate)
-                    .HasColumnType("date")
-                    .HasColumnName("timeEstimate");
-
-                entity.HasOne(d => d.KtvIdNavigation)
-                    .WithMany(p => p.MedicalTests)
-                    .HasForeignKey(d => d.KtvId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_test_ibfk_3");
-
-                entity.HasOne(d => d.CaseStudyIdNavigation)
-                    .WithMany(p => p.MedicalTests)
-                    .HasForeignKey(d => d.CaseStudyId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_test_ibfk_1");
-            });
-
+           
             modelBuilder.Entity<Nurse>(entity =>
             {
                 entity.HasKey(e => e.NurseId)

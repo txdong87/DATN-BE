@@ -11,6 +11,8 @@ namespace Domain.IRepository
     {
 
         Task<User> GetUserByUsernameAsync(int userId);
-
+        Task DeleteAsync(int id);
+        Task<IEnumerable<User>> SearchAsync(string username, string fullname, int take, int skip);
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }

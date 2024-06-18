@@ -20,6 +20,8 @@ using Application.Helpers;
 using Domain.Shared.Enums;
 using Application.Common.Models;
 using Domain.IRepository;
+using Application.DTOs.Users;
+using Infrastructure.Persistence.Repositories;
 
 namespace Application.Services.Interfaces;
 
@@ -160,46 +162,9 @@ public class UserService : BaseService, IUserService
         return new Response<GetUserResponse>(true, getUserDto);
     }
 
-    public async Task<Response<GetListUsersResponse>> GetListAsync(GetListUsersRequest request)
+    public async Task<IEnumerable<User>> GetListAsync()
     {
-        var userRepository = UnitOfWork.AsyncRepository<User>();
-
-        var users = (await userRepository.ListAsync(u => u.Fullname == request.fullName)).AsQueryable();
-
-        var validSortFields = new[]
-        {
-        ModelField.FullName,
-        ModelField.Username,
-        ModelField.RoleId
-    };
-
-        var validFilterFields = new[]
-        {
-        ModelField.RoleId
-    };
-
-        var searchFields = new[]
-        {
-        ModelField.FullName,
-        ModelField.RoleId
-    };
-
-        var processedList = users.SortByField(validSortFields,request.SortQuery.SortField, request.SortQuery.SortDirection)
-                                    .SearchByField(searchFields,
-                                                request.SearchQuery.SearchValue)
-                                    .Select(u => new GetUserResponse(u))
-                                    .AsQueryable()
-                                    .FilterByField(validFilterFields,
-                                                request.FilterQuery.FilterField,
-                                                request.FilterQuery.FilterValue);
-
-        var paginatedList = new PagedList<GetUserResponse>(processedList,
-                                                            request.PagingQuery.PageIndex,
-                                                            request.PagingQuery.PageSize);
-
-        var response = new GetListUsersResponse(paginatedList);
-
-        return new Response<GetListUsersResponse>(true, response);
+        return await _userRepository.GetAllUsersAsync();
     }
 
     public async Task<Response> IsAbleToDisableUser(int id)
@@ -256,6 +221,25 @@ public class UserService : BaseService, IUserService
         await UnitOfWork.SaveChangesAsync();
 
         return new Response<GetUserResponse>(true, "Success", new GetUserResponse(user));
+    }
+    public async Task DeleteUserAsync(int id)
+    {
+        await _userRepository.DeleteAsync(id);
+    }
+
+    public async Task<IEnumerable<UserDTO>> SearchUsersAsync(string username, string fullname, int take, int skip)
+    {
+        if (take == 0) take = 10; // Default take value if it's zero
+
+        var users = await _userRepository.SearchAsync(username, fullname, take, skip);
+        return users.Select(user => new UserDTO
+        {
+            UserId = user.UserId,
+            Username = user.user,
+            Fullname = user.Fullname,
+            Password = user.Password,
+            RoleId = user.RoleId
+        }).ToList();
     }
     private async Task<bool> HasValidAssignment(int userId)
     {

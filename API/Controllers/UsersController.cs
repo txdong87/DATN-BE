@@ -1,228 +1,80 @@
-//using API.Attributes;
-//using Application.Common.Models;
-//using Application.DTOs.Users.GetUser;
-//using Application.DTOs.Users.GetListUsers;
-//using Application.DTOs.Users.CreateUser;
-//using Application.Services.Interfaces;
-//using Domain.Shared.Constants;
-//using Domain.Shared.Enums;
-//using Microsoft.AspNetCore.Mvc;
-//using Application.Queries;
-//using Application.DTOs.Users.ChangePassword;
-//using Application.DTOs.Users.DisableUser;
-//using Application.DTOs.Users.EditUser;
+using Application.DTOs;
+using Application.DTOs.Users;
+using Application.DTOs.Users.CreateUser;
+using Application.DTOs.Users.EditUser;
+using Application.DTOs.Users.GetListUsers;
+using Application.DTOs.Users.GetUser;
+using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
-//namespace API.Controllers;
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsersController : ControllerBase
+    {
+        private readonly IUserService _userService;
 
-//[Route("api/[controller]")]
-//[ApiController]
-//public class UsersController : BaseController
-//{
-//    private readonly IUserService _userService;
+        public UsersController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-//    public UsersController(IUserService userService)
-//    {
-//        _userService = userService;
-//    }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetListAsync();
+            return Ok(users);
+        }
 
-//    //[Authorize(UserRole.Admin)]
-//    [HttpGet("{id}")]
-//    public async Task<ActionResult<Response<GetUserResponse>>> GetById(Guid id)
-//    {
-//        if (CurrentUser == null)
-//        {
-//            return BadRequest(new Response(false, ErrorMessages.BadRequest));
-//        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var userResponse = await _userService.GetAsync(new GetUserRequest { Id = id });
+            if (userResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(userResponse);
+        }
 
-//        var getUserRequest = new GetUserRequest
-//        {
-//            User = id,
-//            Location = CurrentUser.Location
-//        };
+        [HttpPost]
+        public async Task<IActionResult> AddUser([FromBody] CreateUserRequest userRequest)
+        {
+            if (userRequest == null)
+            {
+                return BadRequest();
+            }
 
-//        try
-//        {
-//            var response = await _userService.GetAsync(getUserRequest);
+            var response = await _userService.CreateUserAsync(userRequest);
+            return Ok(response);
+        }
 
-//            if (!response.IsSuccess)
-//            {
-//                return NotFound(response);
-//            }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] EditUserRequest userRequest)
+        {
+            if (userRequest == null || id != userRequest.UserId)
+            {
+                return BadRequest();
+            }
 
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
+            var response = await _userService.EditUserAsync(userRequest);
+            return Ok(response);
+        }
 
-//    [Authorize(UserRole.Admin)]
-//    [HttpGet]
-//    public async Task<ActionResult<Response<GetListUsersResponse>>> GetList(
-//        [FromQuery] PagingQuery pagingQuery,
-//        [FromQuery] SortQuery sortQuery,
-//        [FromQuery] FilterQuery filterQuery,
-//        [FromQuery] SearchQuery searchQuery)
-//    {
-//        if (CurrentUser == null)
-//        {
-//            return BadRequest(new Response(false, ErrorMessages.BadRequest));
-//        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            await _userService.DeleteUserAsync(id);
+            return NoContent();
+        }
 
-//        if (sortQuery.SortField == ModelField.None)
-//        {
-//            sortQuery.SortField = ModelField.FullName;
-//        }
-
-//        var request = new GetListUsersRequest(CurrentUser.Location,
-//                                                pagingQuery,
-//                                                sortQuery,
-//                                                filterQuery,
-//                                                searchQuery);
-
-//        try
-//        {
-//            var response = await _userService.GetListAsync(request);
-
-//            if (!response.IsSuccess)
-//            {
-//                return NotFound(response);
-//            }
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-
-//    [Authorize(UserRole.Admin)]
-//    [HttpPost]
-//    public async Task<ActionResult<Response<CreateUserResponse>>> CreateUser([FromBody] CreateUserRequest requestModel)
-//    {
-//        try
-//        {
-//            if (CurrentUser == null)
-//            {
-//                return BadRequest(new Response<CreateUserResponse>(false, ErrorMessages.BadRequest));
-//            }
-
-//            requestModel.Location = CurrentUser.Location;
-
-//            var response = await _userService.CreateUserAsync(requestModel);
-
-//            if (!response.IsSuccess)
-//            {
-//                return BadRequest(response);
-//            }
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-
-//    [Authorize(UserRole.Admin)]
-//    [HttpGet("disable-availability/{id}")]
-//    public async Task<ActionResult<Response>> CheckDisableAvailability(Guid id)
-//    {
-//        try
-//        {
-//            var response = await _userService.IsAbleToDisableUser(id);
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-
-//    [Authorize(UserRole.Admin)]
-//    [HttpPut("disable")]
-//    public async Task<ActionResult<Response>> DisableUser([FromBody] DisableUserRequest requestModel)
-//    {
-//        try
-//        {
-//            if (CurrentUser == null)
-//            {
-//                return BadRequest(new Response(false, ErrorMessages.BadRequest));
-//            }
-
-//            requestModel.Location = CurrentUser.Location;
-
-//            var response = await _userService.DisableUserAsync(requestModel);
-
-//            if (!response.IsSuccess)
-//            {
-//                return BadRequest(response);
-//            }
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-
-//    [Authorize]
-//    [HttpPut("change-password")]
-//    public async Task<ActionResult<Response>> ChangePassword([FromBody] ChangePasswordRequest requestModel)
-//    {
-//        try
-//        {
-//            if (CurrentUser == null)
-//            {
-//                return BadRequest(new Response(false, ErrorMessages.BadRequest));
-//            }
-
-//            requestModel.Id = CurrentUser?.Id;
-
-//            var response = await _userService.ChangePasswordAsync(requestModel);
-
-//            if (!response.IsSuccess)
-//            {
-//                return BadRequest(response);
-//            }
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-
-//    [Authorize(UserRole.Admin)]
-//    [HttpPut]
-//    public async Task<ActionResult<Response<GetUserResponse>>> Edit([FromBody] EditUserRequest requestModel)
-//    {
-//        try
-//        {
-//            if (CurrentUser == null)
-//            {
-//                return BadRequest(new Response<GetUserResponse>(false, ErrorMessages.BadRequest));
-//            }
-
-//            requestModel.AdminLocation = CurrentUser.Location;
-
-//            var response = await _userService.EditUserAsync(requestModel);
-
-//            if (!response.IsSuccess)
-//            {
-//                return BadRequest(response);
-//            }
-
-//            return Ok(response);
-//        }
-//        catch (Exception exception)
-//        {
-//            return HandleException(exception);
-//        }
-//    }
-//}
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchUsers([FromBody] UserSearchDTO searchDto)
+        {
+            var users = await _userService.SearchUsersAsync(searchDto.Username, searchDto.Fullname, searchDto.Take, searchDto.Skip);
+            return Ok(users);
+        }
+    }
+}

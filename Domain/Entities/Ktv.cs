@@ -8,7 +8,6 @@ namespace Domain.Entities
         public KTV()
         {
             MedicalCdhas = new HashSet<MedicalCdha>();
-            MedicalTests = new HashSet<MedicalTest>();
         }
 
         public int KtvId { get; set; }
@@ -19,6 +18,5 @@ namespace Domain.Entities
 
         public virtual User? UserldNavigation { get; set; }
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
-        public virtual ICollection<MedicalTest> MedicalTests { get; set; }
     }
 }

@@ -50,16 +50,6 @@ namespace Application.Services
                 //    Name = mc.Name,
                 //    Result = mc.Result
                 //}).ToList(),
-                //MedicalIndications = caseStudy.MedicalIndications.Select(mi => new GetMedicalIndicationDto
-                //{
-                //    Name = mi.Name,
-                //    Result = mi.Result
-                //}).ToList(),
-                //MedicalTests = caseStudy.MedicalTests.Select(mt => new GetMedicalTestDto
-                //{
-                //    Name = mt.Name,
-                //    Result = mt.Result
-                //}).ToList()
             };
         }
 

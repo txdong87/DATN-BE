@@ -16,6 +16,7 @@ public class GetListUsersRequest
         SortQuery = sortQuery;
         FilterQuery = filterQuery;
         SearchQuery = searchQuery;
+        fullName = fullName;
     }
 
     public PagingQuery PagingQuery { get; set; }

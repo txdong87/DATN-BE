@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Users
 {
-    internal class SearchUserDTO
+    public class UserSearchDTO
     {
+        public string? Username { get; set; }
+        public string? Fullname { get; set; }
+        public int Take { get; set; } = 10;
+        public int Skip { get; set; } = 0;
     }
 }
