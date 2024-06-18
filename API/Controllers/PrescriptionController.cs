@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.PrescriptionDTO;
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

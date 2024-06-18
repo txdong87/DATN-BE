@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(datnContext))]
-    [Migration("20240607103136_add-PrescriptionMedication")]
-    partial class addPrescriptionMedication
+    [Migration("20240618182906_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -73,7 +73,7 @@ namespace Infrastructure.Migrations
                         .HasColumnName("Status")
                         .HasDefaultValueSql("'NULL'");
 
-                    b.Property<int?>("patientId")
+                    b.Property<int>("patientId")
                         .HasColumnType("int(11)")
                         .HasColumnName("patientId");
 
@@ -159,6 +159,12 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("CaseStudyId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CdhaName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("CDHAName");
+
                     b.Property<DateTime?>("DateCreate")
                         .HasColumnType("date")
                         .HasColumnName("dateCreate");
@@ -185,14 +191,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("ktvId");
 
-                    b.Property<bool?>("NonDicom")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("nonDicom");
-
-                    b.Property<string>("ObservationType")
-                        .HasColumnType("longtext")
-                        .HasColumnName("observationType");
-
                     b.Property<int?>("PatientId")
                         .HasColumnType("int(11)")
                         .HasColumnName("patientId");
@@ -203,6 +201,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("TimeEstimate")
                         .HasColumnType("date")
                         .HasColumnName("timeEstimate");
+
+                    b.Property<string>("result")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -216,82 +217,6 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("patientId1");
 
                     b.ToTable("medical_cdha", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.MedicalIndication", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)")
-                        .HasColumnName("id");
-
-                    b.Property<int?>("CaseStudyId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("CaseStudyId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "CaseStudyId" }, "CaseStudyId");
-
-                    b.ToTable("medical_indication", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.MedicalTest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)")
-                        .HasColumnName("id");
-
-                    b.Property<int?>("CaseStudyId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("CaseStudyId");
-
-                    b.Property<DateTime?>("DateCreate")
-                        .HasColumnType("date")
-                        .HasColumnName("dateCreate");
-
-                    b.Property<int?>("DoctorId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("doctorId");
-
-                    b.Property<int?>("KtvId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("ktvId");
-
-                    b.Property<string>("ObservationType")
-                        .HasColumnType("longtext")
-                        .HasColumnName("observationType");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int(11)")
-                        .HasColumnName("patientId");
-
-                    b.Property<string>("TestName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("testName")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<DateTime?>("TimeEstimate")
-                        .HasColumnType("date")
-                        .HasColumnName("timeEstimate");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseStudyId");
-
-                    b.HasIndex(new[] { "DoctorId" }, "doctorId")
-                        .HasDatabaseName("doctorId1");
-
-                    b.HasIndex(new[] { "KtvId" }, "ktvId")
-                        .HasDatabaseName("ktvId1");
-
-                    b.HasIndex(new[] { "PatientId" }, "patientId")
-                        .HasDatabaseName("patientId2");
-
-                    b.ToTable("medical_test", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Medication", b =>
@@ -517,10 +442,10 @@ namespace Infrastructure.Migrations
                         .HasName("PRIMARY");
 
                     b.HasIndex(new[] { "DoctorId" }, "doctorId")
-                        .HasDatabaseName("doctorId2");
+                        .HasDatabaseName("doctorId1");
 
                     b.HasIndex(new[] { "PatientId" }, "patientId")
-                        .HasDatabaseName("patientId3");
+                        .HasDatabaseName("patientId2");
 
                     b.ToTable("report", (string)null);
                 });
@@ -585,13 +510,14 @@ namespace Infrastructure.Migrations
                         .WithMany("Casestudies")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_casestudy_doctor_DoctorId");
+                        .HasConstraintName("FK_casestudy_doctor");
 
                     b.HasOne("Domain.Entities.Patient", "PatientIdNavigation")
                         .WithMany("Casestudies")
                         .HasForeignKey("patientId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("casestudy_ibfk_1");
+                        .IsRequired()
+                        .HasConstraintName("FK_casestudy_patient");
 
                     b.Navigation("DoctorIdNavigation");
 
@@ -639,48 +565,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Patient", "PatientIdNavigation")
                         .WithMany()
                         .HasForeignKey("PatientIdNavigationPatientId");
-
-                    b.Navigation("CaseStudyIdNavigation");
-
-                    b.Navigation("DoctorIdNavigation");
-
-                    b.Navigation("KtvIdNavigation");
-
-                    b.Navigation("PatientIdNavigation");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MedicalIndication", b =>
-                {
-                    b.HasOne("Domain.Entities.Casestudy", "CaseStudyIdNavigation")
-                        .WithMany("MedicalIndications")
-                        .HasForeignKey("CaseStudyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("medical_indication_ibfk_1");
-
-                    b.Navigation("CaseStudyIdNavigation");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MedicalTest", b =>
-                {
-                    b.HasOne("Domain.Entities.Casestudy", "CaseStudyIdNavigation")
-                        .WithMany("MedicalTests")
-                        .HasForeignKey("CaseStudyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("medical_test_ibfk_1");
-
-                    b.HasOne("Domain.Entities.Doctor", "DoctorIdNavigation")
-                        .WithMany()
-                        .HasForeignKey("DoctorId");
-
-                    b.HasOne("Domain.Entities.KTV", "KtvIdNavigation")
-                        .WithMany("MedicalTests")
-                        .HasForeignKey("KtvId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("medical_test_ibfk_3");
-
-                    b.HasOne("Domain.Entities.Patient", "PatientIdNavigation")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
 
                     b.Navigation("CaseStudyIdNavigation");
 
@@ -775,10 +659,6 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("MedicalCdhas");
 
-                    b.Navigation("MedicalIndications");
-
-                    b.Navigation("MedicalTests");
-
                     b.Navigation("Prescriptions");
                 });
 
@@ -794,8 +674,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.KTV", b =>
                 {
                     b.Navigation("MedicalCdhas");
-
-                    b.Navigation("MedicalTests");
                 });
 
             modelBuilder.Entity("Domain.Entities.Medication", b =>

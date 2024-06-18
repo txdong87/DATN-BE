@@ -24,7 +24,7 @@ namespace Domain.Entities
 
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
         public virtual ICollection<Prescription> Prescriptions { get; set; }
-
+        
         public virtual Patient? PatientIdNavigation { get; set; }
         public virtual Doctor? DoctorIdNavigation { get; set; }
     }

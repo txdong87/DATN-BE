@@ -11,8 +11,5 @@ namespace Application.DTOs.CaseStudy
         public string? Reason { get; set; }
         public string? Status { get; set; }
         public DateTime? CreateDate { get; set; }
-        public List<int> MedicalCdhaIds { get; set; }
-        public List<int> MedicalIndicationIds { get; set; }
-        public List<int> MedicalTestIds { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs;
-using Application.DTOs;
 using Application.Interfaces;
 using Application.Services.Interfaces;
 using Domain.Entities;

@@ -49,11 +49,6 @@ namespace Infracstructure.Persistance
                     .HasColumnType("int(11)")
                     .HasColumnName("CaseStudyId");
 
-                //entity.Property(e => e.ClinicalDiagnosis)
-                //    .HasMaxLength(255)
-                //    .HasColumnName("clinicalDiagnosis")
-                //    .HasDefaultValueSql("'NULL'");
-
                 entity.Property(e => e.Conclusion)
                     .HasMaxLength(255)
                     .HasColumnName("conclusion")
@@ -68,17 +63,15 @@ namespace Infracstructure.Persistance
                     .HasMaxLength(255)
                     .HasColumnName("Reason")
                     .HasDefaultValueSql("'NULL'");
+
                 entity.Property(e => e.Status)
                     .HasMaxLength(255)
                     .HasColumnName("Status")
                     .HasDefaultValueSql("'NULL'");
+
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("date")
-                    .HasColumnName("CreateDate") ;
-
-                //entity.Property(e => e.ListCdha)
-                //    .HasColumnName("listCDHA")
-                //    .HasDefaultValueSql("'NULL'");
+                    .HasColumnName("CreateDate");
 
                 entity.Property(e => e.patientId)
                     .HasColumnType("int(11)")
@@ -116,6 +109,7 @@ namespace Infracstructure.Persistance
                     .HasForeignKey(e => e.CaseStudyId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
             modelBuilder.Entity<Doctor>(entity =>
             {
                 entity.HasKey(e => e.DoctorId)
@@ -176,10 +170,13 @@ namespace Infracstructure.Persistance
 
                 entity.HasIndex(e => e.PatientId, "patientId");
 
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
-
+                entity.Property(e => e.CdhaName)
+                    .HasMaxLength(255)
+                    .HasColumnName("CDHAName");
                 entity.Property(e => e.DateCreate)
                     .HasColumnType("date")
                     .HasColumnName("dateCreate");
@@ -203,13 +200,6 @@ namespace Infracstructure.Persistance
                     .HasColumnType("int(11)")
                     .HasColumnName("ktvId");
 
-                entity.Property(e => e.NonDicom)
-                    .HasColumnName("nonDicom");
-
-                entity.Property(e => e.ObservationType)
-                    .HasColumnName("observationType");
-
-
                 entity.Property(e => e.PatientId)
                     .HasColumnType("int(11)")
                     .HasColumnName("patientId");
@@ -232,6 +222,8 @@ namespace Infracstructure.Persistance
             });
 
            
+
+          
             modelBuilder.Entity<Nurse>(entity =>
             {
                 entity.HasKey(e => e.NurseId)

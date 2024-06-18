@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.PrescriptionDTO;
 using Application.Interfaces;
 using Application.Services.Interfaces;
 using Domain.Entities;

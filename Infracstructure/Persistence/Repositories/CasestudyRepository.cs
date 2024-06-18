@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infracstructure.Persistance;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,6 +22,7 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
+                                 .Include(cs => cs.Prescriptions)
                                  .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
         }
 
@@ -32,7 +32,7 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
-                                 .Include(cs=>cs.Prescriptions)
+                                 .Include(cs => cs.Prescriptions)
                                  .ToListAsync();
         }
 

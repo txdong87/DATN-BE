@@ -1,4 +1,7 @@
-﻿using Application.DTOs.CaseStudy;
+﻿using Application.DTOs;
+using Application.DTOs.CaseStudy;
+using Application.DTOs;
+using Application.DTOs.PrescriptionDTO;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -19,9 +22,9 @@ namespace Application.Services
             _patientRepository = patientRepository;
         }
 
-        public async Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int CaseStudyId)
+        public async Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int caseStudyId)
         {
-            var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(CaseStudyId);
+            var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
             if (caseStudy == null)
             {
                 return null;
@@ -32,10 +35,11 @@ namespace Application.Services
             {
                 return null;
             }
+
             return new GetCaseStudyDto
             {
                 CaseStudyId = caseStudy.CaseStudyId,
-                //PatientId = caseStudy.patientId,
+                PatientId = caseStudy.patientId,
                 Report = caseStudy.Report,
                 ReportCount = caseStudy.ReportCount,
                 Conclusion = caseStudy.Conclusion,
@@ -44,15 +48,25 @@ namespace Application.Services
                 Status = caseStudy.Status,
                 CreateDate = caseStudy.CreateDate,
                 DoctorId = caseStudy.DoctorId,
-                
-                //MedicalCdhas = caseStudy.MedicalCdhas.Select(mc => new GetMedicalCdhaDto
-                //{
-                //    Name = mc.Name,
-                //    Result = mc.Result
-                //}).ToList(),
+                PatientName = patient.PatientName,
+                Address = patient.Address,
+                Sex = patient.Sex,
+                Dob = patient.Dob,
+                Phone = patient.Phone,
+                PatientCode = patient.patientCode,
+                CreatedAt = patient.createdAt,
+                MedicalCdhas = caseStudy.MedicalCdhas.Select(mc => new GetMedicalCdhaDto
+                {
+                    Name = mc.ImageName,
+                    Result = mc.result
+                }).ToList(),
+                Prescriptions = caseStudy.Prescriptions.Select(p => new GetPrescriptionDto
+                {
+                    //Medication = p.Medication,
+                    //Dosage = p.Dosage
+                }).ToList()
             };
         }
-
         public async Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync()
         {
             var caseStudies = await _caseStudyRepository.GetAllCaseStudiesAsync();

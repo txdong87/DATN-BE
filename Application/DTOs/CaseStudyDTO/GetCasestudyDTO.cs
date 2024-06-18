@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Application.DTOs;
+using Application.DTOs.PrescriptionDTO;
+using System;
 
 namespace Application.DTOs.CaseStudy
 {
@@ -14,14 +16,14 @@ namespace Application.DTOs.CaseStudy
         public string? Status { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? DoctorId { get; set; }
-        public string? PatientName { get; set; } // Assuming this property already exists
-
-        // New properties added
-        public string? Address { get; set; }
+        public string PatientName { get; set; }
+        public string Address { get; set; }
         public int? Sex { get; set; }
         public DateTime? Dob { get; set; }
         public int? Phone { get; set; }
-        public string? PatientCode { get; set; }
+        public string PatientCode { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public List<GetMedicalCdhaDto> MedicalCdhas { get; set; }
+        public List<GetPrescriptionDto> Prescriptions { get; set; }
     }
 }

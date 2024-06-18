@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.PrescriptionDTO;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
