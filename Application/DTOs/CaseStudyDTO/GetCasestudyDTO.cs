@@ -8,22 +8,17 @@ namespace Application.DTOs.CaseStudy
     {
         public int CaseStudyId { get; set; }
         public int PatientId { get; set; }
-        public string? Report { get; set; }
         public int? ReportCount { get; set; }
-        public string? Conclusion { get; set; }
-        public string? Diagnostic { get; set; }
-        public string? Reason { get; set; }
-        public string? Status { get; set; }
+        public string Conclusion { get; set; }
+        public string Diagnostic { get; set; }
+        public string Reason { get; set; }
+        public string Status { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? DoctorId { get; set; }
-        public string PatientName { get; set; }
-        public string Address { get; set; }
-        public int? Sex { get; set; }
-        public DateTime? Dob { get; set; }
-        public int? Phone { get; set; }
-        public string PatientCode { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public List<GetMedicalCdhaDto> MedicalCdhas { get; set; }
-        public List<GetPrescriptionDto> Prescriptions { get; set; }
+
+        public PatientDTO Patient { get; set; }
+        //public ReportDto Report { get; set; }
+        public List<MedicationDto> Medications { get; set; }
+        public List<PrescriptionDto> Prescriptions { get; set; }
     }
 }

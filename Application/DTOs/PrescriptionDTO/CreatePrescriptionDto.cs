@@ -8,6 +8,7 @@ namespace Application.DTOs.PrescriptionDTO
 {
     public class CreatePrescriptionDto
     {
+        public int CaseStudyId { get; set; }
         public string Medication { get; set; }
         public string Dosage { get; set; }
     }

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.PatientDTO
+namespace Application.DTOs
 {
     public class PatientDTO
     {
+        public int? PatientId { get; set; }
         public string? PatientName { get; set; }
         public string? PatientCode { get; set; }
 

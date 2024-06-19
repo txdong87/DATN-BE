@@ -47,5 +47,9 @@ namespace Infrastructure.Persistence.Repositories
             _context.Casestudies.Update(caseStudy);
             await _context.SaveChangesAsync();
         }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
