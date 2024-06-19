@@ -9,7 +9,7 @@ using Domain.IRepository;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using Application.DTOs.PatientDTO;
+using Application.DTOs;
 using Application.Services.Interfaces;
 using System.Linq;
 
@@ -55,16 +55,16 @@ namespace Application.Services
                 DoctorId = caseStudy.DoctorId,
                 Patient = new PatientDTO
                 {
-                    PatientId = caseStudy.Patient.PatientId,
-                    PatientName = caseStudy.Patient.PatientName,
-                    Address = caseStudy.Patient.Address,
-                    Dob = caseStudy.Patient.Dob,
-                    PatientCode = caseStudy.Patient.PatientCode,
-                    Phone = caseStudy.Patient.Phone,
-                    Sex = caseStudy.Patient.Sex,
-                    createdAt = caseStudy.Patient.CreatedAt
+                    PatientId = caseStudy.PatientIdNavigation.PatientId,
+                    PatientName = caseStudy.PatientIdNavigation.PatientName,
+                    Address = caseStudy.PatientIdNavigation.Address,
+                    Dob = caseStudy.PatientIdNavigation.Dob,
+                    PatientCode = caseStudy.PatientIdNavigation.patientCode,
+                    Phone = caseStudy.PatientIdNavigation.Phone,
+                    Sex = caseStudy.PatientIdNavigation.Sex,
+                    createdAt = caseStudy.PatientIdNavigation.createdAt
                 },
-                //Report = new ReportDto
+                //Report = new ReportDTO
                 //{
                 //    ReportId = caseStudy.Report.ReportId,
                 //    DoctorId = caseStudy.Report.DoctorId,
@@ -75,21 +75,19 @@ namespace Application.Services
                 //    Image = caseStudy.Report.Image,
                 //    State = caseStudy.Report.State
                 //},
-                Medications = caseStudy.MedicalCdhas.Select(m => new MedicationDto
+                MedicationCDHA = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
                 {
-                    Id = m.MedicationId,
-                    Name = m.Name,
-                    Unit = m.Unit,
-                    Route = m.Route,
-                    Usage = m.Usage,
-                    IsFunctionalFoods = m.IsFunctionalFoods
+                    CdhaName = m.CdhaName,
+                    KtvIdNavigation = m.KtvIdNavigation,
+                    result=m.result,
+                    ImageLink=m.ImageLink,
                 }).ToList(),
-                Prescriptions = caseStudy.Prescriptions.Select(p => new PrescriptionDto
-                {
-                    Id = p.PrescriptionId,
-                    CasestudyId = p.CaseStudyId,
-                    Date = p.Date
-                }).ToList()
+                //Prescriptions = caseStudy.Prescriptions.Select(p => new PrescriptionDto
+                //{
+                //    Id = p.PrescriptionId,
+                //    CasestudyId = p.CaseStudyId,
+                //    Date = p.Date
+                //}).ToList()
             };
         }
         public async Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync()
@@ -113,10 +111,10 @@ namespace Application.Services
          
 
                 var prescriptions = await _prescriptionRepository.GetPrescriptionById(caseStudy.CaseStudyId);
-                var prescriptionsDto = prescriptions.Select(p => new PrescriptionDto
-                {
-                    // Map properties
-                }).ToList();
+                //var prescriptionsDto = prescriptions.Select(p => new PrescriptionDto
+                //{
+                //    // Map properties
+                //}).ToList();
 
                 caseStudyDtos.Add(new GetCaseStudyDto
                 {
@@ -130,7 +128,7 @@ namespace Application.Services
                     CreateDate = caseStudy.CreateDate,
                     DoctorId = caseStudy.DoctorId,
                     Patient = patientDto,
-                    Prescriptions = prescriptionsDto
+                    //Prescriptions = prescriptionsDto
                 });
             }
 
@@ -138,19 +136,14 @@ namespace Application.Services
         }
 
 
-        public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
+        public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto,Patient patient)
         {
-            // Step 1: Create and save the patient
-            var patientResponse = await _patientService.AddPatientAsync(createCaseStudyDto.Patient);
-            if (!patientResponse.IsSuccess)
-                throw new Exception("Error creating patient");
 
-            var patientId = patientResponse.Data.PatientId;
-
-            // Step 2: Create the case study with the patient ID
-            var caseStudy = new CaseStudy
+            var patientId = patient.PatientId;
+            
+            var caseStudy = new Casestudy
             {
-                PatientId = patientId,
+                patientId = patientId,
                 ReportCount = 0,
                 Conclusion = null,
                 Diagnostic = null,
@@ -160,11 +153,9 @@ namespace Application.Services
                 DoctorId = null
             };
 
-            await _caseStudyRepository.AddAsync(caseStudy);
-            await _caseStudyRepository.SaveChangesAsync();
+            await _caseStudyRepository.AddCaseStudyAsync(caseStudy);
 
-            // Step 3: Create and save the report if exists
-            //if (createCaseStudyDto.Report != null)
+
             //{
             //    var report = new Report
             //    {
@@ -181,14 +172,13 @@ namespace Application.Services
             //    await _reportRepository.SaveChangesAsync();
             //}
 
-            // Step 5: Create and save prescriptions if any
             if (createCaseStudyDto.Prescriptions != null)
             {
-                foreach (var prescriptionDto in createCaseStudyDto.Prescriptions)
-                {
-                    prescriptionDto. = patientId; // Update with new patient ID
-                    await _prescriptionService.AddPrescription(prescriptionDto);
-                }
+                //foreach (var prescriptionDto in createCaseStudyDto.Prescriptions)
+                //{
+                //    prescriptionDto. = patientId; // Update with new patient ID
+                //    await _prescriptionService.AddPrescription(prescriptionDto);
+                //}
             }
         }
 

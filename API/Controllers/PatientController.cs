@@ -1,4 +1,4 @@
-﻿using Application.DTOs.PatientDTO;
+﻿using Application.DTOs;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -35,17 +35,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPatient([FromBody] PatientDTO patientDto)
-        {
-            if (patientDto == null)
-            {
-                return BadRequest();
-            }
+        //public async Task<IActionResult> AddPatient([FromBody] PatientDTO patientDto)
+        //{
+        //    if (patientDto == null)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            var response = await _patientService.AddPatientAsync(patientDto);
+        //    var response = await _patientService.AddPatientAsync(patientDto);
 
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatient(int id)
@@ -53,11 +53,11 @@ namespace API.Controllers
             await _patientService.DeletePatientAsync(id);
             return NoContent();
         }
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchPatients([FromBody] PatientSearchDTO searchDto)
-        {
-            var patients = await _patientService.SearchPatientsAsync(searchDto.Name, searchDto.Take, searchDto.Skip);
-            return Ok(patients);
-        }
+        //[HttpPost("search")]
+        //public async Task<IActionResult> SearchPatients([FromBody] PatientSearchDTO searchDto)
+        //{
+        //    var patients = await _patientService.SearchPatientsAsync(searchDto.Name, searchDto.Take, searchDto.Skip);
+        //    return Ok(patients);
+        //}
     }
 }

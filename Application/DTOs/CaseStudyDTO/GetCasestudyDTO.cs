@@ -18,7 +18,7 @@ namespace Application.DTOs.CaseStudy
 
         public PatientDTO Patient { get; set; }
         //public ReportDto Report { get; set; }
-        public List<MedicationDto> Medications { get; set; }
+        public List<MedicalCdhaDTO> MedicationCDHA { get; set; }
         public List<PrescriptionDto> Prescriptions { get; set; }
     }
 }
