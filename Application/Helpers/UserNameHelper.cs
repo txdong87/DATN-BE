@@ -30,9 +30,9 @@ namespace Application.Helpers
             return userName.ToLower();
         }
 
-        public static string GetNewPassword(string userName, DateTime                                                                     dateOfBirth)
+        public static string GetNewPassword(string userName )
         {
-            return userName.ToLower() + "@" + dateOfBirth.ToString("ddMMyyyy");
+            return userName.ToLower() + "@";
         }
     }
 }

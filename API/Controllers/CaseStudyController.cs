@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Services.Interfaces;
 using Application.Interfaces;
+using Application.DTOs;
 
 namespace API.Controllers
 {
@@ -60,6 +61,27 @@ namespace API.Controllers
         public async Task<ActionResult> UpdateCaseStudy(int id, [FromBody] UpdateCaseStudyDto updateCaseStudyDto)
         {
             await _caseStudyService.UpdateCaseStudyAsync(id, updateCaseStudyDto);
+            return NoContent();
+        }
+
+        [HttpPut("{caseStudyId}/report")]
+        public async Task<IActionResult> UpdateReport(int caseStudyId, [FromBody] ReportDTO reportDto)
+        {
+            await _caseStudyService.UpdateReportAsync(caseStudyId, reportDto);
+            return NoContent();
+        }
+
+        [HttpPut("{caseStudyId}/medicalCdha")]
+        public async Task<IActionResult> UpdateMedicalCdha(int caseStudyId, [FromBody] MedicalCdhaDTO medicalCdhaDto)
+        {
+            await _caseStudyService.UpdateMedicalCdhaAsync(caseStudyId, medicalCdhaDto);
+            return NoContent();
+        }
+
+        [HttpPut("{caseStudyId}/prescription")]
+        public async Task<IActionResult> UpdatePrescription(int caseStudyId, [FromBody] PrescriptionDto prescriptionDto)
+        {
+            await _caseStudyService.UpdatePrescriptionAsync(caseStudyId, prescriptionDto);
             return NoContent();
         }
     }

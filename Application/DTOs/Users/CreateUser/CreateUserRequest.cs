@@ -6,16 +6,10 @@ namespace Application.DTOs.Users.CreateUser;
 
 public class CreateUserRequest
 {
-    [Required]
-    public string FullName { get; set; } = null!;
+    public string User { get; set; }
 
-
-    [Required]
-    public DateTime DateOfBirth { get; set; }
-
-
-
-    [Required]
-    public int Role { get; set; }
+    public string Password { get; set; }
+    public string FullName { get; set; }
+    public int RoleId { get; set; }
 
 }

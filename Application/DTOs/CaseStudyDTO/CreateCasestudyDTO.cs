@@ -6,7 +6,7 @@ namespace Application.DTOs.CaseStudy
 {
     public class CreateCaseStudyDto
     {
-        public PatientDto Patient { get; set; }
+        //public PatientDto Patient { get; set; }
         public int patientId { get; set; }
         //public ReportDto Report { get; set; }
         public string? Reason { get; set; }

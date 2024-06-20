@@ -114,14 +114,14 @@ public class UserService : BaseService, IUserService
                                 ? string.Empty
                                 : sameUserNameCount.ToString());
 
-        var newPassword = HashStringHelper.HashString(UserNameHelper.GetNewPassword(newUserName, requestModel.DateOfBirth));
+        var newPassword = HashStringHelper.HashString(UserNameHelper.GetNewPassword(newUserName));
 
         var user = new User
         {
             Fullname = requestModel.FullName,
             user= newUserName,
             Password = newPassword,
-            RoleId = requestModel.Role,
+            RoleId = requestModel.RoleId,
         };
 
         var responseModel = new CreateUserResponse(user);
@@ -162,9 +162,17 @@ public class UserService : BaseService, IUserService
         return new Response<GetUserResponse>(true, getUserDto);
     }
 
-    public async Task<IEnumerable<User>> GetListAsync()
+    public async Task<IEnumerable<UserDTO>> GetListAsync()
+
     {
-        return await _userRepository.GetAllUsersAsync();
+        var users = await _userRepository.GetAllUsersAsync();
+        return users.Select(user => new UserDTO
+        {
+            UserId = user.UserId,
+            Username=user.user,
+            Fullname=user.Fullname,
+            RoleId=user.RoleId
+        }).ToList();
     }
 
     public async Task<Response> IsAbleToDisableUser(int id)

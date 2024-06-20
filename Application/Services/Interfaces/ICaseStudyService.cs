@@ -11,5 +11,8 @@ namespace Application.Interfaces
         Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync();
         Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto);
         Task UpdateCaseStudyAsync(int caseStudyId, UpdateCaseStudyDto updateCaseStudyDto);
+        Task UpdateReportAsync(int caseStudyId, ReportDTO reportDto);
+        Task UpdateMedicalCdhaAsync(int caseStudyId, MedicalCdhaDTO medicalCdhaDto);
+        Task UpdatePrescriptionAsync(int caseStudyId, PrescriptionDto prescriptionDto);
     }
 }

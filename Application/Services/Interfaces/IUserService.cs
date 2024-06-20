@@ -21,7 +21,7 @@ namespace Application.Services.Interfaces
         //Task<UserInternalModel?> GetInternalModelByIdAsync(Guid id);
         Task<Response> ChangePasswordAsync(ChangePasswordRequest requestModel);
         Task<Response<GetUserResponse>> GetAsync(GetUserRequest request);
-        Task<IEnumerable<User>> GetListAsync();
+        Task<IEnumerable<UserDTO>> GetListAsync();
         Task<Response<CreateUserResponse>> CreateUserAsync(CreateUserRequest requestModel);
         Task<Response> DisableUserAsync(DisableUserRequest request);
        
