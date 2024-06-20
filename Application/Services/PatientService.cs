@@ -29,7 +29,7 @@ namespace Application.Services
             return await _patientRepository.GetPatientByIdAsync(patientId);
         }
 
-        public async Task<Response<PatientDTO>> AddPatientAsync(PatientDTO patientDto)
+        public async Task<Response<PatientDto>> AddPatientAsync(PatientDto patientDto)
         {
             if (patientDto == null)
             {
@@ -48,7 +48,7 @@ namespace Application.Services
             };
 
             await _patientRepository.AddPatientAsync(patient);
-            var response = new Response<PatientDTO>(isSuccess: true, data: patientDto);
+            var response = new Response<PatientDto>(isSuccess: true, data: patientDto);
 
             return response;
         }

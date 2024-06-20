@@ -35,7 +35,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPatient([FromBody] PatientDTO patientDto)
+        public async Task<IActionResult> AddPatient([FromBody] PatientDto patientDto)
         {
             if (patientDto == null)
             {

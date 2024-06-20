@@ -23,6 +23,7 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
                                  .Include(cs => cs.Prescriptions)
+                                 .Include(cs => cs.Report)
                                  .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
         }
 

@@ -7,9 +7,8 @@ namespace Domain.Entities
     {
         public int ReportId { get; set; }
         public int? PatientId { get; set; }
-        public string? PatientName { get; set; }
+        public int CaseStudyId { get; set; }
         public int? DoctorId { get; set; }
-        public string? DoctorName { get; set; }
         public string? Image { get; set; }
         public int? State { get; set; }
         public string? Conclusion { get; set; }
@@ -18,5 +17,7 @@ namespace Domain.Entities
 
         public virtual Doctor? DoctorIdNavigation { get; set; }
         public virtual Patient? PatientIdNavigation { get; set; }
+        public virtual KTV? KTVIdNavigation { get; set; }
+        public virtual Casestudy Casestudy { get; set; }
     }
 }

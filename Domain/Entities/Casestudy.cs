@@ -9,12 +9,12 @@ namespace Domain.Entities
         {
             MedicalCdhas = new HashSet<MedicalCdha>();
             Prescriptions = new HashSet<Prescription>();
+            Report = new HashSet<Report>();
         }
 
         public int CaseStudyId { get; set; }
         public int patientId { get; set; }
-        public string? Report { get; set; }
-        public int? ReportCount { get; set; }
+        public string? ReportId { get; set; }
         public string? Reason { get; set; }
         public string? Status { get; set; }
         public DateTime? CreateDate { get; set; }
@@ -23,6 +23,7 @@ namespace Domain.Entities
         public int? DoctorId { get; set; }
 
         public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
+        public virtual ICollection<Report> Report { get; set; }
         public virtual ICollection<Prescription> Prescriptions { get; set; }
         
         public virtual Patient? PatientIdNavigation { get; set; }

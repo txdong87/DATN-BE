@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.PatientDTO
 {
-    public class PatientDTO
+    public class PatientDto
     {
         public int? PatientId { get; set; }
         public string? PatientName { get; set; }

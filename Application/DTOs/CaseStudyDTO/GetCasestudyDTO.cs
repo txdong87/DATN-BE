@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.PatientDTO;
 using Application.DTOs.PrescriptionDTO;
 using System;
 
@@ -16,9 +17,10 @@ namespace Application.DTOs.CaseStudy
         public DateTime? CreateDate { get; set; }
         public int? DoctorId { get; set; }
 
-        public PatientDTO Patient { get; set; }
+        public PatientDto Patient { get; set; }
+        public List<ReportDTO> Reports { get; set; }
         //public ReportDto Report { get; set; }
-        public List<MedicationDto> Medications { get; set; }
+        public List<MedicalCdhaDTO> MedicalCdhas { get; set; }
         public List<PrescriptionDto> Prescriptions { get; set; }
     }
 }

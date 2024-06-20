@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Application.DTOs.PatientDTO;
 using Application.Services.Interfaces;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
@@ -26,11 +27,13 @@ namespace Application.Services
 
         public CaseStudyService(
             ICaseStudyRepository caseStudyRepository,
+            IPatientRepository patientRepository,
             //IReportRepository reportRepository,
             IPrescriptionRepository prescriptionRepository,
             IMedicationRepository medicationRepository)
         {
             _caseStudyRepository = caseStudyRepository;
+            _patientRepository=patientRepository;
             //_reportRepository = reportRepository;
             _prescriptionRepository = prescriptionRepository;
             _medicationRepository = medicationRepository;
@@ -46,50 +49,50 @@ namespace Application.Services
             {
                 CaseStudyId = caseStudy.CaseStudyId,
                 PatientId = caseStudy.patientId,
-                ReportCount = caseStudy.ReportCount,
                 Conclusion = caseStudy.Conclusion,
                 Diagnostic = caseStudy.Diagnostic,
                 Reason = caseStudy.Reason,
                 Status = caseStudy.Status,
                 CreateDate = caseStudy.CreateDate,
                 DoctorId = caseStudy.DoctorId,
-                Patient = new PatientDTO
+                Patient = new PatientDto
                 {
-                    PatientId = caseStudy.Patient.PatientId,
-                    PatientName = caseStudy.Patient.PatientName,
-                    Address = caseStudy.Patient.Address,
-                    Dob = caseStudy.Patient.Dob,
-                    PatientCode = caseStudy.Patient.PatientCode,
-                    Phone = caseStudy.Patient.Phone,
-                    Sex = caseStudy.Patient.Sex,
-                    createdAt = caseStudy.Patient.CreatedAt
+                    PatientId = caseStudy.PatientIdNavigation.PatientId,
+                    PatientName = caseStudy.PatientIdNavigation.PatientName,
+                    Address = caseStudy.PatientIdNavigation.Address,
+                    Dob = caseStudy.PatientIdNavigation.Dob,
+                    PatientCode = caseStudy.PatientIdNavigation.patientCode,
+                    Phone = caseStudy.PatientIdNavigation.Phone,
+                    Sex = caseStudy.PatientIdNavigation.Sex,
+                    createdAt = caseStudy.PatientIdNavigation.createdAt
                 },
-                //Report = new ReportDto
-                //{
-                //    ReportId = caseStudy.Report.ReportId,
-                //    DoctorId = caseStudy.Report.DoctorId,
-                //    PatientId = caseStudy.Report.PatientId,
-                //    Conclusion = caseStudy.Report.Conclusion,
-                //    Diagnostic = caseStudy.Report.Diagnostic,
-                //    DoctorName = caseStudy.Report.DoctorName,
-                //    Image = caseStudy.Report.Image,
-                //    State = caseStudy.Report.State
-                //},
-                Medications = caseStudy.MedicalCdhas.Select(m => new MedicationDto
+                Reports = caseStudy.Report.Select(r => new ReportDTO
                 {
-                    Id = m.MedicationId,
-                    Name = m.Name,
-                    Unit = m.Unit,
-                    Route = m.Route,
-                    Usage = m.Usage,
-                    IsFunctionalFoods = m.IsFunctionalFoods
+                    ReportId = r.ReportId,
+                    DoctorId = r.DoctorId,
+                    PatientId = r.PatientId,
+                    Conclusion = r.Conclusion,
+                    Diagnostic = r.Diagnostic,
+                    Image = r.Image,
+                    State = r.State,
+                    PatientName = r.PatientIdNavigation.PatientName
                 }).ToList(),
+
                 Prescriptions = caseStudy.Prescriptions.Select(p => new PrescriptionDto
                 {
-                    Id = p.PrescriptionId,
-                    CasestudyId = p.CaseStudyId,
+                    Id = p.Id,
+                    CasestudyId = p.CasestudyId,
                     Date = p.Date
-                }).ToList()
+                }).ToList(),
+                 MedicalCdhas = caseStudy.MedicalCdhas.Select(p => new MedicalCdhaDTO
+                 {
+                     Id = p.Id,
+                     CdhaName=p.CdhaName,
+                     ImageLink=p.ImageLink,
+                     DateCreate=p.DateCreate,
+                     ImageName=p.ImageName,
+                     result=p.result,
+                 }).ToList()
             };
         }
         public async Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync()
@@ -99,30 +102,57 @@ namespace Application.Services
 
             foreach (var caseStudy in caseStudies)
             {
-                var patient = await _patientRepository.GetPatientByIdAsync(caseStudy.patientId);
-                var patientDto = new PatientDTO
+
+                // Map PatientDto
+                var patientDto = new PatientDto
                 {
-                    // Map properties
+                    PatientId = caseStudy.PatientIdNavigation.PatientId,
+                    PatientName = caseStudy.PatientIdNavigation.PatientName,
+                    Address = caseStudy.PatientIdNavigation.Address,
+                    Dob = caseStudy.PatientIdNavigation.Dob,
+                    PatientCode = caseStudy.PatientIdNavigation.patientCode,
+                    Phone = caseStudy.PatientIdNavigation.Phone,
+                    Sex = caseStudy.PatientIdNavigation.Sex,
+                    createdAt = caseStudy.PatientIdNavigation.createdAt
                 };
 
-                //var report = await _reportRepository.GetByCaseStudyIdAsync(caseStudy.CaseStudyId);
-                //var reportDto = new ReportDto
-                //{
-                //};
-
-         
-
-                var prescriptions = await _prescriptionRepository.GetPrescriptionById(caseStudy.CaseStudyId);
-                var prescriptionsDto = prescriptions.Select(p => new PrescriptionDto
+                // Map ReportDtos
+                var reportDtos = caseStudy.Report.Select(r => new ReportDTO
                 {
-                    // Map properties
+                    ReportId = r.ReportId,
+                    DoctorId = r.DoctorId,
+                    PatientId = r.PatientId,
+                    Conclusion = r.Conclusion,
+                    Diagnostic = r.Diagnostic,
+                    Image = r.Image,
+                    State = r.State,
+                    PatientName = r.PatientIdNavigation.PatientName // Example, adjust as per your needs
                 }).ToList();
 
-                caseStudyDtos.Add(new GetCaseStudyDto
+                // Map PrescriptionDtos
+                var prescriptionDtos = caseStudy.Prescriptions.Select(p => new PrescriptionDto
+                {
+                    Id = p.Id,
+                    CasestudyId = p.CasestudyId,
+                    Date = p.Date
+                }).ToList();
+
+                // Map MedicalCdhaDtos
+                var medicalCdhaDtos = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
+                {
+                    Id = m.Id,
+                    CdhaName = m.CdhaName,
+                    ImageLink = m.ImageLink,
+                    DateCreate = m.DateCreate,
+                    ImageName = m.ImageName,
+                    result = m.result
+                }).ToList();
+
+                // Create GetCaseStudyDto and add to list
+                var caseStudyDto = new GetCaseStudyDto
                 {
                     CaseStudyId = caseStudy.CaseStudyId,
                     PatientId = caseStudy.patientId,
-                    ReportCount = caseStudy.ReportCount,
                     Conclusion = caseStudy.Conclusion,
                     Diagnostic = caseStudy.Diagnostic,
                     Reason = caseStudy.Reason,
@@ -130,8 +160,12 @@ namespace Application.Services
                     CreateDate = caseStudy.CreateDate,
                     DoctorId = caseStudy.DoctorId,
                     Patient = patientDto,
-                    Prescriptions = prescriptionsDto
-                });
+                    Reports = reportDtos,
+                    Prescriptions = prescriptionDtos,
+                    MedicalCdhas = medicalCdhaDtos
+                };
+
+                caseStudyDtos.Add(caseStudyDto);
             }
 
             return caseStudyDtos;
@@ -140,18 +174,17 @@ namespace Application.Services
 
         public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
         {
-            // Step 1: Create and save the patient
-            var patientResponse = await _patientService.AddPatientAsync(createCaseStudyDto.Patient);
-            if (!patientResponse.IsSuccess)
-                throw new Exception("Error creating patient");
+            var patientId = createCaseStudyDto.patientId;
+            //var patientResponse = await _patientRepository.AddPatientAsync(createCaseStudyDto.Patient);
+            //if (!patientResponse.IsSuccess)
+            //    throw new Exception("Error creating patient");
 
-            var patientId = patientResponse.Data.PatientId;
+            //var patientId = patientResponse.Data.PatientId;
 
             // Step 2: Create the case study with the patient ID
-            var caseStudy = new CaseStudy
+            var caseStudy = new Casestudy
             {
-                PatientId = patientId,
-                ReportCount = 0,
+                patientId = patientId,
                 Conclusion = null,
                 Diagnostic = null,
                 Reason = null,
@@ -160,36 +193,21 @@ namespace Application.Services
                 DoctorId = null
             };
 
-            await _caseStudyRepository.AddAsync(caseStudy);
+            await _caseStudyRepository.AddCaseStudyAsync(caseStudy);
             await _caseStudyRepository.SaveChangesAsync();
-
-            // Step 3: Create and save the report if exists
-            //if (createCaseStudyDto.Report != null)
+            //if (createCaseStudyDto.Prescriptions != null)
             //{
-            //    var report = new Report
+            //    foreach (var prescriptionDto in createCaseStudyDto.Prescriptions)
             //    {
-            //        DoctorId = createCaseStudyDto.Report.DoctorId,
-            //        PatientId = patientId,
-            //        Conclusion = createCaseStudyDto.Report.Conclusion,
-            //        Diagnostic = createCaseStudyDto.Report.Diagnostic,
-            //        DoctorName = createCaseStudyDto.Report.DoctorName,
-            //        Image = createCaseStudyDto.Report.Image,
-            //        State = createCaseStudyDto.Report.State
-            //    };
-
-            //    await _reportRepository.AddAsync(report);
-            //    await _reportRepository.SaveChangesAsync();
+            //        var prescription = new Prescription
+            //        {
+            //            PatientId = patientId, // Assign patientId to Prescription
+            //            CasestudyId = prescriptionDto.CasestudyId,
+            //            Date = prescriptionDto.Date,
+            //        }; 
+            //        await _prescriptionRepository.AddPrescription(prescription);
+            //    }
             //}
-
-            // Step 5: Create and save prescriptions if any
-            if (createCaseStudyDto.Prescriptions != null)
-            {
-                foreach (var prescriptionDto in createCaseStudyDto.Prescriptions)
-                {
-                    prescriptionDto. = patientId; // Update with new patient ID
-                    await _prescriptionService.AddPrescription(prescriptionDto);
-                }
-            }
         }
 
 
@@ -197,18 +215,18 @@ namespace Application.Services
         {
             var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
 
-            if (caseStudy != null)
-            {
-                caseStudy.Report = updateCaseStudyDto.Report;
-                caseStudy.ReportCount = updateCaseStudyDto.ReportCount;
-                caseStudy.Conclusion = updateCaseStudyDto.Conclusion;
-                caseStudy.Diagnostic = updateCaseStudyDto.Diagnostic;
-                caseStudy.Reason = updateCaseStudyDto.Reason;
-                caseStudy.Status = updateCaseStudyDto.Status;
-                caseStudy.CreateDate = updateCaseStudyDto.CreateDate;
+            //if (caseStudy != null)
+            //{
+            //    caseStudy.Report = updateCaseStudyDto.Report;
+            //    caseStudy.ReportCount = updateCaseStudyDto.ReportCount;
+            //    caseStudy.Conclusion = updateCaseStudyDto.Conclusion;
+            //    caseStudy.Diagnostic = updateCaseStudyDto.Diagnostic;
+            //    caseStudy.Reason = updateCaseStudyDto.Reason;
+            //    caseStudy.Status = updateCaseStudyDto.Status;
+            //    caseStudy.CreateDate = updateCaseStudyDto.CreateDate;
 
-                await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
-            }
+            //    await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
+            //}
         }
     }
 }

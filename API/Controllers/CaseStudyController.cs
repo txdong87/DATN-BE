@@ -47,7 +47,7 @@ namespace API.Controllers
             try
             {
                 await _caseStudyService.AddCaseStudyAsync(createCaseStudyDto);
-                return CreatedAtAction(nameof(GetCaseStudyById), new { id = createCaseStudyDto.PatientId }, createCaseStudyDto);
+                return CreatedAtAction(nameof(GetCaseStudyById), new { id = createCaseStudyDto.patientId }, createCaseStudyDto);
             }
             catch (ArgumentException ex)
             {

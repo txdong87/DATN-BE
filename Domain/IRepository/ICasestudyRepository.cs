@@ -10,5 +10,6 @@ namespace Domain.Interfaces
         Task<IEnumerable<Casestudy>> GetAllCaseStudiesAsync();
         Task AddCaseStudyAsync(Casestudy caseStudy);
         Task UpdateCaseStudyAsync(Casestudy caseStudy);
+        Task SaveChangesAsync();
     }
 }
