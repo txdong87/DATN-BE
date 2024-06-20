@@ -4,8 +4,10 @@ using Application.Utilities;
 using System;
 using System.Threading.Tasks;
 using Application.Common.Models;
-using Application.DTOs.PatientDTO;
+using Application.DTOs;
 using Org.BouncyCastle.Crypto;
+using Application.DTOs;
+using Application.DTOs.PatientDTO;
 
 namespace Application.Services
 {
@@ -62,16 +64,16 @@ namespace Application.Services
         {
             await _patientRepository.DeletePatientAsync(patientId);
         }
-        public async Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip)
-        {
-            var patients = await _patientRepository.SearchByNameAsync(name, take, skip);
-            return patients.Select(patient => new PatientSearchDTO
-            {
+        //public async Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip)
+        //{
+        //    var patients = await _patientRepository.SearchByNameAsync(name, take, skip);
+        //    return patients.Select(patient => new PatientSearchDTO
+        //    {
                 
-                Name = patient.PatientName,
-                PatientCode = patient.patientCode,
-                // Map other fields as needed
-            }).ToList();
-        }
+        //        Name = patient.PatientName,
+        //        PatientCode = patient.patientCode,
+        //        // Map other fields as needed
+        //    }).ToList();
+        //}
     }
 }

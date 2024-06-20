@@ -9,10 +9,11 @@ using Domain.IRepository;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
-using Application.DTOs.PatientDTO;
+using Application.DTOs;
 using Application.Services.Interfaces;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Application.DTOs.PatientDTO;
 
 namespace Application.Services
 {
@@ -66,17 +67,24 @@ namespace Application.Services
                     Sex = caseStudy.PatientIdNavigation.Sex,
                     createdAt = caseStudy.PatientIdNavigation.createdAt
                 },
-                Reports = caseStudy.Report.Select(r => new ReportDTO
-                {
-                    ReportId = r.ReportId,
-                    DoctorId = r.DoctorId,
-                    PatientId = r.PatientId,
-                    Conclusion = r.Conclusion,
-                    Diagnostic = r.Diagnostic,
-                    Image = r.Image,
-                    State = r.State,
-                    PatientName = r.PatientIdNavigation.PatientName
-                }).ToList(),
+                //Report = new ReportDTO
+                //{
+                //    ReportId = caseStudy.Report.ReportId,
+                //    DoctorId = caseStudy.Report.DoctorId,
+                //    PatientId = caseStudy.Report.PatientId,
+                //    Conclusion = caseStudy.Report.Conclusion,
+                //    Diagnostic = caseStudy.Report.Diagnostic,
+                //    DoctorName = caseStudy.Report.DoctorName,
+                //    Image = caseStudy.Report.Image,
+                //    State = caseStudy.Report.State
+                //},
+                //MedicationCDHA = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
+                //{
+                //    CdhaName = m.CdhaName,
+                //    KtvIdNavigation = m.KtvIdNavigation,
+                //    result=m.result,
+                //    ImageLink=m.ImageLink,
+                //}).ToList(),
 
                 Prescriptions = caseStudy.Prescriptions.Select(p => new PrescriptionDto
                 {
@@ -194,8 +202,8 @@ namespace Application.Services
             };
 
             await _caseStudyRepository.AddCaseStudyAsync(caseStudy);
-            await _caseStudyRepository.SaveChangesAsync();
-            //if (createCaseStudyDto.Prescriptions != null)
+
+
             //{
             //    foreach (var prescriptionDto in createCaseStudyDto.Prescriptions)
             //    {

@@ -14,6 +14,6 @@ namespace Application.Services
         Task<Response<PatientDto>> AddPatientAsync(PatientDto patientDto);
         Task UpdatePatientAsync(Patient patient);
         Task DeletePatientAsync(int patientId);
-        Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip);
+        //Task<IEnumerable<PatientSearchDTO>> SearchPatientsAsync(string name, int take, int skip);
     }
 }
