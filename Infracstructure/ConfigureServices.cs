@@ -53,6 +53,8 @@ public static class ConfigureServices
                 .AddScoped<INurseRepository, NurseRepository>()
                 .AddScoped<IMedicationRepository, MedicationRepository>()
                 .AddScoped<IPrescriptionRepository, PrescriptionRepository>()
+                .AddScoped<IRoleRepository, RoleRepository>()
+                .AddScoped<IReportRepository, ReportRepository>()
                 .AddScoped<ICaseStudyRepository, CaseStudyRepository>();
 
         return services;

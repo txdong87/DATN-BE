@@ -24,6 +24,8 @@ public static class ConfigureServices
         services.AddScoped<INurseService, NurseService>();
         services.AddScoped<IMedicationService, MedicationService>();
         services.AddScoped<IPrescriptionService, PrescriptionService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
