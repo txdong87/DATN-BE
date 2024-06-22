@@ -150,7 +150,7 @@ namespace Application.Services
                     Id = m.Id,
                     CdhaName = m.CdhaName,
                     ImageLink = m.ImageLink,
-                    DateCreate = m.DateCreate,
+                    DateCreate = m.DateCreate, 
                     ImageName = m.ImageName,
                     result = m.result
                 }).ToList();
@@ -182,13 +182,6 @@ namespace Application.Services
         public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
         {
             var patientId = createCaseStudyDto.patientId;
-            //var patientResponse = await _patientRepository.AddPatientAsync(createCaseStudyDto.Patient);
-            //if (!patientResponse.IsSuccess)
-            //    throw new Exception("Error creating patient");
-
-            //var patientId = patientResponse.Data.PatientId;
-
-            // Step 2: Create the case study with the patient ID
             var caseStudy = new Casestudy
             {
                 patientId = patientId,
@@ -314,7 +307,5 @@ namespace Application.Services
                 await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
             }
         }
-
-
     }
 }

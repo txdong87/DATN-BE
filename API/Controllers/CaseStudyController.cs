@@ -55,7 +55,6 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
         [HttpPut("{id}")]
         //[Authorize]
         public async Task<ActionResult> UpdateCaseStudy(int id, [FromBody] UpdateCaseStudyDto updateCaseStudyDto)

@@ -109,17 +109,12 @@ public class UserService : BaseService, IUserService
 
      
 
-        var newUserName = UserNameHelper.GetNewUserNameWithoutNumber(requestModel.FullName)
-                            + ((sameUserNameCount == 0)
-                                ? string.Empty
-                                : sameUserNameCount.ToString());
-
-        var newPassword = HashStringHelper.HashString(UserNameHelper.GetNewPassword(newUserName));
+        var newPassword = BCrypt.Net.BCrypt.HashPassword(requestModel.Password);
 
         var user = new User
         {
             Fullname = requestModel.FullName,
-            user= newUserName,
+            user= requestModel.User,
             Password = newPassword,
             RoleId = requestModel.RoleId,
         };
