@@ -10,5 +10,6 @@ namespace Application.DTOs
     {
         public int MedicationId { get; set; }
         public string Dosages { get; set; }
+        public MedicationDto Medication { get; set; }
     }
 }

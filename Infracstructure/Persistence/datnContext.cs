@@ -446,23 +446,6 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.IsFunctionalFoods).HasDefaultValue(false);
             });
 
-            modelBuilder.Entity<PrescriptionMedication>(entity =>
-            {
-                entity.ToTable("PrescriptionMedication");
-
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Dosages).HasMaxLength(200);
-
-                entity.HasOne(e => e.Prescription)
-                      .WithMany(p => p.PrescriptionMedications)
-                      .HasForeignKey(e => e.PrescriptionId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(e => e.Medication)
-                      .WithMany(m => m.PrescriptionMedications)
-                      .HasForeignKey(e => e.MedicationId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -19,13 +19,15 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<Casestudy> GetCaseStudyByIdAsync(int caseStudyId)
         {
             return await _context.Casestudies
-                                 .Include(cs => cs.PatientIdNavigation)
-                                 .Include(cs => cs.DoctorIdNavigation)
-                                 .Include(cs => cs.MedicalCdhas)
-            .ThenInclude(mccs => mccs.MedicalCdhaIdNavigation)
-                                 .Include(cs => cs.Prescriptions)
-                                 .Include(cs => cs.Report)
-                                 .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
+              .Include(cs => cs.PatientIdNavigation)
+              .Include(cs => cs.DoctorIdNavigation)
+              .Include(cs => cs.MedicalCdhas)
+                  .ThenInclude(mccs => mccs.MedicalCdhaIdNavigation)
+              .Include(cs => cs.Prescriptions)
+                  .ThenInclude(p => p.PrescriptionMedications)
+                      .ThenInclude(pm => pm.Medication)
+              .Include(cs => cs.Report)
+              .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
         }
 
         public async Task<IEnumerable<Casestudy>> GetAllCaseStudiesAsync()

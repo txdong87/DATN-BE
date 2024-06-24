@@ -32,14 +32,20 @@ namespace Application.Services
         public async Task<string?> AuthenticateAsync(string username, string password)
         {
             var user = await _authRepository.LoginAsync(username, password);
-            if (user == null || !VerifyPassword(password, user.Password))
+            if (user == null)
             {
-                return null; // Invalid login
+                Console.WriteLine("User not found during authentication");
+                return null;
             }
 
-            return GenerateJwtToken(user); // Successful login
-        }
+            if (!VerifyPassword(password, user.Password))
+            {
+                Console.WriteLine("Password verification failed");
+                return null; 
+            }
 
+            return GenerateJwtToken(user);
+        }
         private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

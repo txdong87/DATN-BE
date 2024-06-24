@@ -35,13 +35,13 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromBody] PrescriptionDto prescriptionDto)
         {
             await _prescriptionService.AddPrescription(prescriptionDto);
-            return CreatedAtAction(nameof(GetById), new { id = prescriptionDto.Id }, prescriptionDto);
+            return CreatedAtAction(nameof(GetById), prescriptionDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] PrescriptionDto prescriptionDto)
         {
-            if (id != prescriptionDto.Id) return BadRequest();
+           
             await _prescriptionService.UpdatePrescription(prescriptionDto);
             return NoContent();
         }

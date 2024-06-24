@@ -46,7 +46,58 @@ namespace Application.Services
             if (caseStudy == null)
                 return null;
 
-            return new GetCaseStudyDto
+            var patientDto = new PatientDto
+            {
+                PatientId = caseStudy.PatientIdNavigation.PatientId,
+                PatientName = caseStudy.PatientIdNavigation.PatientName,
+                Address = caseStudy.PatientIdNavigation.Address,
+                Dob = caseStudy.PatientIdNavigation.Dob,
+                PatientCode = caseStudy.PatientIdNavigation.patientCode,
+                Phone = caseStudy.PatientIdNavigation.Phone,
+                Sex = caseStudy.PatientIdNavigation.Sex,
+                createdAt = caseStudy.PatientIdNavigation.createdAt
+            };
+
+            var reportDtos = caseStudy.Report.Select(r => new ReportDTO
+            {
+                ReportId = r.ReportId,
+                DoctorId = r.DoctorId,
+                PatientId = r.PatientId,
+                Conclusion = r.Conclusion,
+                Diagnostic = r.Diagnostic,
+                Image = r.Image,
+                State = r.State,
+            }).ToList();
+
+            var prescriptionDtos = caseStudy.Prescriptions.Select(p => new PrescriptionDto
+            {
+                CasestudyId = p.CasestudyId,
+                Date = p.Date,
+                PrescriptionMedications = p.PrescriptionMedications.Select(pm => new PrescriptionMedicationDto
+                {
+                    MedicationId = pm.MedicationId,
+                    Dosages = pm.Dosages,
+                    Medication = new MedicationDto
+                    {
+                        Name = pm.Medication.Name,
+                        Unit = pm.Medication.Unit,
+                        Route = pm.Medication.Route,
+                        Usage = pm.Medication.Usage,
+                        IsFunctionalFoods = pm.Medication.IsFunctionalFoods
+                    }
+                }).ToList()
+            }).ToList();
+            var medicalCdhaDtos = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
+            {
+                Id = m.Id,
+                CdhaName = m.MedicalCdhaIdNavigation.CdhaName,
+                ImageLink = m.ImageLink,
+                DateCreate = m.MedicalCdhaIdNavigation.DateCreate,
+                ImageName = m.ImageName,
+                result = m.Conlusion
+            }).ToList();
+
+            var caseStudyDto = new GetCaseStudyDto
             {
                 CaseStudyId = caseStudy.CaseStudyId,
                 PatientId = caseStudy.patientId,
@@ -56,52 +107,13 @@ namespace Application.Services
                 Status = caseStudy.Status,
                 CreateDate = caseStudy.CreateDate,
                 DoctorId = caseStudy.DoctorId,
-                Patient = new PatientDto
-                {
-                    PatientId = caseStudy.PatientIdNavigation.PatientId,
-                    PatientName = caseStudy.PatientIdNavigation.PatientName,
-                    Address = caseStudy.PatientIdNavigation.Address,
-                    Dob = caseStudy.PatientIdNavigation.Dob,
-                    PatientCode = caseStudy.PatientIdNavigation.patientCode,
-                    Phone = caseStudy.PatientIdNavigation.Phone,
-                    Sex = caseStudy.PatientIdNavigation.Sex,
-                    createdAt = caseStudy.PatientIdNavigation.createdAt
-                },
-                //Report = new ReportDTO
-                //{
-                //    ReportId = caseStudy.Report.ReportId,
-                //    DoctorId = caseStudy.Report.DoctorId,
-                //    PatientId = caseStudy.Report.PatientId,
-                //    Conclusion = caseStudy.Report.Conclusion,
-                //    Diagnostic = caseStudy.Report.Diagnostic,
-                //    DoctorName = caseStudy.Report.DoctorName,
-                //    Image = caseStudy.Report.Image,
-                //    State = caseStudy.Report.State
-                //},
-                //MedicationCDHA = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
-                //{
-                //    CdhaName = m.CdhaName,
-                //    KtvIdNavigation = m.KtvIdNavigation,
-                //    result=m.result,
-                //    ImageLink=m.ImageLink,
-                //}).ToList(),
-
-                Prescriptions = caseStudy.Prescriptions.Select(p => new PrescriptionDto
-                {
-                    Id = p.Id,
-                    CasestudyId = p.CasestudyId,
-                    Date = p.Date
-                }).ToList(),
-                 MedicalCdhas = caseStudy.MedicalCdhas.Select(p => new MedicalCdhaDTO
-                 {
-                     Id = p.Id,
-                     CdhaName=p.MedicalCdhaIdNavigation.CdhaName,
-                     ImageLink=p.ImageLink,
-                     DateCreate=p.MedicalCdhaIdNavigation.DateCreate,
-                     ImageName=p.ImageName,
-                     result=p.Conlusion,
-                 }).ToList()
+                Patient = patientDto,
+                Reports = reportDtos,
+                Prescriptions = prescriptionDtos,
+                MedicalCdhas = medicalCdhaDtos
             };
+
+            return caseStudyDto;
         }
         public async Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync()
         {
@@ -136,7 +148,6 @@ namespace Application.Services
 
                 var prescriptionDtos = caseStudy.Prescriptions.Select(p => new PrescriptionDto
                 {
-                    Id = p.Id,
                     CasestudyId = p.CasestudyId,
                     Date = p.Date
                 }).ToList();
@@ -216,7 +227,6 @@ namespace Application.Services
                 var report = caseStudy.Report.FirstOrDefault(r => r.ReportId == reportDto.ReportId);
                 if (report != null)
                 {
-                    // Update existing report
                     report.Conclusion = reportDto.Conclusion;
                     report.Diagnostic = reportDto.Diagnostic;
                     report.Image = reportDto.Image;
@@ -226,7 +236,6 @@ namespace Application.Services
                 }
                 else
                 {
-                    // Add new report
                     var newReport = new Report
                     {
                         Conclusion = reportDto.Conclusion,
@@ -252,7 +261,6 @@ namespace Application.Services
                 var medicalCdhaCaseStudy = caseStudy.MedicalCdhas.FirstOrDefault(m => m.MedicalCdhaId == medicalCdhaDto.Id);
                 if (medicalCdhaCaseStudy != null)
                 {
-                    // Update existing MedicalCdha
                     var medicalCdha = medicalCdhaCaseStudy.MedicalCdhaIdNavigation;
                     if (medicalCdha != null)
                     {
@@ -265,7 +273,6 @@ namespace Application.Services
                 }
                 else
                 {
-                    // Add new MedicalCdha and MedicalCdhaCaseStudy
                     var newMedicalCdha = new MedicalCdha
                     {
                         CdhaName = medicalCdhaDto.CdhaName,
@@ -292,28 +299,74 @@ namespace Application.Services
         {
             var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
 
-            if (caseStudy != null)
+            if (caseStudy == null)
             {
-                var prescription = caseStudy.Prescriptions.FirstOrDefault(p => p.Id == prescriptionDto.Id);
-                if (prescription != null)
+                throw new KeyNotFoundException($"CaseStudy with Id {caseStudyId} not found");
+            }
+
+            var prescription = caseStudy.Prescriptions.FirstOrDefault(); // Lấy đơn thuốc đầu tiên, có thể cần chỉnh sửa nếu có nhiều đơn thuốc
+
+            if (prescription != null)
+            {
+                prescription.Date = prescriptionDto.Date;
+                prescription.CasestudyId = prescriptionDto.CasestudyId;
+
+                // Xóa các PrescriptionMedication cũ và thêm mới
+                prescription.PrescriptionMedications.Clear();
+
+                foreach (var medDto in prescriptionDto.PrescriptionMedications)
                 {
-                    // Update existing prescription
-                    prescription.Date = prescriptionDto.Date;
-                    prescription.CasestudyId = prescriptionDto.CasestudyId;
-                }
-                else
-                {
-                    // Add new prescription
-                    var newPrescription = new Prescription
+                    var medication = await _medicationRepository.GetMedicationById(medDto.MedicationId); // Lấy thông tin thuốc từ database
+
+                    if (medication != null)
                     {
-                        Date = prescriptionDto.Date,
-                        CasestudyId = caseStudyId
-                    };
-                    caseStudy.Prescriptions.Add(newPrescription);
+                        var newPrescriptionMedication = new PrescriptionMedication
+                        {
+                            MedicationId = medication.Id,
+                            Dosages = medDto.Dosages
+                        };
+                        prescription.PrescriptionMedications.Add(newPrescriptionMedication);
+                    }
+                    else
+                    {
+                        throw new Exception($"Medication with id {medDto.MedicationId} not found");
+                    }
+                }
+            }
+            else
+            {
+                var newPrescription = new Prescription
+                {
+                    Date = prescriptionDto.Date,
+                    CasestudyId = caseStudyId,
+                    PrescriptionMedications = new List<PrescriptionMedication>()
+                };
+
+                foreach (var medDto in prescriptionDto.PrescriptionMedications)
+                {
+                    var medication = await _medicationRepository.GetMedicationById(medDto.MedicationId);
+
+                    if (medication != null)
+                    {
+                        var newPrescriptionMedication = new PrescriptionMedication
+                        {
+                            MedicationId = medication.Id,
+                            Dosages = medDto.Dosages
+                        };
+                        newPrescription.PrescriptionMedications.Add(newPrescriptionMedication);
+                    }
+                    else
+                    {
+                        throw new Exception($"Medication with id {medDto.MedicationId} not found");
+                    }
                 }
 
-                await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
+                caseStudy.Prescriptions.Add(newPrescription);
             }
+
+            await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
         }
+
+
     }
 }

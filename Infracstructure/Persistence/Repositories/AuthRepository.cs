@@ -34,6 +34,14 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<User?> LoginAsync(string username, string password)
         {
             var user = await _dbSet.FirstOrDefaultAsync(u => u.user == username);
+            if (user == null)
+            {
+                Console.WriteLine("User not found");
+            }
+            else
+            {
+                Console.WriteLine("lôgigign");
+            }
             return user;
         }
 
@@ -46,7 +54,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
-                                 .Include(u => u.Role) // Sử dụng Include để load Role
+                                 .Include(u => u.Role) 
                                  .FirstOrDefaultAsync(u => u.user == username);
         }
 

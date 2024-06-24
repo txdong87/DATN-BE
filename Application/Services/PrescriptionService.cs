@@ -31,8 +31,6 @@ namespace Application.Services
 
             return prescriptions.Select(p => new PrescriptionDto
             {
-                Id = p.Id,
-                PatientId = p.PatientId,
                 CasestudyId = p.CasestudyId,
                 Date = p.Date,
                 PrescriptionMedications = p.PrescriptionMedications?.Select(pm => new PrescriptionMedicationDto
@@ -51,8 +49,6 @@ namespace Application.Services
 
             return new PrescriptionDto
             {
-                Id = prescription.Id,
-                PatientId = prescription.PatientId,
                 CasestudyId = prescription.CasestudyId,
                 Date = prescription.Date,
                 PrescriptionMedications = prescription.PrescriptionMedications.Select(pm => new PrescriptionMedicationDto
@@ -67,7 +63,6 @@ namespace Application.Services
         {
             var prescription = new Prescription
             {
-                PatientId = prescriptionDto.PatientId,
                 CasestudyId = prescriptionDto.CasestudyId,
                 Date = prescriptionDto.Date,
                 PrescriptionMedications = prescriptionDto.PrescriptionMedications.Select(pm => new PrescriptionMedication
@@ -81,19 +76,18 @@ namespace Application.Services
 
         public async Task UpdatePrescription(PrescriptionDto prescriptionDto)
         {
-            var prescription = await _prescriptionRepository.GetPrescriptionById(prescriptionDto.Id);
-            if (prescription == null) throw new Exception("Prescription not found");
+            //var prescription = await _prescriptionRepository.GetPrescriptionById(prescriptionDto.Id);
+            //if (prescription == null) throw new Exception("Prescription not found");
 
-            prescription.PatientId = prescriptionDto.PatientId;
-            prescription.CasestudyId = prescriptionDto.CasestudyId;
-            prescription.Date = prescriptionDto.Date;
-            prescription.PrescriptionMedications = prescriptionDto.PrescriptionMedications.Select(pm => new PrescriptionMedication
-            {
-                MedicationId = pm.MedicationId,
-                Dosages = pm.Dosages
-            }).ToList();
+            //prescription.CasestudyId = prescriptionDto.CasestudyId;
+            //prescription.Date = prescriptionDto.Date;
+            //prescription.PrescriptionMedications = prescriptionDto.PrescriptionMedications.Select(pm => new PrescriptionMedication
+            //{
+            //    MedicationId = pm.MedicationId,
+            //    Dosages = pm.Dosages
+            //}).ToList();
 
-            await _prescriptionRepository.UpdatePrescription(prescription);
+            //await _prescriptionRepository.UpdatePrescription(prescription);
         }
 
         public async Task DeletePrescription(int id)
