@@ -20,5 +20,6 @@ namespace Domain.Entities
         public virtual ICollection<Patient> Patients { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<Casestudy> Casestudies { get; set; }
+        public virtual ICollection<MedicalCdhaCaseStudy> MedicalCdhas { get; set; }
     }
 }

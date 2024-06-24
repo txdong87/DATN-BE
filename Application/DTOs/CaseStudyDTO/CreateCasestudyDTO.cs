@@ -8,6 +8,7 @@ namespace Application.DTOs.CaseStudy
     {
         //public PatientDto Patient { get; set; }
         public int patientId { get; set; }
+        public int doctorId { get; set; }
         //public ReportDto Report { get; set; }
         public string? Reason { get; set; }
         public string? Status { get; set; }

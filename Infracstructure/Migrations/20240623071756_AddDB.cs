@@ -6,11 +6,27 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    public partial class FixDB : Migration
+    public partial class AddDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "medical_cdha",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int(11)", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    CDHAName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    dateCreate = table.Column<DateTime>(type: "date", nullable: true),
+                    timeEstimate = table.Column<DateTime>(type: "date", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_medical_cdha", x => x.id);
+                })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -190,51 +206,6 @@ namespace Infrastructure.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "medical_cdha",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int(11)", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    CDHAName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
-                    PatientId = table.Column<int>(type: "int(11)", nullable: true),
-                    doctorId = table.Column<int>(type: "int(11)", nullable: true),
-                    ktvId = table.Column<int>(type: "int(11)", nullable: true),
-                    CaseStudyId = table.Column<int>(type: "int(11)", nullable: true),
-                    dateCreate = table.Column<DateTime>(type: "date", nullable: true),
-                    timeEstimate = table.Column<DateTime>(type: "date", nullable: true),
-                    imageName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
-                    imageLink = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
-                    result = table.Column<string>(type: "longtext", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_medical_cdha", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_medical_cdha_casestudy_CaseStudyId",
-                        column: x => x.CaseStudyId,
-                        principalTable: "casestudy",
-                        principalColumn: "CaseStudyId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_medical_cdha_doctor_doctorId",
-                        column: x => x.doctorId,
-                        principalTable: "doctor",
-                        principalColumn: "doctorId");
-                    table.ForeignKey(
-                        name: "FK_medical_cdha_patient_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "patient",
-                        principalColumn: "patientId");
-                    table.ForeignKey(
-                        name: "medical_cdha_ibfk_3",
-                        column: x => x.ktvId,
-                        principalTable: "ktv",
-                        principalColumn: "ktvId",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Prescription",
                 columns: table => new
                 {
@@ -333,6 +304,57 @@ namespace Infrastructure.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "medical_cdha_case_study",
+                columns: table => new
+                {
+                    caseStudyId = table.Column<int>(type: "int(11)", nullable: false),
+                    medicalCdhaId = table.Column<int>(type: "int(11)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    doctorId = table.Column<int>(type: "int(11)", nullable: true),
+                    ktvId = table.Column<int>(type: "int(11)", nullable: true),
+                    ReportId = table.Column<int>(type: "int(11)", nullable: false),
+                    conclusion = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false, defaultValueSql: "'NULL'"),
+                    description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false, defaultValueSql: "'NULL'"),
+                    imageName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
+                    imageLink = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_medical_cdha_case_study", x => new { x.medicalCdhaId, x.caseStudyId });
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_case_study_casestudy",
+                        column: x => x.caseStudyId,
+                        principalTable: "casestudy",
+                        principalColumn: "CaseStudyId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_case_study_doctor",
+                        column: x => x.doctorId,
+                        principalTable: "doctor",
+                        principalColumn: "doctorId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_case_study_ktv",
+                        column: x => x.ktvId,
+                        principalTable: "ktv",
+                        principalColumn: "ktvId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_case_study_medicalcdha",
+                        column: x => x.medicalCdhaId,
+                        principalTable: "medical_cdha",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_medical_cdha_case_study_report",
+                        column: x => x.ReportId,
+                        principalTable: "report",
+                        principalColumn: "reportId",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_casestudy_DoctorId",
                 table: "casestudy",
@@ -354,24 +376,25 @@ namespace Infrastructure.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "doctorId",
-                table: "medical_cdha",
+                name: "IX_medical_cdha_case_study_caseStudyId",
+                table: "medical_cdha_case_study",
+                column: "caseStudyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_medical_cdha_case_study_doctorId",
+                table: "medical_cdha_case_study",
                 column: "doctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_medical_cdha_CaseStudyId",
-                table: "medical_cdha",
-                column: "CaseStudyId");
-
-            migrationBuilder.CreateIndex(
-                name: "ktvId",
-                table: "medical_cdha",
+                name: "IX_medical_cdha_case_study_ktvId",
+                table: "medical_cdha_case_study",
                 column: "ktvId");
 
             migrationBuilder.CreateIndex(
-                name: "patientId1",
-                table: "medical_cdha",
-                column: "PatientId");
+                name: "IX_medical_cdha_case_study_ReportId",
+                table: "medical_cdha_case_study",
+                column: "ReportId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "userId",
@@ -404,7 +427,7 @@ namespace Infrastructure.Migrations
                 column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
-                name: "doctorId1",
+                name: "doctorId",
                 table: "report",
                 column: "doctorId");
 
@@ -419,7 +442,7 @@ namespace Infrastructure.Migrations
                 column: "KtvId");
 
             migrationBuilder.CreateIndex(
-                name: "patientId2",
+                name: "patientId1",
                 table: "report",
                 column: "patientId");
 
@@ -432,13 +455,16 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "medical_cdha");
+                name: "medical_cdha_case_study");
 
             migrationBuilder.DropTable(
                 name: "nurse");
 
             migrationBuilder.DropTable(
                 name: "PrescriptionMedication");
+
+            migrationBuilder.DropTable(
+                name: "medical_cdha");
 
             migrationBuilder.DropTable(
                 name: "report");

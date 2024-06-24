@@ -144,9 +144,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("id");
 
-                    b.Property<int?>("CaseStudyId")
-                        .HasColumnType("int(11)");
-
                     b.Property<string>("CdhaName")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -157,9 +154,47 @@ namespace Infrastructure.Migrations
                         .HasColumnType("date")
                         .HasColumnName("dateCreate");
 
+                    b.Property<DateTime?>("TimeEstimate")
+                        .HasColumnType("date")
+                        .HasColumnName("timeEstimate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("medical_cdha", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.MedicalCdhaCaseStudy", b =>
+                {
+                    b.Property<int?>("MedicalCdhaId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("medicalCdhaId");
+
+                    b.Property<int?>("CaseStudyId")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("caseStudyId");
+
+                    b.Property<string>("Conlusion")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("conclusion")
+                        .HasDefaultValueSql("'NULL'");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("description")
+                        .HasDefaultValueSql("'NULL'");
+
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int(11)")
                         .HasColumnName("doctorId");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageLink")
                         .ValueGeneratedOnAdd()
@@ -179,28 +214,21 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("ktvId");
 
-                    b.Property<int?>("PatientId")
+                    b.Property<int>("ReportId")
                         .HasColumnType("int(11)");
 
-                    b.Property<DateTime?>("TimeEstimate")
-                        .HasColumnType("date")
-                        .HasColumnName("timeEstimate");
-
-                    b.Property<string>("result")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
+                    b.HasKey("MedicalCdhaId", "CaseStudyId");
 
                     b.HasIndex("CaseStudyId");
 
-                    b.HasIndex(new[] { "DoctorId" }, "doctorId");
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex(new[] { "KtvId" }, "ktvId");
+                    b.HasIndex("KtvId");
 
-                    b.HasIndex(new[] { "PatientId" }, "patientId")
-                        .HasDatabaseName("patientId1");
+                    b.HasIndex("ReportId")
+                        .IsUnique();
 
-                    b.ToTable("medical_cdha", (string)null);
+                    b.ToTable("medical_cdha_case_study", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Medication", b =>
@@ -418,11 +446,10 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("KtvId");
 
-                    b.HasIndex(new[] { "DoctorId" }, "doctorId")
-                        .HasDatabaseName("doctorId1");
+                    b.HasIndex(new[] { "DoctorId" }, "doctorId");
 
                     b.HasIndex(new[] { "PatientId" }, "patientId")
-                        .HasDatabaseName("patientId2");
+                        .HasDatabaseName("patientId1");
 
                     b.ToTable("report", (string)null);
                 });
@@ -521,26 +548,40 @@ namespace Infrastructure.Migrations
                     b.Navigation("UserldNavigation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MedicalCdha", b =>
+            modelBuilder.Entity("Domain.Entities.MedicalCdhaCaseStudy", b =>
                 {
                     b.HasOne("Domain.Entities.Casestudy", "CaseStudyIdNavigation")
                         .WithMany("MedicalCdhas")
                         .HasForeignKey("CaseStudyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_medical_cdha_case_study_casestudy");
 
                     b.HasOne("Domain.Entities.Doctor", "DoctorIdNavigation")
-                        .WithMany()
-                        .HasForeignKey("DoctorId");
+                        .WithMany("MedicalCdhas")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_medical_cdha_case_study_doctor");
 
                     b.HasOne("Domain.Entities.KTV", "KtvIdNavigation")
                         .WithMany("MedicalCdhas")
                         .HasForeignKey("KtvId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("medical_cdha_ibfk_3");
+                        .HasConstraintName("FK_medical_cdha_case_study_ktv");
 
-                    b.HasOne("Domain.Entities.Patient", "PatientIdNavigation")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
+                    b.HasOne("Domain.Entities.MedicalCdha", "MedicalCdhaIdNavigation")
+                        .WithMany("MedicalCdhaCaseStudies")
+                        .HasForeignKey("MedicalCdhaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_medical_cdha_case_study_medicalcdha");
+
+                    b.HasOne("Domain.Entities.Report", "Report")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MedicalCdhaCaseStudy", "ReportId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_medical_cdha_case_study_report");
 
                     b.Navigation("CaseStudyIdNavigation");
 
@@ -548,7 +589,9 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("KtvIdNavigation");
 
-                    b.Navigation("PatientIdNavigation");
+                    b.Navigation("MedicalCdhaIdNavigation");
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Domain.Entities.Nurse", b =>
@@ -658,6 +701,8 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("Casestudies");
 
+                    b.Navigation("MedicalCdhas");
+
                     b.Navigation("Patients");
 
                     b.Navigation("Reports");
@@ -666,6 +711,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.KTV", b =>
                 {
                     b.Navigation("MedicalCdhas");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MedicalCdha", b =>
+                {
+                    b.Navigation("MedicalCdhaCaseStudies");
                 });
 
             modelBuilder.Entity("Domain.Entities.Medication", b =>

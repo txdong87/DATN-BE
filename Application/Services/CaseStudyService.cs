@@ -95,11 +95,11 @@ namespace Application.Services
                  MedicalCdhas = caseStudy.MedicalCdhas.Select(p => new MedicalCdhaDTO
                  {
                      Id = p.Id,
-                     CdhaName=p.CdhaName,
+                     CdhaName=p.MedicalCdhaIdNavigation.CdhaName,
                      ImageLink=p.ImageLink,
-                     DateCreate=p.DateCreate,
+                     DateCreate=p.MedicalCdhaIdNavigation.DateCreate,
                      ImageName=p.ImageName,
-                     result=p.result,
+                     result=p.Conlusion,
                  }).ToList()
             };
         }
@@ -111,7 +111,6 @@ namespace Application.Services
             foreach (var caseStudy in caseStudies)
             {
 
-                // Map PatientDto
                 var patientDto = new PatientDto
                 {
                     PatientId = caseStudy.PatientIdNavigation.PatientId,
@@ -124,7 +123,6 @@ namespace Application.Services
                     createdAt = caseStudy.PatientIdNavigation.createdAt
                 };
 
-                // Map ReportDtos
                 var reportDtos = caseStudy.Report.Select(r => new ReportDTO
                 {
                     ReportId = r.ReportId,
@@ -133,10 +131,9 @@ namespace Application.Services
                     Conclusion = r.Conclusion,
                     Diagnostic = r.Diagnostic,
                     Image = r.Image,
-                    State = r.State,// Example, adjust as per your needs
+                    State = r.State,
                 }).ToList();
 
-                // Map PrescriptionDtos
                 var prescriptionDtos = caseStudy.Prescriptions.Select(p => new PrescriptionDto
                 {
                     Id = p.Id,
@@ -144,18 +141,17 @@ namespace Application.Services
                     Date = p.Date
                 }).ToList();
 
-                // Map MedicalCdhaDtos
+                
                 var medicalCdhaDtos = caseStudy.MedicalCdhas.Select(m => new MedicalCdhaDTO
                 {
                     Id = m.Id,
-                    CdhaName = m.CdhaName,
+                    CdhaName = m.MedicalCdhaIdNavigation.CdhaName,
                     ImageLink = m.ImageLink,
-                    DateCreate = m.DateCreate, 
+                    DateCreate = m.MedicalCdhaIdNavigation.DateCreate, 
                     ImageName = m.ImageName,
-                    result = m.result
+                    result = m.Conlusion
                 }).ToList();
 
-                // Create GetCaseStudyDto and add to list
                 var caseStudyDto = new GetCaseStudyDto
                 {
                     CaseStudyId = caseStudy.CaseStudyId,
@@ -179,11 +175,11 @@ namespace Application.Services
         }
 
 
-        public async Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
+        public async Task<Casestudy> AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto)
         {
             var patientId = createCaseStudyDto.patientId;
             var caseStudy = new Casestudy
-            {
+            {   
                 patientId = patientId,
                 Conclusion = null,
                 Diagnostic = null,
@@ -194,6 +190,7 @@ namespace Application.Services
             };
 
             await _caseStudyRepository.AddCaseStudyAsync(caseStudy);
+            return caseStudy;
         }
 
 
@@ -252,34 +249,45 @@ namespace Application.Services
 
             if (caseStudy != null)
             {
-                var medicalCdha = caseStudy.MedicalCdhas.FirstOrDefault(m => m.Id == medicalCdhaDto.Id);
-                if (medicalCdha != null)
+                var medicalCdhaCaseStudy = caseStudy.MedicalCdhas.FirstOrDefault(m => m.MedicalCdhaId == medicalCdhaDto.Id);
+                if (medicalCdhaCaseStudy != null)
                 {
                     // Update existing MedicalCdha
-                    medicalCdha.CdhaName = medicalCdhaDto.CdhaName;
-                    medicalCdha.ImageLink = medicalCdhaDto.ImageLink;
-                    medicalCdha.DateCreate = medicalCdhaDto.DateCreate;
-                    medicalCdha.ImageName = medicalCdhaDto.ImageName;
-                    medicalCdha.result = medicalCdhaDto.result;
+                    var medicalCdha = medicalCdhaCaseStudy.MedicalCdhaIdNavigation;
+                    if (medicalCdha != null)
+                    {
+                        medicalCdha.CdhaName = medicalCdhaDto.CdhaName;
+                        medicalCdha.DateCreate = medicalCdhaDto.DateCreate;
+                    }
+                    medicalCdhaCaseStudy.ImageLink = medicalCdhaDto.ImageLink;
+                    medicalCdhaCaseStudy.ImageName = medicalCdhaDto.ImageName;
+                    medicalCdhaCaseStudy.Conlusion = medicalCdhaDto.result;
                 }
                 else
                 {
-                    // Add new MedicalCdha
+                    // Add new MedicalCdha and MedicalCdhaCaseStudy
                     var newMedicalCdha = new MedicalCdha
                     {
                         CdhaName = medicalCdhaDto.CdhaName,
+                        DateCreate = medicalCdhaDto.DateCreate
+                    };
+
+                    var newMedicalCdhaCaseStudy = new MedicalCdhaCaseStudy
+                    {
+                        MedicalCdhaIdNavigation = newMedicalCdha,
                         ImageLink = medicalCdhaDto.ImageLink,
-                        DateCreate = medicalCdhaDto.DateCreate,
                         ImageName = medicalCdhaDto.ImageName,
-                        result = medicalCdhaDto.result,
+                        Conlusion = medicalCdhaDto.result,
                         CaseStudyId = caseStudyId
                     };
-                    caseStudy.MedicalCdhas.Add(newMedicalCdha);
+
+                    caseStudy.MedicalCdhas.Add(newMedicalCdhaCaseStudy);
                 }
 
                 await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
             }
         }
+
         public async Task UpdatePrescriptionAsync(int caseStudyId, PrescriptionDto prescriptionDto)
         {
             var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);

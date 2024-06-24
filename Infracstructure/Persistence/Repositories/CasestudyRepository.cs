@@ -22,6 +22,7 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
+            .ThenInclude(mccs => mccs.MedicalCdhaIdNavigation)
                                  .Include(cs => cs.Prescriptions)
                                  .Include(cs => cs.Report)
                                  .FirstOrDefaultAsync(cs => cs.CaseStudyId == caseStudyId);
@@ -33,7 +34,9 @@ namespace Infrastructure.Persistence.Repositories
                                  .Include(cs => cs.PatientIdNavigation)
                                  .Include(cs => cs.DoctorIdNavigation)
                                  .Include(cs => cs.MedicalCdhas)
+                                    .ThenInclude(mccs => mccs.MedicalCdhaIdNavigation)
                                  .Include(cs => cs.Prescriptions)
+                                 .Include(cs => cs.Report)
                                  .ToListAsync();
         }
 

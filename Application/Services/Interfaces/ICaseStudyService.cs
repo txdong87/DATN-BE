@@ -9,7 +9,7 @@ namespace Application.Interfaces
     {
         Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int caseStudyId);
         Task<IEnumerable<GetCaseStudyDto>> GetAllCaseStudiesAsync();
-        Task AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto);
+        Task<Casestudy> AddCaseStudyAsync(CreateCaseStudyDto createCaseStudyDto);
         Task UpdateCaseStudyAsync(int caseStudyId, UpdateCaseStudyDto updateCaseStudyDto);
         Task UpdateReportAsync(int caseStudyId, ReportDTO reportDto);
         Task UpdateMedicalCdhaAsync(int caseStudyId, MedicalCdhaDTO medicalCdhaDto);

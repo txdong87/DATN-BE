@@ -7,7 +7,7 @@ namespace Domain.Entities
     {
         public KTV()
         {
-            MedicalCdhas = new HashSet<MedicalCdha>();
+            MedicalCdhas = new HashSet<MedicalCdhaCaseStudy>();
         }
 
         public int KtvId { get; set; }
@@ -17,6 +17,6 @@ namespace Domain.Entities
         public int? RoleIndication { get; set; }
 
         public virtual User? UserldNavigation { get; set; }
-        public virtual ICollection<MedicalCdha> MedicalCdhas { get; set; }
+        public virtual ICollection<MedicalCdhaCaseStudy> MedicalCdhas { get; set; }
     }
 }

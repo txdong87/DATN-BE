@@ -19,10 +19,5 @@ namespace Application.DTOs
         public string? ImageName { get; set; }
         public string? ImageLink { get; set; }
         public string? result { get; set; }
-
-        public virtual Doctor? DoctorIdNavigation { get; set; }
-        public virtual KTV? KtvIdNavigation { get; set; }
-        public virtual Casestudy? CaseStudyId { get; set; }
-        public virtual Patient? PatientIdNavigation { get; set; }
     }
 }

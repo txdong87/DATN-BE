@@ -21,6 +21,7 @@ namespace Infracstructure.Persistance
         public virtual DbSet<Doctor> Doctors { get; set; } = null!;
         public virtual DbSet<KTV> Ktvs { get; set; } = null!;
         public virtual DbSet<MedicalCdha> MedicalCdhas { get; set; } = null!;
+        public virtual DbSet<MedicalCdhaCaseStudy> MedicalCdhaCaseStudies { get; set; } = null!;
         public virtual DbSet<Medication> Medication { get; set; } = null!;
         public virtual DbSet<Prescription> Prescription { get; set; } = null!;
         public virtual DbSet<PrescriptionMedication> PrescriptionMedication { get; set; } = null!;
@@ -32,7 +33,7 @@ namespace Infracstructure.Persistance
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -78,7 +79,6 @@ namespace Infracstructure.Persistance
                     .HasColumnType("int(11)")
                     .HasColumnName("patientId");
 
-                // Không cần thiết cho ReportId nếu không có
                 entity.Ignore(e => e.ReportId);
 
                 entity.HasOne(d => d.PatientIdNavigation)
@@ -87,26 +87,22 @@ namespace Infracstructure.Persistance
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_casestudy_patient");
 
-                // Configure relationship with Doctor
                 entity.HasOne(d => d.DoctorIdNavigation)
                     .WithMany(p => p.Casestudies)
                     .HasForeignKey(d => d.DoctorId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_casestudy_doctor");
 
-                // Configure relationship with Prescription
                 entity.HasMany(e => e.Prescriptions)
                     .WithOne(e => e.Casestudy)
                     .HasForeignKey(e => e.CasestudyId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // Configure relationship with MedicalCdha
                 entity.HasMany(e => e.MedicalCdhas)
                     .WithOne(e => e.CaseStudyIdNavigation)
                     .HasForeignKey(e => e.CaseStudyId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // Configure relationship with Report
                 entity.HasMany(e => e.Report)
                     .WithOne(e => e.Casestudy)
                     .HasForeignKey(e => e.CaseStudyId)
@@ -127,6 +123,7 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.UserId)
                       .HasColumnType("int(11)")
                       .HasColumnName("userId");
+
                 entity.Property(e => e.DoctorRole)
                    .HasMaxLength(255)
                    .HasColumnName("doctorRole");
@@ -160,37 +157,61 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.UserId)
                     .HasColumnType("int(11)")
                     .HasColumnName("userId");
-
             });
 
             modelBuilder.Entity<MedicalCdha>(entity =>
             {
                 entity.ToTable("medical_cdha");
 
-                entity.HasIndex(e => e.DoctorId, "doctorId");
-
-                entity.HasIndex(e => e.KtvId, "ktvId");
-
-                entity.HasIndex(e => e.PatientId, "patientId");
-
+                entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
+
                 entity.Property(e => e.CdhaName)
                     .HasMaxLength(255)
                     .HasColumnName("CDHAName");
+
                 entity.Property(e => e.DateCreate)
                     .HasColumnType("date")
                     .HasColumnName("dateCreate");
+
+                entity.Property(e => e.TimeEstimate)
+                    .HasColumnType("date")
+                    .HasColumnName("timeEstimate");
+            });
+
+            modelBuilder.Entity<MedicalCdhaCaseStudy>(entity =>
+            {
+                entity.HasKey(e => new { e.MedicalCdhaId, e.CaseStudyId });
+
+                entity.ToTable("medical_cdha_case_study");
+
+                entity.Property(e => e.MedicalCdhaId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("medicalCdhaId");
+
+                entity.Property(e => e.CaseStudyId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("caseStudyId");
 
                 entity.Property(e => e.DoctorId)
                     .HasColumnType("int(11)")
                     .HasColumnName("doctorId");
 
-                entity.Property(e => e.ImageLink)
+                entity.Property(e => e.KtvId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("ktvId");
+
+                entity.Property(e => e.Conlusion)
                     .HasMaxLength(255)
-                    .HasColumnName("imageLink")
+                    .HasColumnName("conclusion")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .HasColumnName("description")
                     .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.ImageName)
@@ -198,26 +219,41 @@ namespace Infracstructure.Persistance
                     .HasColumnName("imageName")
                     .HasDefaultValueSql("'NULL'");
 
+                entity.Property(e => e.ImageLink)
+                    .HasMaxLength(255)
+                    .HasColumnName("imageLink")
+                    .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.KtvId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("ktvId");
-                entity.Property(e => e.TimeEstimate)
-                    .HasColumnType("date")
-                    .HasColumnName("timeEstimate");
+                entity.HasOne(d => d.DoctorIdNavigation)
+                    .WithMany(p => p.MedicalCdhas)
+                    .HasForeignKey(d => d.DoctorId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_medical_cdha_case_study_doctor");
 
                 entity.HasOne(d => d.KtvIdNavigation)
                     .WithMany(p => p.MedicalCdhas)
                     .HasForeignKey(d => d.KtvId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("medical_cdha_ibfk_3");
+                    .HasConstraintName("FK_medical_cdha_case_study_ktv");
 
+                entity.HasOne(d => d.CaseStudyIdNavigation)
+                    .WithMany(p => p.MedicalCdhas)
+                    .HasForeignKey(d => d.CaseStudyId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_medical_cdha_case_study_casestudy");
 
-            });
+                entity.HasOne(d => d.MedicalCdhaIdNavigation)
+                    .WithMany(p => p.MedicalCdhaCaseStudies)
+                    .HasForeignKey(d => d.MedicalCdhaId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_medical_cdha_case_study_medicalcdha");
+                entity.HasOne(d => d.Report)
+                    .WithOne()
+                    .HasForeignKey<MedicalCdhaCaseStudy>(d => d.ReportId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_medical_cdha_case_study_report");
+                    });
 
-           
-
-          
             modelBuilder.Entity<Nurse>(entity =>
             {
                 entity.HasKey(e => e.NurseId)
@@ -273,6 +309,7 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.Sex)
                     .HasColumnType("int(11)")
                     .HasColumnName("sex");
+
                 entity.Property(e => e.createdAt)
                    .HasColumnType("date")
                    .HasColumnName("createdAt");
@@ -303,10 +340,10 @@ namespace Infracstructure.Persistance
                     .HasColumnName("diagnostic")
                     .HasDefaultValueSql("'NULL'");
 
-
                 entity.Property(e => e.DoctorId)
                     .HasColumnType("int(11)")
                     .HasColumnName("doctorId");
+
                 entity.Property(e => e.CaseStudyId)
                     .HasColumnName("caseStudyId");
 
@@ -334,6 +371,7 @@ namespace Infracstructure.Persistance
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("report_ibfk_1");
+
                 entity.HasOne(d => d.Casestudy)
                     .WithMany(p => p.Report)
                     .HasForeignKey(d => d.CaseStudyId)
@@ -356,6 +394,7 @@ namespace Infracstructure.Persistance
                       .HasMaxLength(255)
                       .HasColumnName("fullname")
                       .HasDefaultValueSql("'NULL'");
+
                 entity.Property(e => e.Password)
                       .HasMaxLength(255)
                       .HasColumnName("password")
@@ -365,7 +404,6 @@ namespace Infracstructure.Persistance
                       .HasColumnType("int(11)")
                       .HasColumnName("RoleId");
             });
-
 
             modelBuilder.Entity<Role>(entity =>
             {
@@ -381,9 +419,8 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.RoleName)
                     .HasMaxLength(255)
                     .HasColumnName("RoleName");
-
-              
             });
+
             modelBuilder.Entity<Prescription>(entity =>
             {
                 entity.ToTable("Prescription");
@@ -426,6 +463,7 @@ namespace Infracstructure.Persistance
                       .HasForeignKey(e => e.MedicationId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 
