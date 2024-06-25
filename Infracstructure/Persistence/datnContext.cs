@@ -247,11 +247,6 @@ namespace Infracstructure.Persistance
                     .HasForeignKey(d => d.MedicalCdhaId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_medical_cdha_case_study_medicalcdha");
-                entity.HasOne(d => d.Report)
-                    .WithOne()
-                    .HasForeignKey<MedicalCdhaCaseStudy>(d => d.ReportId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_medical_cdha_case_study_report");
                     });
 
             modelBuilder.Entity<Nurse>(entity =>

@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.IRepository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

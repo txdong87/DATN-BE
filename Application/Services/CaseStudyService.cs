@@ -267,9 +267,9 @@ namespace Application.Services
                         medicalCdha.CdhaName = medicalCdhaDto.CdhaName;
                         medicalCdha.DateCreate = medicalCdhaDto.DateCreate;
                     }
-                    medicalCdhaCaseStudy.ImageLink = medicalCdhaDto.ImageLink;
-                    medicalCdhaCaseStudy.ImageName = medicalCdhaDto.ImageName;
-                    medicalCdhaCaseStudy.Conlusion = medicalCdhaDto.result;
+                    //medicalCdhaCaseStudy.ImageLink = medicalCdhaDto.ImageLink;
+                    //medicalCdhaCaseStudy.ImageName = medicalCdhaDto.ImageName;
+                    //medicalCdhaCaseStudy.Conlusion = medicalCdhaDto.result;
                 }
                 else
                 {
@@ -282,9 +282,9 @@ namespace Application.Services
                     var newMedicalCdhaCaseStudy = new MedicalCdhaCaseStudy
                     {
                         MedicalCdhaIdNavigation = newMedicalCdha,
-                        ImageLink = medicalCdhaDto.ImageLink,
-                        ImageName = medicalCdhaDto.ImageName,
-                        Conlusion = medicalCdhaDto.result,
+                        //ImageLink = medicalCdhaDto.ImageLink,
+                        //ImageName = medicalCdhaDto.ImageName,
+                        //Conlusion = medicalCdhaDto.result,
                         CaseStudyId = caseStudyId
                     };
 

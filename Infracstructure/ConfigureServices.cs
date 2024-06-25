@@ -2,6 +2,7 @@
 using Domain.IRepository;
 using Infracstructure.Persistance;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -55,6 +56,8 @@ public static class ConfigureServices
                 .AddScoped<IPrescriptionRepository, PrescriptionRepository>()
                 .AddScoped<IRoleRepository, RoleRepository>()
                 .AddScoped<IReportRepository, ReportRepository>()
+                .AddScoped<IMedicalCdhaRepository, MedicalCdhaRepository>()
+                .AddScoped<IMedicalCdhaCaseStudyRepository, MedicalCdhaCaseStudyRepository>()
                 .AddScoped<ICaseStudyRepository, CaseStudyRepository>();
 
         return services;
