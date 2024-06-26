@@ -183,56 +183,43 @@ namespace Infracstructure.Persistance
             });
             modelBuilder.Entity<MedicalCdhaCaseStudy>(entity =>
             {
-                entity.HasKey(e => new { e.MedicalCdhaId, e.CaseStudyId });
+                entity.HasKey(e => new { e.MedicalCdhaId, e.CaseStudyId,e.Id });
 
                 entity.ToTable("medical_cdha_case_study");
 
-                entity.Property(e => e.MedicalCdhaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("medicalCdhaId");
-
-                entity.Property(e => e.CaseStudyId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("caseStudyId");
-
-                entity.Property(e => e.DoctorId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("doctorId");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.KtvId)
-                    .HasColumnType("int(11)")
                     .HasColumnName("ktvId");
+
+                entity.Property(e => e.CaseStudyId)
+                    .HasColumnName("caseStudyId");
+
+                entity.Property(e => e.MedicalCdhaId)
+                    .HasColumnName("medicalCdhaId");
+
+                entity.Property(e => e.ReportId)
+                    .HasColumnName("reportId");
 
                 entity.Property(e => e.Conclusion)
                     .HasMaxLength(255)
                     .HasColumnName("conclusion")
-                    .HasDefaultValueSql("'NULL'");
+                    .IsRequired();
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(255)
                     .HasColumnName("description")
-                    .HasDefaultValueSql("'NULL'");
+                    .IsRequired();
 
                 entity.Property(e => e.ImageName)
                     .HasMaxLength(255)
-                    .HasColumnName("imageName")
-                    .HasDefaultValueSql("'NULL'");
+                    .HasColumnName("imageName");
 
                 entity.Property(e => e.ImageLink)
                     .HasMaxLength(255)
-                    .HasColumnName("imageLink")
-                    .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.ReportId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("reportId")
-                    .IsRequired(false); // Đặt là nullable
-
-                entity.HasOne(d => d.DoctorIdNavigation)
-                    .WithMany(p => p.MedicalCdhas)
-                    .HasForeignKey(d => d.DoctorId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_medical_cdha_case_study_doctor");
+                    .HasColumnName("imageLink");
 
                 entity.HasOne(d => d.KtvIdNavigation)
                     .WithMany(p => p.MedicalCdhas)
@@ -251,6 +238,12 @@ namespace Infracstructure.Persistance
                     .HasForeignKey(d => d.MedicalCdhaId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_medical_cdha_case_study_medicalcdha");
+
+                entity.HasOne(d => d.Report)
+                    .WithMany()
+                    .HasForeignKey(d => d.ReportId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_medical_cdha_case_study_report_reportId");
             });
             modelBuilder.Entity<Nurse>(entity =>
             {
@@ -357,12 +350,6 @@ namespace Infracstructure.Persistance
                 entity.Property(e => e.State)
                     .HasColumnType("int(11)")
                     .HasColumnName("state");
-
-                entity.HasOne(d => d.DoctorIdNavigation)
-                    .WithMany(p => p.Reports)
-                    .HasForeignKey(d => d.DoctorId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("report_ibfk_2");
 
                 entity.HasOne(d => d.PatientIdNavigation)
                     .WithMany(p => p.Reports)

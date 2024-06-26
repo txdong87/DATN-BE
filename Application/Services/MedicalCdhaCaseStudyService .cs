@@ -72,7 +72,6 @@ namespace Application.Services
             return new MedicalCdhaCaseStudyDto
             {
                 Id = entity.Id,
-                DoctorId = entity.DoctorId,
                 KtvId = entity.KtvId,
                 CaseStudyId = entity.CaseStudyId,
                 MedicalCdhaId = entity.MedicalCdhaId,
@@ -89,7 +88,6 @@ namespace Application.Services
             return new MedicalCdhaCaseStudy
             {
                 Id = dto.Id,
-                DoctorId = dto.DoctorId,
                 KtvId = dto.KtvId,
                 CaseStudyId = dto.CaseStudyId,
                 MedicalCdhaId = dto.MedicalCdhaId,
@@ -113,7 +111,7 @@ namespace Application.Services
             {
                 medicalCdha = new MedicalCdha
                 {
-                    Id = medicalCdhaDtos.MedicalCdhaId, // Example: Initialize other properties
+                    Id = medicalCdhaDtos.MedicalCdhaId,
                 };
                 await _medicalCdhaRepository.AddMedicalCdhaAsync(medicalCdha);
             }
@@ -121,10 +119,7 @@ namespace Application.Services
             var newMedicalCdhaCaseStudy = new MedicalCdhaCaseStudy
             {
                 MedicalCdhaId = medicalCdha.Id,
-                CaseStudyId = caseStudyId,
-                DoctorId = medicalCdhaDtos.DoctorId,
                 KtvId = medicalCdhaDtos.KtvId,
-                // Initialize other properties as needed
             };
 
             await _medicalCdhaCaseStudyRepository.AddAsync(newMedicalCdhaCaseStudy);
