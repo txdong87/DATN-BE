@@ -48,6 +48,10 @@ namespace Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
+        public async Task<MedicalCdhaCaseStudy> GetByMedicalCdhaIdAndCaseStudyIdAsync(int medicalCdhaId, int caseStudyId)
+        {
+            return await _context.MedicalCdhaCaseStudies
+                .FirstOrDefaultAsync(x => x.MedicalCdhaId == medicalCdhaId && x.CaseStudyId == caseStudyId);
+        }
     }
 }

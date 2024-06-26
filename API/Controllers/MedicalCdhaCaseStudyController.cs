@@ -1,6 +1,9 @@
 ﻿using Application.DTOs;
 using Application.DTOs.CaseStudy;
+using Application.DTOs.MedicalCdhaCaseStudyDTO;
 using Application.Interfaces;
+using Application.Exceptions;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -61,13 +64,24 @@ namespace WebAPI.Controllers
             await _service.DeleteAsync(id);
             return NoContent();
         }
-        [HttpPost("add-medical-cdha")]
-        public async Task<ActionResult> AddMedicalCdhasToCaseStudy(int caseStudyId, List<GetMedicalCdhaDto> dtos)
+        [HttpPost("{caseStudyId}")]
+        public async Task<IActionResult> AddMedicalCdhaToCaseStudy(int caseStudyId, [FromBody] AddMedicalCdhaCaseStudyDto requestDto)
         {
-            await _service.AddMedicalCdhasToCaseStudyAsync(caseStudyId, dtos);
-            return Ok();
-        }
+            try
+            {
+                await _service.AddMedicalCdhasToCaseStudyAsync(caseStudyId, requestDto);
 
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); 
+            }
+        }
         [HttpPut("update-medical-cdha")]
         public async Task<ActionResult> UpdateMedicalCdhaCaseStudy(MedicalCdhaCaseStudyDto dto)
         {

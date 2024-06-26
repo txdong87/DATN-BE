@@ -94,7 +94,7 @@ namespace Application.Services
                 ImageLink = m.ImageLink,
                 DateCreate = m.MedicalCdhaIdNavigation.DateCreate,
                 ImageName = m.ImageName,
-                result = m.Conlusion
+                result = m.Conclusion
             }).ToList();
 
             var caseStudyDto = new GetCaseStudyDto
@@ -160,7 +160,7 @@ namespace Application.Services
                     ImageLink = m.ImageLink,
                     DateCreate = m.MedicalCdhaIdNavigation.DateCreate, 
                     ImageName = m.ImageName,
-                    result = m.Conlusion
+                    result = m.Conclusion
                 }).ToList();
 
                 var caseStudyDto = new GetCaseStudyDto

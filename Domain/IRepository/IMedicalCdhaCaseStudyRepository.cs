@@ -11,6 +11,7 @@ namespace Domain.IRepository
         Task AddAsync(MedicalCdhaCaseStudy medicalCdhaCaseStudy);
         Task UpdateAsync(MedicalCdhaCaseStudy medicalCdhaCaseStudy);
         Task DeleteAsync(int id);
+        Task<MedicalCdhaCaseStudy> GetByMedicalCdhaIdAndCaseStudyIdAsync(int medicalCdhaId, int caseStudyId);
 
     }
 }

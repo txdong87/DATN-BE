@@ -9,9 +9,10 @@ namespace Application.DTOs.MedicalCdhaCaseStudyDTO
 {
     public class AddMedicalCdhaCaseStudyDto
     {
-        public int? DoctorId { get; set; }
-        public int? KtvId { get; set; }
-        public int? CaseStudyId { get; set; }
-        public List<MedicalCdha> MedicalCdha { get; set; }
+        public int Id { get; set; }
+        public int DoctorId { get; set; }
+        public int KtvId { get; set; }
+        public int CaseStudyId { get; set; }
+        public int MedicalCdhaId { get; set; }
     }
 }

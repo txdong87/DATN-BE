@@ -13,9 +13,9 @@ namespace Domain.Entities
         public int? KtvId { get; set; }
         public int? CaseStudyId { get; set; }
         public int? MedicalCdhaId { get; set; }
-        public int ReportId { get; set; }
+        public int ?ReportId { get; set; }
 
-        public string Conlusion { get; set; } //kết luận
+        public string Conclusion { get; set; }
 
         public string Description { get; set; } //mô tả
         public string? ImageName { get; set; }

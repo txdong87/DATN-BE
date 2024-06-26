@@ -9,6 +9,6 @@ namespace Application.DTOs
     public class GetMedicalCdhaDto
     {
         public string CdhaName { get; set; }
-        public int id { get; set; }
+        public int MedicalCdhaId { get; set; }
     }
 }

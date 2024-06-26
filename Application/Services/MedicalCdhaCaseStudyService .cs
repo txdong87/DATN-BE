@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.CaseStudy;
+using Application.DTOs.MedicalCdhaCaseStudyDTO;
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Services.Interfaces;
 using Domain.Entities;
@@ -7,6 +9,7 @@ using Domain.Interfaces;
 using Domain.IRepository;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -74,7 +77,7 @@ namespace Application.Services
                 CaseStudyId = entity.CaseStudyId,
                 MedicalCdhaId = entity.MedicalCdhaId,
                 ReportId = entity.ReportId,
-                Conlusion = entity.Conlusion,
+                Conlusion = entity.Conclusion,
                 Description = entity.Description,
                 ImageName = entity.ImageName,
                 ImageLink = entity.ImageLink
@@ -91,45 +94,41 @@ namespace Application.Services
                 CaseStudyId = dto.CaseStudyId,
                 MedicalCdhaId = dto.MedicalCdhaId,
                 ReportId = dto.ReportId,
-                Conlusion = dto.Conlusion,
+                Conclusion = dto.Conlusion,
                 Description = dto.Description,
                 ImageName = dto.ImageName,
                 ImageLink = dto.ImageLink
             };
         }
-        public async Task AddMedicalCdhasToCaseStudyAsync(int caseStudyId, List<GetMedicalCdhaDto> medicalCdhaDtos)
+        public async Task AddMedicalCdhasToCaseStudyAsync(int caseStudyId, AddMedicalCdhaCaseStudyDto medicalCdhaDtos)
         {
             var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
-            if (caseStudy != null)
+            if (caseStudy == null)
             {
-                foreach (var dto in medicalCdhaDtos)
-                {
-                    // Check if MedicalCdha already exists
-                    var medicalCdha = await _medicalCdhaRepository.GetMedicalCdhaByIdAsync(dto.id);
-                    if (medicalCdha == null)
-                    {
-                        medicalCdha = new MedicalCdha
-                        {
-                            Id = dto.id,
-                            CdhaName = dto.CdhaName
-                            // Add other properties as needed
-                        };
-                        await _medicalCdhaRepository.AddMedicalCdhaAsync(medicalCdha);
-                    }
-
-                    // Create MedicalCdhaCaseStudy
-                    var newMedicalCdhaCaseStudy = new MedicalCdhaCaseStudy
-                    {
-                        MedicalCdhaId = medicalCdha.Id,
-                        CaseStudyId = caseStudyId,
-                        // Set other properties like Conlusion, Description, etc.
-                    };
-
-                    await _medicalCdhaCaseStudyRepository.AddAsync(newMedicalCdhaCaseStudy);
-                }
-
-                await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
+                throw new NotFoundException($"CaseStudy with ID {caseStudyId} not found.");
             }
+
+            var medicalCdha = await _medicalCdhaRepository.GetMedicalCdhaByIdAsync(medicalCdhaDtos.MedicalCdhaId);
+            if (medicalCdha == null)
+            {
+                medicalCdha = new MedicalCdha
+                {
+                    Id = medicalCdhaDtos.MedicalCdhaId, // Example: Initialize other properties
+                };
+                await _medicalCdhaRepository.AddMedicalCdhaAsync(medicalCdha);
+            }
+
+            var newMedicalCdhaCaseStudy = new MedicalCdhaCaseStudy
+            {
+                MedicalCdhaId = medicalCdha.Id,
+                CaseStudyId = caseStudyId,
+                DoctorId = medicalCdhaDtos.DoctorId,
+                KtvId = medicalCdhaDtos.KtvId,
+                // Initialize other properties as needed
+            };
+
+            await _medicalCdhaCaseStudyRepository.AddAsync(newMedicalCdhaCaseStudy);
+            await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
         }
 
 
@@ -142,7 +141,7 @@ namespace Application.Services
                 var medicalCdhaCaseStudy = caseStudy.MedicalCdhas.FirstOrDefault(m => m.Id == dto.Id);
                 if (medicalCdhaCaseStudy != null)
                 {
-                    medicalCdhaCaseStudy.Conlusion = dto.Conlusion;
+                    medicalCdhaCaseStudy.Conclusion = dto.Conlusion;
                     medicalCdhaCaseStudy.Description = dto.Description;
                     medicalCdhaCaseStudy.ImageName = dto.ImageName;
                     medicalCdhaCaseStudy.ImageLink = dto.ImageLink;

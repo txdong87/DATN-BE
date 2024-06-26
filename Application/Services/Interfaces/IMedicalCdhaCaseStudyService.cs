@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.CaseStudy;
+using Application.DTOs.MedicalCdhaCaseStudyDTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace Application.Interfaces
         Task AddAsync(MedicalCdhaCaseStudyDto dto);
         Task UpdateAsync(MedicalCdhaCaseStudyDto dto);
         Task DeleteAsync(int id);
-        Task AddMedicalCdhasToCaseStudyAsync(int caseStudyId, List<GetMedicalCdhaDto> medicalCdhaDtos);
+        Task AddMedicalCdhasToCaseStudyAsync(int caseStudyId, AddMedicalCdhaCaseStudyDto medicalCdhaDtos);
         Task UpdateMedicalCdhaCaseStudyAsync(MedicalCdhaCaseStudyDto dto);
     }
 }
