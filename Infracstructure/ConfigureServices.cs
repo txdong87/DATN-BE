@@ -4,6 +4,7 @@ using Infracstructure.Persistance;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,7 +60,6 @@ public static class ConfigureServices
                 .AddScoped<IMedicalCdhaRepository, MedicalCdhaRepository>()
                 .AddScoped<IMedicalCdhaCaseStudyRepository, MedicalCdhaCaseStudyRepository>()
                 .AddScoped<ICaseStudyRepository, CaseStudyRepository>();
-
         return services;
     }
 }

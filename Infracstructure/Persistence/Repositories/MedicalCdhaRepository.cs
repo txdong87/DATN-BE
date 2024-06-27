@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.IRepository;
 using Infracstructure.Persistance;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,10 @@ namespace Infrastructure.Persistence.Repositories
     public class MedicalCdhaRepository : IMedicalCdhaRepository
     {
         private readonly datnContext _context;
-
+        public async Task<IEnumerable<MedicalCdha>> GetAllAsync()
+        {
+            return await _context.MedicalCdhas.ToListAsync();
+        }
         public MedicalCdhaRepository(datnContext context)
         {
             _context = context;
@@ -27,6 +31,21 @@ namespace Infrastructure.Persistence.Repositories
         {
             await _context.MedicalCdhas.AddAsync(medicalCdha);
             await _context.SaveChangesAsync();
+        }
+        public async Task UpdateAsync(MedicalCdha entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _context.MedicalCdhas.FindAsync(id);
+            if (entity != null)
+            {
+                _context.MedicalCdhas.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

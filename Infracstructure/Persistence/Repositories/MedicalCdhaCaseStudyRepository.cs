@@ -19,12 +19,20 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<MedicalCdhaCaseStudy>> GetAllAsync()
         {
-            return await _context.MedicalCdhaCaseStudies.ToListAsync();
+            return await _context.MedicalCdhaCaseStudies
+                 .Include(x => x.CaseStudyIdNavigation)
+                .ThenInclude(cs => cs.PatientIdNavigation)
+                .Include(x => x.MedicalCdhaIdNavigation)
+                .ToListAsync();
         }
 
         public async Task<MedicalCdhaCaseStudy> GetByIdAsync(int id)
         {
-            return await _context.MedicalCdhaCaseStudies.FindAsync(id);
+            return await _context.MedicalCdhaCaseStudies
+                .Include(x => x.CaseStudyIdNavigation)
+                .ThenInclude(cs => cs.PatientIdNavigation)
+                .Include(x => x.MedicalCdhaIdNavigation)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddAsync(MedicalCdhaCaseStudy medicalCdhaCaseStudy)

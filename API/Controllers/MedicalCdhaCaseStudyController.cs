@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MedicalCdhaCaseStudyDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<GetMedicalCdhaCaseStudyDto>>> GetAll()
         {
             var result = await _service.GetAllAsync();
             return Ok(result);

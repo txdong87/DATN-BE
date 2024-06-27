@@ -12,6 +12,7 @@ using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -29,63 +30,59 @@ namespace Application.Services
             _medicalCdhaRepository = medicalCdhaRepository;
         }
 
-        public async Task<IEnumerable<MedicalCdhaCaseStudyDto>> GetAllAsync()
+        public async Task<IEnumerable<GetMedicalCdhaCaseStudyDto>> GetAllAsync()
         {
             var entities = await _medicalCdhaCaseStudyRepository.GetAllAsync();
-            var dtos = new List<MedicalCdhaCaseStudyDto>();
+            var dtos = new List<GetMedicalCdhaCaseStudyDto>();
             foreach (var entity in entities)
             {
-                dtos.Add(MapToDto(entity));
+                var dto = new GetMedicalCdhaCaseStudyDto
+                {
+                    Id = entity.Id,
+                    KtvId = entity.KtvId,
+                    CaseStudyId = entity.CaseStudyId,
+                    patientName = entity.CaseStudyIdNavigation?.PatientIdNavigation?.PatientName ?? string.Empty,
+                    MedicalCdhaName = entity.MedicalCdhaIdNavigation?.CdhaName ?? string.Empty,
+                    DateCreate=entity.MedicalCdhaIdNavigation.DateCreate,
+                    ReportId = entity.ReportId,
+                    Conlusion = entity.Conclusion,
+                    Description = entity.Description,
+                    ImageName = entity.ImageName,
+                    ImageLink = entity.ImageLink
+                };
+                dtos.Add(dto);
             }
             return dtos;
         }
 
-        public async Task<MedicalCdhaCaseStudyDto> GetByIdAsync(int id)
+        public async Task<GetMedicalCdhaCaseStudyDto> GetByIdAsync(int id)
         {
             var entity = await _medicalCdhaCaseStudyRepository.GetByIdAsync(id);
             if (entity == null)
             {
                 return null;
             }
-            return MapToDto(entity);
-        }
 
-        public async Task AddAsync(MedicalCdhaCaseStudyDto dto)
-        {
-            var entity = MapToEntity(dto);
-            await _medicalCdhaCaseStudyRepository.AddAsync(entity);
-        }
-
-        public async Task UpdateAsync(MedicalCdhaCaseStudyDto dto)
-        {
-            var entity = MapToEntity(dto);
-            await _medicalCdhaCaseStudyRepository.UpdateAsync(entity);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _medicalCdhaCaseStudyRepository.DeleteAsync(id);
-        }
-
-        private MedicalCdhaCaseStudyDto MapToDto(MedicalCdhaCaseStudy entity)
-        {
-            return new MedicalCdhaCaseStudyDto
+            var dto = new GetMedicalCdhaCaseStudyDto
             {
                 Id = entity.Id,
                 KtvId = entity.KtvId,
                 CaseStudyId = entity.CaseStudyId,
-                MedicalCdhaId = entity.MedicalCdhaId,
+                patientName = entity.CaseStudyIdNavigation?.PatientIdNavigation?.PatientName ?? string.Empty,
+                MedicalCdhaName = entity.MedicalCdhaIdNavigation?.CdhaName ?? string.Empty,
+                DateCreate = entity.MedicalCdhaIdNavigation.DateCreate,
                 ReportId = entity.ReportId,
                 Conlusion = entity.Conclusion,
                 Description = entity.Description,
                 ImageName = entity.ImageName,
                 ImageLink = entity.ImageLink
             };
+            return dto;
         }
 
-        private MedicalCdhaCaseStudy MapToEntity(MedicalCdhaCaseStudyDto dto)
+        public async Task AddAsync(MedicalCdhaCaseStudyDto dto)
         {
-            return new MedicalCdhaCaseStudy
+            var entity = new MedicalCdhaCaseStudy
             {
                 Id = dto.Id,
                 KtvId = dto.KtvId,
@@ -97,7 +94,31 @@ namespace Application.Services
                 ImageName = dto.ImageName,
                 ImageLink = dto.ImageLink
             };
+            await _medicalCdhaCaseStudyRepository.AddAsync(entity);
         }
+
+        public async Task UpdateAsync(MedicalCdhaCaseStudyDto dto)
+        {
+            var entity = new MedicalCdhaCaseStudy
+            {
+                Id = dto.Id,
+                KtvId = dto.KtvId,
+                CaseStudyId = dto.CaseStudyId,
+                MedicalCdhaId = dto.MedicalCdhaId,
+                ReportId = dto.ReportId,
+                Conclusion = dto.Conlusion,
+                Description = dto.Description,
+                ImageName = dto.ImageName,
+                ImageLink = dto.ImageLink
+            };
+            await _medicalCdhaCaseStudyRepository.UpdateAsync(entity);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _medicalCdhaCaseStudyRepository.DeleteAsync(id);
+        }
+
         public async Task AddMedicalCdhasToCaseStudyAsync(int caseStudyId, AddMedicalCdhaCaseStudyDto medicalCdhaDtos)
         {
             var caseStudy = await _caseStudyRepository.GetCaseStudyByIdAsync(caseStudyId);
@@ -125,8 +146,6 @@ namespace Application.Services
             await _medicalCdhaCaseStudyRepository.AddAsync(newMedicalCdhaCaseStudy);
             await _caseStudyRepository.UpdateCaseStudyAsync(caseStudy);
         }
-
-
 
         public async Task UpdateMedicalCdhaCaseStudyAsync(MedicalCdhaCaseStudyDto dto)
         {

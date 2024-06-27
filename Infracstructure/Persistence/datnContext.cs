@@ -178,8 +178,11 @@ namespace Infracstructure.Persistance
                     .HasColumnName("dateCreate");
 
                 entity.Property(e => e.TimeEstimate)
-                    .HasColumnType("date")
+                    .HasColumnType("int(11)")
                     .HasColumnName("timeEstimate");
+                entity.Property(e => e.Price)
+                   .HasColumnType("int(11)")
+                   .HasColumnName("price");
             });
             modelBuilder.Entity<MedicalCdhaCaseStudy>(entity =>
             {

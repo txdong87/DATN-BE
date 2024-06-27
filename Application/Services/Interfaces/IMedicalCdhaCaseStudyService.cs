@@ -8,8 +8,8 @@ namespace Application.Interfaces
 {
     public interface IMedicalCdhaCaseStudyService
     {
-        Task<IEnumerable<MedicalCdhaCaseStudyDto>> GetAllAsync();
-        Task<MedicalCdhaCaseStudyDto> GetByIdAsync(int id);
+        Task<IEnumerable<GetMedicalCdhaCaseStudyDto>> GetAllAsync();
+        Task<GetMedicalCdhaCaseStudyDto> GetByIdAsync(int id);
         Task AddAsync(MedicalCdhaCaseStudyDto dto);
         Task UpdateAsync(MedicalCdhaCaseStudyDto dto);
         Task DeleteAsync(int id);

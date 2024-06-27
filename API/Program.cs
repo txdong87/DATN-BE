@@ -38,7 +38,7 @@ app.UseHttpsRedirection();
 
 // Áp dụng middleware CORS
 app.UseCors("AllowLocalhost4200");
-
+app.UseStaticFiles(); 
 app.UseAuthorization();
 
 app.MapControllers();

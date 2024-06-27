@@ -9,7 +9,8 @@ namespace Domain.Entities
         public string CdhaName { get; set; }
        
         public DateTime? DateCreate { get; set; }
-        public DateTime? TimeEstimate { get; set; }
+        public int? TimeEstimate { get; set; }
+        public int? Price { get; set; }
         public virtual ICollection<MedicalCdhaCaseStudy> MedicalCdhaCaseStudies { get; set; }
 
 
