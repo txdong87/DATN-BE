@@ -7,6 +7,7 @@ using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Services.Interfaces;
 
 namespace WebAPI.Controllers
 {
@@ -15,10 +16,14 @@ namespace WebAPI.Controllers
     public class MedicalCdhaCaseStudyController : ControllerBase
     {
         private readonly IMedicalCdhaCaseStudyService _service;
+        private readonly ICaseStudyService _caseStudyService;
+        private readonly IMedicalCdhaService _medicalCdhaService;
 
-        public MedicalCdhaCaseStudyController(IMedicalCdhaCaseStudyService service)
+        public MedicalCdhaCaseStudyController(IMedicalCdhaCaseStudyService service, ICaseStudyService caseStudyService,IMedicalCdhaService medicalCdhaService)
         {
             _service = service;
+            _caseStudyService = caseStudyService;
+            _medicalCdhaService = medicalCdhaService;
         }
 
         [HttpGet]
@@ -51,13 +56,13 @@ namespace WebAPI.Controllers
         {
             try
             {
-                // Kiểm tra xem bản ghi có tồn tại không
                 var existingDto = await _service.GetByIdAsync(id);
                 if (existingDto == null)
                 {
                     return NotFound(); // Không tìm thấy bản ghi
                 }
-
+                var caseStudy = await _caseStudyService.GetCaseStudyByIdAsync(dto.CaseStudyId);
+                var medicalCdha = await _medicalCdhaService.GetMedicalCdhaByIdAsync(dto.MedicalCdhaId);
                 if (file != null && file.Length > 0)
                 {
                     var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -66,7 +71,7 @@ namespace WebAPI.Controllers
                         Directory.CreateDirectory(uploadsFolderPath);
                     }
 
-                    var fileName = $"{dto.CaseStudyId}_{dto.MedicalCdhaId}_{Path.GetFileName(file.FileName)}";
+                    var fileName = $"{caseStudy.Patient.PatientName}-{dto.CaseStudyId}-{medicalCdha.CdhaName}-{Path.GetFileName(file.FileName)}";
                     var filePath = Path.Combine(uploadsFolderPath, fileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -77,13 +82,11 @@ namespace WebAPI.Controllers
                     dto.ImageLink = $"/uploads/{fileName}";
                 }
 
-                // Cập nhật dữ liệu từ dto vào existingDto
                 existingDto.Conclusion = dto.Conclusion;
                 existingDto.Description = dto.Description;
                 existingDto.ImageName = dto.ImageName;
                 existingDto.ImageLink = dto.ImageLink;
 
-                // Tạo đối tượng mới để cập nhật, tránh việc DbContext theo dõi nhiều thực thể cùng một khóa chính
                 var updateDto = new GetMedicalCdhaCaseStudyDto
                 {
                     Id = existingDto.Id,
@@ -103,7 +106,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); // Xử lý ngoại lệ và trả về lỗi 500
+                return StatusCode(500, ex.Message);
             }
         }
 
