@@ -24,6 +24,10 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
         }
+        public async Task<User> GetUserByIdAsync(int userId)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        }
         public async Task DeleteAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);

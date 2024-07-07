@@ -19,6 +19,7 @@ namespace Domain.Entities
         public string Description { get; set; } //mô tả
         public string? ImageName { get; set; }
         public string? ImageLink { get; set; }
+        //public string? status { get; set; }
         public virtual Report? Report { get; set; }
         public virtual KTV? KtvIdNavigation { get; set; }
         public virtual Casestudy? CaseStudyIdNavigation { get; set; }

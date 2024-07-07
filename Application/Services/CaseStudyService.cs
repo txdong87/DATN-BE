@@ -14,30 +14,38 @@ using Application.Services.Interfaces;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Application.DTOs.PatientDTO;
+using Infrastructure.Persistence.Repositories;
+using Application.DTOs.DoctorDTO;
 
 namespace Application.Services
 {
     public class CaseStudyService :ICaseStudyService
     {
         private readonly ICaseStudyRepository _caseStudyRepository;
+        private readonly IUserRepository _userRepository;
         //private readonly IReportRepository _reportRepository;
         private readonly IPrescriptionRepository _prescriptionRepository;
         private readonly IMedicationRepository _medicationRepository;
         private readonly IPatientRepository _patientRepository;
-
+        private readonly IDoctorRepository _doctorRepository;
 
         public CaseStudyService(
             ICaseStudyRepository caseStudyRepository,
             IPatientRepository patientRepository,
-            //IReportRepository reportRepository,
-            IPrescriptionRepository prescriptionRepository,
-            IMedicationRepository medicationRepository)
+            IUserRepository userRepository,
+        //IReportRepository reportRepository,
+        IPrescriptionRepository prescriptionRepository,
+            IMedicationRepository medicationRepository,
+            IDoctorRepository doctorRepository
+            )
         {
             _caseStudyRepository = caseStudyRepository;
             _patientRepository=patientRepository;
+            _userRepository = userRepository;
             //_reportRepository = reportRepository;
             _prescriptionRepository = prescriptionRepository;
             _medicationRepository = medicationRepository;
+            _doctorRepository = doctorRepository;
         }
 
         public async Task<GetCaseStudyDto> GetCaseStudyByIdAsync(int id)
@@ -119,7 +127,6 @@ namespace Application.Services
         {
             var caseStudies = await _caseStudyRepository.GetAllCaseStudiesAsync();
             var caseStudyDtos = new List<GetCaseStudyDto>();
-
             foreach (var caseStudy in caseStudies)
             {
 
@@ -145,7 +152,14 @@ namespace Application.Services
                     Image = r.Image,
                     State = r.State,
                 }).ToList();
+                var doctor = await _doctorRepository.GetDoctorByIdAsync(caseStudy.DoctorId);
+                var user = await _userRepository.GetUserByIdAsync(doctor.UserId);
 
+                var doctorDto = new DoctorResponseDTO
+                {
+                    DoctorId = doctor.DoctorId,
+                    DoctorName = user.Fullname,
+                };
                 var prescriptionDtos = caseStudy.Prescriptions.Select(p => new PrescriptionDto
                 {
                     CasestudyId = p.CasestudyId,
@@ -173,6 +187,7 @@ namespace Application.Services
                     Status = caseStudy.Status,
                     CreateDate = caseStudy.CreateDate,
                     DoctorId = caseStudy.DoctorId,
+                    Doctor = doctorDto,
                     Patient = patientDto,
                     Reports = reportDtos,
                     Prescriptions = prescriptionDtos,
@@ -197,7 +212,7 @@ namespace Application.Services
                 Reason = null,
                 Status = "Pending",
                 CreateDate = DateTime.Now,
-                DoctorId = null
+                DoctorId=createCaseStudyDto.doctorId
             };
 
             await _caseStudyRepository.AddCaseStudyAsync(caseStudy);

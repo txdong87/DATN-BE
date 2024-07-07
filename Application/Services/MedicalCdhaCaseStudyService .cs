@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.CaseStudy;
 using Application.DTOs.MedicalCdhaCaseStudyDTO;
+using Application.DTOs.PatientDTO;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.Services.Interfaces;
@@ -42,13 +43,23 @@ namespace Application.Services
                     KtvId = entity.KtvId,
                     CaseStudyId = entity.CaseStudyId,
                     patientName = entity.CaseStudyIdNavigation?.PatientIdNavigation?.PatientName ?? string.Empty,
+                    MedicaCdhaId= entity.MedicalCdhaId,
                     MedicalCdhaName = entity.MedicalCdhaIdNavigation?.CdhaName ?? string.Empty,
                     DateCreate=entity.MedicalCdhaIdNavigation.DateCreate,
                     ReportId = entity.ReportId,
-                    Conlusion = entity.Conclusion,
+                    Conclusion = entity.Conclusion,
                     Description = entity.Description,
                     ImageName = entity.ImageName,
-                    ImageLink = entity.ImageLink
+                    ImageLink = entity.ImageLink,
+                    patient = new PatientDto
+                    {
+                        PatientId = entity.CaseStudyIdNavigation.PatientIdNavigation.PatientId,
+                        PatientName = entity.CaseStudyIdNavigation.PatientIdNavigation.PatientName,
+                        Address = entity.CaseStudyIdNavigation.PatientIdNavigation.Address,
+                        Dob = entity.CaseStudyIdNavigation.PatientIdNavigation.Dob,
+                        Phone = entity.CaseStudyIdNavigation.PatientIdNavigation.Phone,
+                        Sex = entity.CaseStudyIdNavigation.PatientIdNavigation.Sex,
+                    }
                 };
                 dtos.Add(dto);
             }
@@ -69,16 +80,23 @@ namespace Application.Services
                 KtvId = entity.KtvId,
                 CaseStudyId = entity.CaseStudyId,
                 patientName = entity.CaseStudyIdNavigation?.PatientIdNavigation?.PatientName ?? string.Empty,
+                MedicaCdhaId = entity.MedicalCdhaId,
                 MedicalCdhaName = entity.MedicalCdhaIdNavigation?.CdhaName ?? string.Empty,
                 DateCreate = entity.MedicalCdhaIdNavigation.DateCreate,
                 ReportId = entity.ReportId,
-                Conlusion = entity.Conclusion,
+                Conclusion = entity.Conclusion,
                 Description = entity.Description,
                 ImageName = entity.ImageName,
-                ImageLink = entity.ImageLink
+                ImageLink = entity.ImageLink,
+                patient = new PatientDto
+                {
+                    PatientId = entity.CaseStudyIdNavigation.PatientIdNavigation.PatientId,
+                    PatientName = entity.CaseStudyIdNavigation.PatientIdNavigation.PatientName,
+                }
             };
             return dto;
         }
+
 
         public async Task AddAsync(MedicalCdhaCaseStudyDto dto)
         {
@@ -89,7 +107,7 @@ namespace Application.Services
                 CaseStudyId = dto.CaseStudyId,
                 MedicalCdhaId = dto.MedicalCdhaId,
                 ReportId = dto.ReportId,
-                Conclusion = dto.Conlusion,
+                Conclusion = dto.Conclusion,
                 Description = dto.Description,
                 ImageName = dto.ImageName,
                 ImageLink = dto.ImageLink
@@ -97,16 +115,16 @@ namespace Application.Services
             await _medicalCdhaCaseStudyRepository.AddAsync(entity);
         }
 
-        public async Task UpdateAsync(MedicalCdhaCaseStudyDto dto)
+        public async Task UpdateAsync(GetMedicalCdhaCaseStudyDto dto)
         {
             var entity = new MedicalCdhaCaseStudy
             {
                 Id = dto.Id,
                 KtvId = dto.KtvId,
                 CaseStudyId = dto.CaseStudyId,
-                MedicalCdhaId = dto.MedicalCdhaId,
+                MedicalCdhaId = dto.MedicaCdhaId,
                 ReportId = dto.ReportId,
-                Conclusion = dto.Conlusion,
+                Conclusion = dto.Conclusion,
                 Description = dto.Description,
                 ImageName = dto.ImageName,
                 ImageLink = dto.ImageLink
@@ -155,7 +173,7 @@ namespace Application.Services
                 var medicalCdhaCaseStudy = caseStudy.MedicalCdhas.FirstOrDefault(m => m.Id == dto.Id);
                 if (medicalCdhaCaseStudy != null)
                 {
-                    medicalCdhaCaseStudy.Conclusion = dto.Conlusion;
+                    medicalCdhaCaseStudy.Conclusion = dto.Conclusion;
                     medicalCdhaCaseStudy.Description = dto.Description;
                     medicalCdhaCaseStudy.ImageName = dto.ImageName;
                     medicalCdhaCaseStudy.ImageLink = dto.ImageLink;

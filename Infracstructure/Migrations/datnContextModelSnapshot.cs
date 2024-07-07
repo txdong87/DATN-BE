@@ -114,13 +114,6 @@ namespace Infrastructure.Migrations
                         .HasColumnName("ktvName")
                         .HasDefaultValueSql("'NULL'");
 
-                    b.Property<string>("Password")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("password")
-                        .HasDefaultValueSql("'NULL'");
-
                     b.Property<int?>("RoleIndication")
                         .HasColumnType("int(11)")
                         .HasColumnName("roleIndication");
@@ -154,8 +147,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("date")
                         .HasColumnName("dateCreate");
 
-                    b.Property<DateTime?>("TimeEstimate")
-                        .HasColumnType("date")
+                    b.Property<int?>("Price")
+                        .HasColumnType("int(11)")
+                        .HasColumnName("price");
+
+                    b.Property<int?>("TimeEstimate")
+                        .HasColumnType("int(11)")
                         .HasColumnName("timeEstimate");
 
                     b.HasKey("Id");
@@ -173,6 +170,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("caseStudyId");
 
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
                     b.Property<string>("Conclusion")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -184,10 +186,6 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("description");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int")
-                        .HasColumnName("id");
 
                     b.Property<string>("ImageLink")
                         .HasMaxLength(255)
@@ -207,7 +205,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int(11)")
                         .HasColumnName("reportId");
 
-                    b.HasKey("MedicalCdhaId", "CaseStudyId");
+                    b.HasKey("MedicalCdhaId", "CaseStudyId", "Id");
 
                     b.HasIndex("CaseStudyId");
 

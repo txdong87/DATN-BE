@@ -20,7 +20,7 @@ namespace Domain.Entities
         public DateTime? CreateDate { get; set; }
         public string? Conclusion { get; set; }
         public string? Diagnostic { get; set; }
-        public int? DoctorId { get; set; }
+        public int DoctorId { get; set; }
 
         public virtual ICollection<MedicalCdhaCaseStudy> MedicalCdhas { get; set; }
         public virtual ICollection<Report> Report { get; set; }

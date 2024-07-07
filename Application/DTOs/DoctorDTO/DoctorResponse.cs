@@ -9,7 +9,7 @@ namespace Application.DTOs.DoctorDTO
     public class DoctorResponseDTO
     {
         public int UserId { get; set; }
-        public string DoctorRole { get; set; }
+        public int DoctorId { get; set; }
         public string DoctorName { get; set;}
 
     }

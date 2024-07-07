@@ -23,6 +23,7 @@ namespace Infrastructure.Repositories
                  .Include(x => x.CaseStudyIdNavigation)
                 .ThenInclude(cs => cs.PatientIdNavigation)
                 .Include(x => x.MedicalCdhaIdNavigation)
+                .Include(m => m.CaseStudyIdNavigation.PatientIdNavigation)
                 .ToListAsync();
         }
 
@@ -30,8 +31,9 @@ namespace Infrastructure.Repositories
         {
             return await _context.MedicalCdhaCaseStudies
                 .Include(x => x.CaseStudyIdNavigation)
-                .ThenInclude(cs => cs.PatientIdNavigation)
+                    .ThenInclude(cs => cs.PatientIdNavigation)
                 .Include(x => x.MedicalCdhaIdNavigation)
+                .Include(m => m.CaseStudyIdNavigation.PatientIdNavigation)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 

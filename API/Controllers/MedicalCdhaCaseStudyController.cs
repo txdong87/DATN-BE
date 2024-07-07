@@ -39,24 +39,63 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(MedicalCdhaCaseStudyDto dto)
-        {
-            await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> Create(MedicalCdhaCaseStudyDto dto)
+        //{
+        //    await _service.AddAsync(dto);
+        //    return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+        //}
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, MedicalCdhaCaseStudyDto dto)
+        public async Task<ActionResult> Update(int id, [FromForm] GetMedicalCdhaCaseStudyDto dto, IFormFile file)
         {
-            if (id != dto.Id)
+            try
             {
-                return BadRequest();
-            }
+                // Kiểm tra xem bản ghi có tồn tại không
+                var existingDto = await _service.GetByIdAsync(id);
+                if (existingDto == null)
+                {
+                    return NotFound(); // Không tìm thấy bản ghi
+                }
 
-            await _service.UpdateAsync(dto);
-            return NoContent();
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(uploadsFolderPath))
+                    {
+                        Directory.CreateDirectory(uploadsFolderPath);
+                    }
+
+                    var fileName = $"{dto.patientName}_{dto.CaseStudyId}_{dto.MedicalCdhaName}_{Path.GetFileName(file.FileName)}";
+                    var filePath = Path.Combine(uploadsFolderPath, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    dto.ImageName = fileName;
+                    dto.ImageLink = $"/uploads/{fileName}";
+                }
+
+                // Cập nhật dữ liệu từ dto vào existingDto
+                existingDto.CaseStudyId = dto.CaseStudyId;
+                existingDto.MedicaCdhaId = dto.MedicaCdhaId;
+                existingDto.ReportId = dto.ReportId;
+                existingDto.Conclusion = dto.Conclusion;
+                existingDto.Description = dto.Description;
+                existingDto.ImageName = dto.ImageName;
+                existingDto.ImageLink = dto.ImageLink;
+
+                await _service.UpdateAsync(existingDto);
+
+                return CreatedAtAction(nameof(GetById), new { id = existingDto.Id }, existingDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); // Xử lý ngoại lệ và trả về lỗi 500
+            }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
@@ -64,22 +103,28 @@ namespace WebAPI.Controllers
             await _service.DeleteAsync(id);
             return NoContent();
         }
-        [HttpPost("{caseStudyId}")]
-        public async Task<IActionResult> AddMedicalCdhaToCaseStudy(int caseStudyId, [FromBody] AddMedicalCdhaCaseStudyDto requestDto)
+
+        [HttpPost]
+        public async Task<ActionResult> Create(MedicalCdhaCaseStudyDto dto)
         {
             try
             {
-                await _service.AddMedicalCdhasToCaseStudyAsync(caseStudyId, requestDto);
+                //if (file != null && file.Length > 0)
+                //{
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+                //        await file.CopyToAsync(memoryStream);
+                //        dto.ImageName = file.FileName;
+                //        dto.ImageLink = Convert.ToBase64String(memoryStream.ToArray());
+                //    }
+                //}
 
-                return Ok();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message); 
+                await _service.AddAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, ex.Message);
             }
         }
         [HttpPut("update-medical-cdha")]

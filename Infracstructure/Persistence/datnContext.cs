@@ -145,11 +145,6 @@ namespace Infracstructure.Persistance
                     .HasColumnName("ktvName")
                     .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.Password)
-                    .HasMaxLength(255)
-                    .HasColumnName("password")
-                    .HasDefaultValueSql("'NULL'");
-
                 entity.Property(e => e.RoleIndication)
                     .HasColumnType("int(11)")
                     .HasColumnName("roleIndication");
@@ -435,7 +430,7 @@ namespace Infracstructure.Persistance
             });
 
 
-            OnModelCreatingPartial(modelBuilder);
+            OnModelCreatingPartial(modelBuilder); 
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

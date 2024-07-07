@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Migrations
 {
-    public partial class AddDB : Migration
+    public partial class UpdateDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,7 +21,8 @@ namespace Infrastructure.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     CDHAName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
                     dateCreate = table.Column<DateTime>(type: "date", nullable: true),
-                    timeEstimate = table.Column<DateTime>(type: "date", nullable: true)
+                    timeEstimate = table.Column<int>(type: "int(11)", nullable: true),
+                    price = table.Column<int>(type: "int(11)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,7 +132,6 @@ namespace Infrastructure.Migrations
                     ktvId = table.Column<int>(type: "int(11)", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     userId = table.Column<int>(type: "int(11)", nullable: false),
-                    password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     ktvName = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true, defaultValueSql: "'NULL'"),
                     roleIndication = table.Column<int>(type: "int(11)", nullable: true)
                 },
@@ -301,9 +301,10 @@ namespace Infrastructure.Migrations
                 name: "medical_cdha_case_study",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     caseStudyId = table.Column<int>(type: "int(11)", nullable: false),
                     medicalCdhaId = table.Column<int>(type: "int(11)", nullable: false),
-                    id = table.Column<int>(type: "int", nullable: false),
                     ktvId = table.Column<int>(type: "int(11)", nullable: true),
                     reportId = table.Column<int>(type: "int(11)", nullable: true),
                     conclusion = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
@@ -313,7 +314,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_medical_cdha_case_study", x => new { x.medicalCdhaId, x.caseStudyId });
+                    table.PrimaryKey("PK_medical_cdha_case_study", x => new { x.medicalCdhaId, x.caseStudyId, x.id });
                     table.ForeignKey(
                         name: "FK_medical_cdha_case_study_casestudy",
                         column: x => x.caseStudyId,

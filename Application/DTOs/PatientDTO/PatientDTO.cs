@@ -9,7 +9,7 @@ namespace Application.DTOs.PatientDTO
 {
     public class PatientDto
     {
-        public int? PatientId { get; set; }
+        public int PatientId { get; set; }
         public string? PatientName { get; set; }
         public string? PatientCode { get; set; }
 

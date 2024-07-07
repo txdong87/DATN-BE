@@ -50,10 +50,25 @@ namespace Application.Services
             };
 
             await _patientRepository.AddPatientAsync(patient);
-            var response = new Response<PatientDto>(isSuccess: true, data: patientDto);
+
+            // Tạo đối tượng PatientDto với ID đã được tự động tăng
+            var patientDtoResponse = new PatientDto
+            {
+                PatientId = patient.PatientId, 
+                PatientName = patient.PatientName,
+                Address = patient.Address,
+                Sex = patient.Sex,
+                Dob = patient.Dob,
+                Phone = patient.Phone,
+                PatientCode = patient.patientCode,
+                createdAt = patient.createdAt
+            };
+
+            var response = new Response<PatientDto>(isSuccess: true, data: patientDtoResponse);
 
             return response;
         }
+
 
         public async Task UpdatePatientAsync(Patient patient)
         {
