@@ -117,20 +117,24 @@ namespace Application.Services
 
         public async Task UpdateAsync(GetMedicalCdhaCaseStudyDto dto)
         {
-            var entity = new MedicalCdhaCaseStudy
+            var existingEntity = await _medicalCdhaCaseStudyRepository.GetByIdAsync(dto.Id);
+            if (existingEntity == null)
             {
-                Id = dto.Id,
-                KtvId = dto.KtvId,
-                CaseStudyId = dto.CaseStudyId,
-                MedicalCdhaId = dto.MedicaCdhaId,
-                ReportId = dto.ReportId,
-                Conclusion = dto.Conclusion,
-                Description = dto.Description,
-                ImageName = dto.ImageName,
-                ImageLink = dto.ImageLink
-            };
-            await _medicalCdhaCaseStudyRepository.UpdateAsync(entity);
+                throw new NotFoundException($"Entity with ID {dto.Id} not found.");
+            }
+
+            existingEntity.KtvId = dto.KtvId;
+            existingEntity.CaseStudyId = dto.CaseStudyId;
+            existingEntity.MedicalCdhaId = dto.MedicaCdhaId;
+            existingEntity.ReportId = dto.ReportId;
+            existingEntity.Conclusion = dto.Conclusion;
+            existingEntity.Description = dto.Description;
+            existingEntity.ImageName = dto.ImageName;
+            existingEntity.ImageLink = dto.ImageLink;
+
+            await _medicalCdhaCaseStudyRepository.UpdateAsync(existingEntity);
         }
+
 
         public async Task DeleteAsync(int id)
         {

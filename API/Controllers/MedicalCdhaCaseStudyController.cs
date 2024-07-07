@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         //}
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromForm] GetMedicalCdhaCaseStudyDto dto, IFormFile file)
+        public async Task<ActionResult> Update(int id, [FromForm] MedicalCdhaCaseStudyDto dto, IFormFile file)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
                         Directory.CreateDirectory(uploadsFolderPath);
                     }
 
-                    var fileName = $"{dto.patientName}_{dto.CaseStudyId}_{dto.MedicalCdhaName}_{Path.GetFileName(file.FileName)}";
+                    var fileName = $"{dto.CaseStudyId}_{dto.MedicalCdhaId}_{Path.GetFileName(file.FileName)}";
                     var filePath = Path.Combine(uploadsFolderPath, fileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -78,24 +78,34 @@ namespace WebAPI.Controllers
                 }
 
                 // Cập nhật dữ liệu từ dto vào existingDto
-                existingDto.CaseStudyId = dto.CaseStudyId;
-                existingDto.MedicaCdhaId = dto.MedicaCdhaId;
-                existingDto.ReportId = dto.ReportId;
                 existingDto.Conclusion = dto.Conclusion;
                 existingDto.Description = dto.Description;
                 existingDto.ImageName = dto.ImageName;
                 existingDto.ImageLink = dto.ImageLink;
 
-                await _service.UpdateAsync(existingDto);
+                // Tạo đối tượng mới để cập nhật, tránh việc DbContext theo dõi nhiều thực thể cùng một khóa chính
+                var updateDto = new GetMedicalCdhaCaseStudyDto
+                {
+                    Id = existingDto.Id,
+                    KtvId = existingDto.KtvId,
+                    CaseStudyId = existingDto.CaseStudyId,
+                    MedicaCdhaId = existingDto.MedicaCdhaId,
+                    ReportId = existingDto.ReportId,
+                    Conclusion = existingDto.Conclusion,
+                    Description = existingDto.Description,
+                    ImageName = existingDto.ImageName,
+                    ImageLink = existingDto.ImageLink
+                };
 
-                return CreatedAtAction(nameof(GetById), new { id = existingDto.Id }, existingDto);
+                await _service.UpdateAsync(updateDto);
+
+                return CreatedAtAction(nameof(GetById), new { id = updateDto.Id }, updateDto);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message); // Xử lý ngoại lệ và trả về lỗi 500
             }
         }
-
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)

@@ -34,6 +34,7 @@ namespace Infrastructure.Repositories
                     .ThenInclude(cs => cs.PatientIdNavigation)
                 .Include(x => x.MedicalCdhaIdNavigation)
                 .Include(m => m.CaseStudyIdNavigation.PatientIdNavigation)
+                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
