@@ -8,7 +8,7 @@ namespace Application.DTOs.CaseStudy
 {
     public class GetCaseStudyDto
     {
-        public int CaseStudyId { get; set; }
+        public int? CaseStudyId { get; set; }
         public int PatientId { get; set; }
         public string Conclusion { get; set; }
         public string Diagnostic { get; set; }

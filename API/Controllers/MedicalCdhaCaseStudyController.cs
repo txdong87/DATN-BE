@@ -59,10 +59,10 @@ namespace WebAPI.Controllers
                 var existingDto = await _service.GetByIdAsync(id);
                 if (existingDto == null)
                 {
-                    return NotFound(); // Không tìm thấy bản ghi
+                    return NotFound(); 
                 }
-                var caseStudy = await _caseStudyService.GetCaseStudyByIdAsync(dto.CaseStudyId);
-                var medicalCdha = await _medicalCdhaService.GetMedicalCdhaByIdAsync(dto.MedicalCdhaId);
+                var caseStudy = await _caseStudyService.GetCaseStudyByIdAsync(dto.CaseStudyId ?? 0);
+                var medicalCdha = await _medicalCdhaService.GetMedicalCdhaByIdAsync(dto.MedicalCdhaId ?? 0);
                 if (file != null && file.Length > 0)
                 {
                     var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");

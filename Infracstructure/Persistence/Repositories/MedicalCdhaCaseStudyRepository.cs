@@ -24,6 +24,7 @@ namespace Infrastructure.Repositories
                 .ThenInclude(cs => cs.PatientIdNavigation)
                 .Include(x => x.MedicalCdhaIdNavigation)
                 .Include(m => m.CaseStudyIdNavigation.PatientIdNavigation)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -46,9 +47,23 @@ namespace Infrastructure.Repositories
 
         public async Task UpdateAsync(MedicalCdhaCaseStudy medicalCdhaCaseStudy)
         {
-            _context.Entry(medicalCdhaCaseStudy).State = EntityState.Modified;
+            var existingEntity = await _context.MedicalCdhaCaseStudies
+                .FirstOrDefaultAsync(e => e.Id == medicalCdhaCaseStudy.Id
+                                       && e.CaseStudyId == medicalCdhaCaseStudy.CaseStudyId
+                                       && e.MedicalCdhaId == medicalCdhaCaseStudy.MedicalCdhaId);
+
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).CurrentValues.SetValues(medicalCdhaCaseStudy);
+            }
+            else
+            {
+                _context.MedicalCdhaCaseStudies.Update(medicalCdhaCaseStudy);
+            }
+
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(int id)
         {
